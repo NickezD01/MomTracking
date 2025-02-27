@@ -29,6 +29,38 @@ namespace Application.MyMapper
             CreateMap<ChildrenRequest, Children>();
             CreateMap<Children, ChildrenResponse>();
 
+            //Comment
+            
+
+            //GrowthIndex
+
+
+            //HealthMetric
+
+
+            //Notification
+
+
+            //Order
+
+
+            //Post
+
+
+            //Schedule
+
+
+            //SubcriptionPlan
+
+
+            //Subscription
+
+
+            //TransactionHistory
+
+
+            //WHOStandaed
+
         }
     }
 }
