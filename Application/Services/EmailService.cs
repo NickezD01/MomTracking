@@ -12,7 +12,7 @@ namespace Application.Services
 {
     public class EmailService : IEmailService
     {
-        public const string EmailUserSystem = "hoanghiep8401@gmail.com";
+        public const string EmailUserSystem = "vinhngalong123@gmail.com";
         public const string EmailPasswordSystem = "luyj hckb ksdx ybgv";
         public async Task<ApiResponse> SendValidationEmail(string recievedUser, string emailContent)
         {
