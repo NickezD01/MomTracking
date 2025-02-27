@@ -12,6 +12,7 @@ namespace Infrastructure.Repositories
     {
         public UserAccountRepository(AppDbContext context) : base(context)
         {
+
         }
     }
 }

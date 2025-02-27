@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class CommentRepository : GenericRepository<Comment>, ICommentRepository
+    public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
-        public CommentRepository(AppDbContext context) : base(context)
+        public OrderRepository(AppDbContext context) : base(context)
         {
         }
     }
