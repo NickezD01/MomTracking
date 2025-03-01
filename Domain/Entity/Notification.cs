@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +8,9 @@ namespace Domain.Entity
 {
     public class Notification
     {
-        public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
-        public string Content { get; set; }
+        public int Id { get; set; }
+        public int AccountId { get; set; }
+        public string? Content { get; set; }
         public NotiType Type { get; set; }
         public bool IsRead { get; set; }
         public DateTime Date { get; set; }

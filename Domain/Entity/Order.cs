@@ -8,11 +8,11 @@ namespace Domain.Entity
 {
     public class Order
     {
-        public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
-        public Guid PlanId { get; set; }
+        public int Id { get; set; }
+        public int AccountId { get; set; }
+        public int PlanId { get; set; }
         public double TotalPrice { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
         public bool IsDelete { get; set; }
         public UserAccount? Account { get; set; }
         public SubscriptionPlan? SubscriptionPlans { get; set; }

@@ -13,7 +13,7 @@ namespace Domain.Entity
 
         public decimal Price { get; set; }
         public DateTime DurationMonth { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public List<Subscription>? Subscriptions { get; set; }
         public List<Order>? Orders { get; set; }
     }

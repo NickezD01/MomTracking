@@ -44,7 +44,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> DeleteChildrenData(Guid Id)
+        public async Task<ApiResponse> DeleteChildrenData(int Id)
         {
             ApiResponse apiResponse = new ApiResponse();
             try

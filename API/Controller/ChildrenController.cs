@@ -26,7 +26,7 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
         [HttpDelete("DeleteChildrenDetail{id}")]
-        public async Task<IActionResult> DeleteChildrenDetail(Guid id)
+        public async Task<IActionResult> DeleteChildrenDetail(int id)
         {
             var response = await _childrenService.DeleteChildrenData(id);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
