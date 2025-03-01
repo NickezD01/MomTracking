@@ -8,12 +8,14 @@ namespace Domain.Entity
 {
     public class SubscriptionPlan : Base
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public SubscriptionPlanName Name { get; set; }
-
+        
         public decimal Price { get; set; }
         public DateTime DurationMonth { get; set; }
         public string? Description { get; set; }
+        public bool IsActive { get; set; } = true;
+        public string Feature { get; set; }
         public List<Subscription>? Subscriptions { get; set; }
         public List<Order>? Orders { get; set; }
     }
