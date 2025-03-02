@@ -6,5 +6,6 @@ namespace Application.Interface
 {   public interface IClaimService
     {
         ClaimDTO GetUserClaim();
+        
     }
 }

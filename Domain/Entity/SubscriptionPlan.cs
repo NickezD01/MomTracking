@@ -12,7 +12,7 @@ namespace Domain.Entity
         public SubscriptionPlanName Name { get; set; }
         
         public decimal Price { get; set; }
-        public DateTime DurationMonth { get; set; }
+        public int DurationMonth { get; set; }
         public string? Description { get; set; }
         public bool IsActive { get; set; } = true;
         public string Feature { get; set; }
