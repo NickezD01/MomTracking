@@ -10,12 +10,10 @@ namespace Domain.Entity
     {
         public int Id { get; set; }
         public SubscriptionPlanName Name { get; set; }
-        
+
         public decimal Price { get; set; }
-        public int DurationMonth { get; set; }
-        public string? Description { get; set; }
-        public bool IsActive { get; set; } = true;
-        public string Feature { get; set; }
+        public DateTime DurationMonth { get; set; }
+        public string Description { get; set; }
         public List<Subscription>? Subscriptions { get; set; }
         public List<Order>? Orders { get; set; }
     }

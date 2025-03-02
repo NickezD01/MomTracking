@@ -11,7 +11,7 @@ namespace Domain.Entity
         public int Id { get; set; }
         public int AccountId { get; set; }
         public bool IsNoti { get; set; }
-        public string? Content { get; set; }
+        public string Content { get; set; }
         public UserAccount? Account { get; set; }
     }
 }
