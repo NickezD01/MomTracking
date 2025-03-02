@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,12 +10,13 @@ namespace Domain.Entity
 {
     public class Children
     {
-        public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
+        public int Id { get; set; }
+        public int AccountId { get; set; }
         public string Name { get; set; }
         public Gender Gender { get; set; }
         public DateTime Birth { get; set; }
         public UserAccount Account { get; set; }
+
         public List<HealthMetric> HealthMetrics { get; set; }
     }
     public enum Gender

@@ -9,8 +9,8 @@ namespace Application.Response.Children
 {
     public class ChildrenResponse
     {
-        public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
+        public int Id { get; set; }
+        public int AccountId { get; set; }
         public string Name { get; set; }
         public Gender Gender { get; set; }
         public DateTime Birth { get; set; }

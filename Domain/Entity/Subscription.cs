@@ -8,9 +8,9 @@ namespace Domain.Entity
 {
     public class Subscription
     {
-        public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
-        public Guid PlanId { get; set; }
+        public int Id { get; set; }
+        public int AccountId { get; set; }
+        public int PlanId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool Status { get; set; }
