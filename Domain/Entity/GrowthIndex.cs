@@ -12,6 +12,6 @@ namespace Domain.Entity
         public int HealthMetricId { get; set; }
         public double DevelopmentScore { get; set; }
         public double GrowthRate { get; set; }
-        public HealthMetric? HealthMetric { get; set; }
+        public HealthMetric HealthMetric { get; set; }
     }
 }
