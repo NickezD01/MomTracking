@@ -8,7 +8,7 @@ namespace Domain.Entity
 {
     public class SubscriptionPlan : Base
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public SubscriptionPlanName Name { get; set; }
 
         public decimal Price { get; set; }

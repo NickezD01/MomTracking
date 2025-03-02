@@ -8,8 +8,8 @@ namespace Domain.Entity
 {
     public class HealthMetric : Base
     {
-        public Guid Id { get; set; }
-        public Guid ChildrentId { get; set; }
+        public int Id { get; set; }
+        public int ChildrentId { get; set; }
         public DateTime PregnancyWeek { get; set; }
         public double HeadCircumference { get; set; }
         public double Weight { get; set; }

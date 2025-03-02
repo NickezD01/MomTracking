@@ -8,9 +8,9 @@ namespace Domain.Entity
 {
     public class Comment : Base
     {
-        public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
-        public Guid PostId { get; set; }
+        public int Id { get; set; }
+        public int AccountId { get; set; }
+        public int PostId { get; set; }
         public bool IsEdited { get; set; }
         public DateTime LastUpdateTime { get; set; }
         public UserAccount? Account { get; set; }

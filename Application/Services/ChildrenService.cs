@@ -32,11 +32,11 @@ namespace Application.Services
                 var childrenExist = await _unitOfWork.Childrens.GetAsync(x => x.Id == children.Id);
                 if(childrenExist == null)
                 {
-                    return apiResponse.SetNotFound("Can not found Children");
+                    await _unitOfWork.Childrens.AddAsync(children);
+                    await _unitOfWork.SaveChangeAsync();
+                    return apiResponse.SetOk("Children's details added successfully!");
                 }
-                await _unitOfWork.Childrens.AddAsync(children);
-                await _unitOfWork.SaveChangeAsync();
-                return apiResponse.SetOk("Children's details added successfully!");
+                return apiResponse.SetBadRequest("...");
             }
             catch (Exception e)
             {
@@ -44,7 +44,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> DeleteChildrenData(Guid Id)
+        public async Task<ApiResponse> DeleteChildrenData(int Id)
         {
             ApiResponse apiResponse = new ApiResponse();
             try

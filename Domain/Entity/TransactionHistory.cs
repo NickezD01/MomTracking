@@ -8,7 +8,7 @@ namespace Domain.Entity
 {
     public class TransactionHistory : Base
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public int Amount { get; set; }
         public Status Status { get; set; }
         public List<Payment>? Payments { get; set; }

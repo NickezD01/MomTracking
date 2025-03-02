@@ -8,8 +8,8 @@ namespace Domain.Entity
 {
     public class Post : Base
     {
-        public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
+        public int Id { get; set; }
+        public int AccountId { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
         public bool IsEdited { get; set; }
