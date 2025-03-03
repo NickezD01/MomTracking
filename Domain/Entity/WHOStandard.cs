@@ -9,9 +9,12 @@ namespace Domain.Entity
     public class WHOStandard
     {
         public int Id { get; set; } 
-        public string Content { get; set; }
-        public NotiType Type { get; set; }
-        public bool IsRead { get; set; }
-        public DateTime Date { get; set; }  
+        public int PregnancyWeek { get; set; }
+        public double? HeadCircumference { get; set; }
+        public double? Weight { get; set; }
+        public double? Lenght { get; set; }
+        public double? SacDiameter { get; set; }
+        public double? HearRate { get; set; }
+
     }
 }
