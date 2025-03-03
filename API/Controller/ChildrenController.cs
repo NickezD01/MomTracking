@@ -40,14 +40,14 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [HttpDelete("DeleteChildrenDetail{id}")]
+        [HttpDelete("DeleteChildrenDetail/{id}")]
         public async Task<IActionResult> DeleteChildrenDetail(int id)
         {
             var response = await _childrenService.DeleteChildrenData(id);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPut("UpdateChildrenData{id}")]
+        [HttpPut("UpdateChildrenData/{id}")]
         public async Task<IActionResult> UpdateChildrenData(int id, ChildrenUpdateRequest childrentRequest)
         {
             var resposne = await _childrenService.UpdateChildrenData(id,childrentRequest);
