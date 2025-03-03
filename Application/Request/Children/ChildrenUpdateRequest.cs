@@ -9,7 +9,7 @@ namespace Application.Request.Children
 {
     public class ChildrenUpdateRequest
     {
-        public int Id { get; set; }
+        
         public string Name { get; set; }
         public Gender Gender { get; set; }
         public DateTime Birth { get; set; }

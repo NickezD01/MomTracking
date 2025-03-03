@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Application.Response.UserAccount;
 using Application.Request.Children;
 using Application.Response.Children;
+using Application.Request.HealthMetric;
+using Application.Response;
 
 
 namespace Application.MyMapper
@@ -28,16 +30,16 @@ namespace Application.MyMapper
             //Children
             CreateMap<ChildrenRequest, Children>();
             CreateMap<Children, ChildrenResponse>();
-
+            CreateMap<ChildrenUpdateRequest, Children>();
             //Comment
-            
+
 
             //GrowthIndex
 
 
             //HealthMetric
-
-
+            CreateMap<HealthMetricRequest, HealthMetric>();
+            CreateMap<HealthMetric, HealthMetricResponse>();
             //Notification
 
 

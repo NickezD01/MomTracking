@@ -201,18 +201,16 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PregnancyWeek")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("PregnancyWeek")
+                        .HasColumnType("int");
 
                     b.Property<double>("SacDiameter")
                         .HasColumnType("float");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
@@ -620,18 +618,23 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("HeadCircumference")
+                        .HasColumnType("float");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<double?>("HearRate")
+                        .HasColumnType("float");
 
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
+                    b.Property<double?>("Lenght")
+                        .HasColumnType("float");
 
-                    b.Property<int>("Type")
+                    b.Property<int>("PregnancyWeek")
                         .HasColumnType("int");
+
+                    b.Property<double?>("SacDiameter")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Weight")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 

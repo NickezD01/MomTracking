@@ -81,17 +81,17 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> UpdateChildrenData(ChildrenUpdateRequest childrenRequest)
+        public async Task<ApiResponse> UpdateChildrenData(int Id,ChildrenUpdateRequest childrenUpdateRequest)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var children = await _unitOfWork.Childrens.GetAsync(c => c.Id == childrenRequest.Id);
+                var children = await _unitOfWork.Childrens.GetAsync(c => c.Id == Id);
                 if (children == null)
                 {
                     return apiResponse.SetNotFound("Can not found the Children detail");
                 }
-                _mapper.Map(childrenRequest, children);
+                _mapper.Map(childrenUpdateRequest, children);
                 await _unitOfWork.SaveChangeAsync();
                 return apiResponse.SetOk("Children's details updated successfully");
 
@@ -100,6 +100,6 @@ namespace Application.Services
             {
                 return apiResponse.SetBadRequest(e.Message);
             }
-        }
+        } 
     }
 }
