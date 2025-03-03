@@ -35,5 +35,12 @@ namespace API.Controller
             var resposne = await _service.GetAllAccountAsync();
             return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
         }
+        [Authorize]
+        [HttpGet("GetUserId")]
+        public async Task<IActionResult> GetUserId()
+        {
+            var result = await _service.GetUserIdAsync();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
     }
 }

@@ -73,5 +73,23 @@ namespace Application.Services
             }
         }
 
+        public async Task<ApiResponse> GetUserIdAsync()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var claim = _claim.GetUserClaim();
+                if (claim == null)
+                {
+                    return apiResponse.SetNotFound("User not found");
+                }
+
+                return apiResponse.SetOk(new { UserId = claim.Id });
+            }
+            catch (Exception ex)
+            {
+                return apiResponse.SetBadRequest(ex.Message);
+            }
+        }
     }
 }
