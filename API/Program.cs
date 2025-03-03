@@ -92,7 +92,7 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IClaimService, ClaimService>();
-
+builder.Services.AddScoped<IHeathMetricService, HealthMetricService>();
 builder.Services.AddScoped<IChildenService, ChildrenService>();
 //builder.Services.AddScoped<IOrderFishService, OrderFishService>();
 
