@@ -1,6 +1,5 @@
 ﻿using Application.Interface;
 using Application.Request.Children;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controller
@@ -14,9 +13,7 @@ namespace API.Controller
         {
             _childrenService = childrenService;
         }
-        [Authorize(Roles = "Customer")]
-        [Route("AddNewChildren")]
-        [HttpPost]
+        [HttpPost("AddNewChildren")]
         public async Task<IActionResult> AddNewChildren(ChildrenRequest childrentRequest)
         {
             var result = await _childrenService.AddNewChildren(childrentRequest);

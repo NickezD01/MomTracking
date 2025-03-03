@@ -17,22 +17,18 @@ namespace Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private IClaimService _claim;
 
-        public ChildrenService(IUnitOfWork unitOfWork, IMapper mapper, IClaimService claim)
+        public ChildrenService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _claim = claim;
         }
         public async Task<ApiResponse> AddNewChildren(ChildrenRequest childrentRequest)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var claim = _claim.GetUserClaim();
                 var children = _mapper.Map<Children>(childrentRequest);
-                children.AccountId = claim.Id;
                 var childrenExist = await _unitOfWork.Childrens.GetAsync(x => x.Id == children.Id);
                 if(childrenExist == null)
                 {
