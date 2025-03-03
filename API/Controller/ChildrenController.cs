@@ -17,7 +17,10 @@ namespace API.Controller
         }
 
 
+
         //[HttpPost("AddNewChildren")]
+        [HttpPost("AddNewChildren")]
+
 
         [Authorize(Roles = "Customer")]
         [Route("AddNewChildren")]
