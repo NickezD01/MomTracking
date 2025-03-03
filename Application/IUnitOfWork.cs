@@ -14,7 +14,7 @@ namespace Application
         public IChildrenRepository Childrens { get; }
         public ICommentRepository Comments { get; }
         public IGrowthIndexRepository GrowthIndex { get; }
-        public IHeathMetricRepository HeathMetric { get; }
+        public IHeathMetricRepository HeathMetrics { get; }
         public INotificationRepository Notification { get; }
         public IOrderRepository Order { get; }
         public IPostRepository Post { get; }

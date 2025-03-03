@@ -13,6 +13,6 @@ namespace Application.Interface
         Task<ApiResponse> AddNewChildren(ChildrenRequest childrentRequest);
         Task<ApiResponse> GetAllChildren();
         Task<ApiResponse> DeleteChildrenData(int Id);
-        Task<ApiResponse> UpdateChildrenData(ChildrenUpdateRequest childrenRequest);
+        Task<ApiResponse> UpdateChildrenData(int Id,ChildrenUpdateRequest childrenUpdateRequest);
     }
 }
