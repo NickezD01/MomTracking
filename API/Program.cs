@@ -97,7 +97,8 @@ builder.Services.AddScoped<IChildenService, ChildrenService>();
 //builder.Services.AddScoped<IOrderFishService, OrderFishService>();
 
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
-
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
 
 
 //builder.Services.AddScoped<IVnPayService, VnPayService>();
