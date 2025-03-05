@@ -11,5 +11,6 @@ namespace Application.Request.UserAccount
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
+        public string? ImgUrl { get; set; }
     }
 }
