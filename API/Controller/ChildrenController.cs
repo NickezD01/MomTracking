@@ -1,5 +1,6 @@
 ﻿using Application.Interface;
 using Application.Request.Children;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controller
@@ -14,11 +15,6 @@ namespace API.Controller
         {
             _childrenService = childrenService;
         }
-<<<<<<< HEAD
-        [HttpPost("AddNewChildren")]
-=======
-
-
 
         //[HttpPost("AddNewChildren")]
 
@@ -28,7 +24,6 @@ namespace API.Controller
         [Route("AddNewChildren")]
         [HttpPost]
 
->>>>>>> main
         public async Task<IActionResult> AddNewChildren(ChildrenRequest childrentRequest)
         {
 
