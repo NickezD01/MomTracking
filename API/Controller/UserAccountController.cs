@@ -1,4 +1,5 @@
 ﻿using Application.Interface;
+using Application.Request.UserAccount;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,12 +23,12 @@ namespace API.Controller
             return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
         }
         [Authorize]
-        //[HttpPut("UpdateUserProfile")]
-        //public async Task<IActionResult> UpdateUserProfileAsync(UpdateUserRequest updateUserRequest)
-        //{
-        //    var result = await _service.UpdateUserProfileAsync(updateUserRequest);
-        //    return result.IsSuccess ? Ok(result) : BadRequest(result);
-        //}
+        [HttpPut("UpdateUserProfile")]
+        public async Task<IActionResult> UpdateUserProfileAsync(UpdateUserRequest updateUserRequest)
+        {
+            var result = await _service.UpdateUserProfileAsync(updateUserRequest);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
         [Authorize(Roles = "Manager")]
         [HttpGet("GetAllAccountAsync")]
         public async Task<IActionResult> GetAllAccountAsync()

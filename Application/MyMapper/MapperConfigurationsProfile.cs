@@ -13,6 +13,7 @@ using Application.Request.Children;
 using Application.Response.Children;
 using Application.Request.HealthMetric;
 using Application.Response;
+using Application.Request.UserAccount;
 
 
 namespace Application.MyMapper
@@ -23,7 +24,7 @@ namespace Application.MyMapper
         {
             //UserAccount
             //CreateMap<UserProfileResponse, UserAccount>();
-            //CreateMap<UpdateUserRequest, UserAccount>();
+            CreateMap<UpdateUserRequest, UserAccount>();
             CreateMap<UserAccount, UserProfileResponse>();
             CreateMap<UserAccount, AccountResponse>();
 
