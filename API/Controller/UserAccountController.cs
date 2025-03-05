@@ -28,7 +28,7 @@ namespace API.Controller
         //    var result = await _service.UpdateUserProfileAsync(updateUserRequest);
         //    return result.IsSuccess ? Ok(result) : BadRequest(result);
         //}
-        //[Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager")]
         [HttpGet("GetAllAccountAsync")]
         public async Task<IActionResult> GetAllAccountAsync()
         {
