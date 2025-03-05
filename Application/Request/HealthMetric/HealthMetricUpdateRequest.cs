@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.Request.HealthMetric
 {
-    public class HealthMetricRequest
+    public class HealthMetricUpdateRequest
     {
-        public int childrenId { get; set; }
+        public int Id { get; set; }
+        public int ChildrenId { get; set; }
         public int PregnancyWeek { get; set; }
         public double HeadCircumference { get; set; }
         public double Weight { get; set; }

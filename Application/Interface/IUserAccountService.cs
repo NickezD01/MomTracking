@@ -1,4 +1,5 @@
-﻿using Application.Response;
+﻿using Application.Request.UserAccount;
+using Application.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace Application.Interface
     public interface IUserAccountService
     {
         Task<ApiResponse> GetUserProfileAsync();
-        //Task<ApiResponse> UpdateUserProfileAsync(UpdateUserRequest updateUserRequest);
+        Task<ApiResponse> UpdateUserProfileAsync(UpdateUserRequest updateUserRequest);
         Task<ApiResponse> GetAllAccountAsync();
+        Task<ApiResponse> GetUserIdAsync();
     }
 }

@@ -21,7 +21,7 @@ namespace Infrastructure
 
         public IGrowthIndexRepository GrowthIndex { get; }
 
-        public IHeathMetricRepository HeathMetric { get; }
+        public IHeathMetricRepository HeathMetrics { get; }
 
         public INotificationRepository Notification { get; }
 
@@ -49,7 +49,7 @@ namespace Infrastructure
             Childrens = new ChildrenRepository(context);
             Comments = new CommentRepository(context);
             GrowthIndex = new GrowthIndexRepository(context);
-            HeathMetric = new HeathMetricRepository(context);
+            HeathMetrics = new HeathMetricRepository(context);
             Notification = new NotificationRepository(context);
             Order = new OrderRepository(context);
             Post = new PostRepository(context);
