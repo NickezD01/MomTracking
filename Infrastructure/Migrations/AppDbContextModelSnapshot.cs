@@ -36,10 +36,14 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Birth")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Gender")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NickName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

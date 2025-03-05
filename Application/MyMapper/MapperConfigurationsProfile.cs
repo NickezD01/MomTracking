@@ -13,6 +13,8 @@ using Application.Request.Children;
 using Application.Response.Children;
 using Application.Request.HealthMetric;
 using Application.Response;
+using Application.Request.WHO;
+using Application.Response.WHO;
 
 
 namespace Application.MyMapper
@@ -62,7 +64,8 @@ namespace Application.MyMapper
 
 
             //WHOStandaed
-
+            CreateMap<StandardRequest, WHOStandard>();
+            CreateMap<WHOStandard, StandardResponse>();
         }
     }
 }
