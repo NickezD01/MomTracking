@@ -2,6 +2,7 @@
 using Application.Response;
 using Application.Response.UserAccount;
 using AutoMapper;
+using Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +64,7 @@ namespace Application.Services
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var user = await _unitOfWork.UserAccounts.GetAllAsync(null);
+                var user = await _unitOfWork.UserAccounts.GetAllAsync(x => x.Role == Role.Customer);
                 var userResponse = _mapper.Map<List<AccountResponse>>(user);
                 return apiResponse.SetOk(userResponse);
             }
