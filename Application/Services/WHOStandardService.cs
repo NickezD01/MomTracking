@@ -48,7 +48,7 @@ namespace Application.Services
                 {
                     return apiResponse.SetNotFound("Data does not exist!");
                 }
-                await _unitOfWork.WHOStandard.RemoveByIdAsync(standard);
+                await _unitOfWork.WHOStandard.RemoveByIdAsync(Id);
                 await _unitOfWork.SaveChangeAsync();
                 return apiResponse.SetOk("Deleted successfully!");
             }
