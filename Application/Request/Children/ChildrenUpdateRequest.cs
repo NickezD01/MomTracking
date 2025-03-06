@@ -10,7 +10,7 @@ namespace Application.Request.Children
     public class ChildrenUpdateRequest
     {
        
-        public string Name { get; set; }
+        public string FullName { get; set; }
         public string NickName { get; set; }
         public Gender Gender { get; set; }
         public DateTime Birth { get; set; }
