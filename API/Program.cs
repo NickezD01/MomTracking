@@ -95,7 +95,6 @@ builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddScoped<IHeathMetricService, HealthMetricService>();
 builder.Services.AddScoped<IChildenService, ChildrenService>();
 builder.Services.AddScoped<IWHOStandardService, WHOStandardService>();
-//builder.Services.AddScoped<IOrderFishService, OrderFishService>();
 
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 
