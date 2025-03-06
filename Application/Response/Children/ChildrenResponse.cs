@@ -10,7 +10,6 @@ namespace Application.Response.Children
     public class ChildrenResponse
     {
         public int Id { get; set; }
-        public int AccountId { get; set; }
         public string Name { get; set; }
         public string NickName { get; set; }
         public Gender Gender { get; set; }

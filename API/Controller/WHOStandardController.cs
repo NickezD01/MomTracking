@@ -1,5 +1,6 @@
 ﻿using Application.Interface;
 using Application.Request.WHO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ namespace API.Controller
         {
             _standard = standard;
         }
+        [Authorize(Roles = "Manager")]
         [HttpPost("AddWHOStandard")]
         public async Task<IActionResult> AddWHOStandard(StandardRequest standardRequest)
         {
@@ -26,12 +28,14 @@ namespace API.Controller
             var response = await _standard.GetAllStandard();
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
+        [Authorize(Roles = "Manager")]
         [HttpDelete("DeleteWHOData/{id}")]
         public async Task<IActionResult> DeleteData(int id)
         {
             var response = await _standard.DeleteStandard(id);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
+        [Authorize(Roles = "Manager")]
         [HttpPut("UpdateWHOData/{id}")]
         public async Task<IActionResult> UpdateData(int id, StandardRequest standardRequest)
         {

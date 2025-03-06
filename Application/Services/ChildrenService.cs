@@ -75,8 +75,7 @@ namespace Application.Services
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var claim = _claim.GetUserClaim();
-                var childrens = await _unitOfWork.Childrens.GetAllAsync(c => c.AccountId == claim.Id);
+                var childrens = await _unitOfWork.Childrens.GetAllAsync(null);
                 var resChildrens = _mapper.Map<List<ChildrenResponse>>(childrens);
                 return new ApiResponse().SetOk(resChildrens);
             }
