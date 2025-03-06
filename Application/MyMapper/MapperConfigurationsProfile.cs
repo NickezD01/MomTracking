@@ -13,12 +13,10 @@ using Application.Request.Children;
 using Application.Response.Children;
 using Application.Request.HealthMetric;
 using Application.Response;
-<<<<<<< HEAD
 using Application.Request.UserAccount;
-=======
 using Application.Request.WHO;
 using Application.Response.WHO;
->>>>>>> UpdateHealthMetric
+
 
 
 namespace Application.MyMapper
