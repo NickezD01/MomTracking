@@ -44,7 +44,10 @@ namespace Application.Services
             }
         }
 
-
+        public Task<ApiResponse> CompareData(int Id, HealthMetricUpdateRequest healthMetricRequest)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<ApiResponse> DeleteHealthMetric(int Id)
         {
