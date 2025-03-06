@@ -11,7 +11,9 @@ namespace Application.Request.Children
     {
         //public int AccountId { get; set; }
         public string Name { get; set; }
+        public string NickName { get; set; }
         public Gender Gender { get; set; }
         public DateTime Birth { get; set; }
+        
     }
 }

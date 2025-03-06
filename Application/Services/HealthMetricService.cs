@@ -81,12 +81,12 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> UpdateHealthMetric(HealthMetricUpdateRequest healthMetricRequest)
+        public async Task<ApiResponse> UpdateHealthMetric(int Id, HealthMetricUpdateRequest healthMetricRequest)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var healthMetric = await _unitOfWork.HeathMetrics.GetAsync(c => c.Id == healthMetricRequest.Id && c.Status == true);
+                var healthMetric = await _unitOfWork.HeathMetrics.GetAsync(c => c.Id == Id && c.Status == true);
                 if (healthMetric == null)
                 {
                     return apiResponse.SetNotFound("Can not found the Children's health detail");

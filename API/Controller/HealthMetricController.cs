@@ -32,17 +32,17 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [HttpDelete("DeleteHealthMetric{id}")]
+        [HttpDelete("DeleteHealthMetric/{id}")]
         public async Task<IActionResult> DeleteHealthMetric(int id)
         {
             var response = await _heathMetricService.DeleteHealthMetric(id);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPut("UpdateHealthMetric")]
-        public async Task<IActionResult> UpdateHealthMetric(HealthMetricUpdateRequest healthMetricRequest)
+        [HttpPut("UpdateHealthMetric/{id}")]
+        public async Task<IActionResult> UpdateHealthMetric(int id, HealthMetricUpdateRequest healthMetricRequest)
         {
-            var resposne = await _heathMetricService.UpdateHealthMetric(healthMetricRequest);
+            var resposne = await _heathMetricService.UpdateHealthMetric(id, healthMetricRequest);
             return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
         }
     }
