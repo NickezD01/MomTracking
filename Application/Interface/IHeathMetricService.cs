@@ -15,6 +15,5 @@ namespace Application.Interface
         Task<ApiResponse> GetAllHealthMetric();
         Task<ApiResponse> DeleteHealthMetric(int Id);
         Task<ApiResponse> UpdateHealthMetric(int Id, HealthMetricUpdateRequest healthMetricRequest);
-        
-    }
+     }
 }
