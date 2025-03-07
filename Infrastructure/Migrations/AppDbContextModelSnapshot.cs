@@ -421,15 +421,17 @@ namespace Infrastructure.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -625,7 +627,10 @@ namespace Infrastructure.Migrations
                     b.Property<double?>("HeadCircumference")
                         .HasColumnType("float");
 
-                    b.Property<double?>("HearRate")
+                    b.Property<double?>("HearRateMax")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HearRateMin")
                         .HasColumnType("float");
 
                     b.Property<double?>("Lenght")

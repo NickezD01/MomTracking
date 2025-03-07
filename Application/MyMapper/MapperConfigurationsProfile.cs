@@ -16,6 +16,8 @@ using Application.Response;
 using Application.Request.UserAccount;
 using Application.Request.WHO;
 using Application.Response.WHO;
+using Application.Request.Schedule;
+using Application.Response.Schedule;
 
 
 
@@ -44,6 +46,7 @@ namespace Application.MyMapper
             //HealthMetric
             CreateMap<HealthMetricRequest, HealthMetric>();
             CreateMap<HealthMetric, HealthMetricResponse>();
+            CreateMap<HealthMetricUpdateRequest, HealthMetric>();
             //Notification
 
 
@@ -54,8 +57,8 @@ namespace Application.MyMapper
 
 
             //Schedule
-
-
+            CreateMap<ScheduleRequest, Schedule>();
+            CreateMap<Schedule, ScheduleResponse>();
             //SubcriptionPlan
 
 
