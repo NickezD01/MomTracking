@@ -21,49 +21,36 @@ namespace Application.Services
             IClaimService claimService)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            _mapper = mapper;   
             _claimService = claimService;
         }
 
         public async Task<ApiResponse> CreatePlanAsync(CreateSubscriptionPlanRequest request)
         {
+            ApiResponse apiResponse = new ApiResponse();
             try
             {
-                // Verify if user is Manager
                 var userClaim = _claimService.GetUserClaim();
                 if (userClaim.Role != Role.Manager)
                 {
-                    return new ApiResponse().SetBadRequest("Only managers can create subscription plans");
+                    return apiResponse.SetBadRequest("Only managers can create subscription plans");
                 }
 
-                // Check if plan name already exists
-                var planExists = await _unitOfWork.SubscriptionPlan.IsPlanNameExists(request.Name.ToString());
-                if (planExists)
+                if (await _unitOfWork.SubscriptionPlan.IsPlanNameExists(request.Name))
                 {
-                    return new ApiResponse().SetBadRequest("A plan with this name already exists");
+                    return apiResponse.SetBadRequest("A plan with this name already exists");
                 }
 
-                // Create new plan
-                var plan = new SubscriptionPlan
-                {
-                    Name = request.Name,
-                    Price = request.Price,
-                    DurationMonth = request.DurationInMonths,
-                    Description = request.Description,
-                    Feature = request.Feature,
-                    IsActive = true,
-                    CreatedBy = Guid.Parse(userClaim.Id.ToString()),
-                    CreatedDate = DateTime.UtcNow
-                };
+                var plan = _mapper.Map<SubscriptionPlan>(request);
                 await _unitOfWork.SubscriptionPlan.AddAsync(plan);
                 await _unitOfWork.SaveChangeAsync();
 
                 var response = _mapper.Map<SubscriptionPlanResponse>(plan);
-                return new ApiResponse().SetOk(response);
+                return apiResponse.SetOk(response);
             }
             catch (Exception ex)
             {
-                return new ApiResponse().SetBadRequest($"Error creating subscription plan: {ex.Message}");
+                return apiResponse.SetBadRequest($"Error creating subscription plan: {ex.Message}");
             }
         }
 
@@ -71,33 +58,19 @@ namespace Application.Services
         {
             try
             {
-                // Verify if user is Manager
                 var userClaim = _claimService.GetUserClaim();
                 if (userClaim.Role != Role.Manager)
                 {
                     return new ApiResponse().SetBadRequest("Only managers can update subscription plans");
                 }
+
                 var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == request.PlanId);
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
                 }
 
-                // Update plan details
-                if (request.Price.HasValue)
-                    plan.Price = request.Price.Value;
-                
-                if (!string.IsNullOrEmpty(request.Description))
-                    plan.Description = request.Description;
-                
-                if (!string.IsNullOrEmpty(request.Feature))
-                    plan.Feature = request.Feature;
-                
-                if (request.IsActive.HasValue)
-                    plan.IsActive = request.IsActive.Value;
-
-                plan.ModifiedBy = Guid.Parse(userClaim.Id.ToString());
-                plan.ModifiedDate = DateTime.UtcNow;
+                _mapper.Map(request, plan);
                 await _unitOfWork.SaveChangeAsync();
 
                 var response = _mapper.Map<SubscriptionPlanResponse>(plan);
@@ -133,7 +106,6 @@ namespace Application.Services
                 }
 
                 plan.IsDeleted = true;
-                plan.ModifiedBy = Guid.Parse(userClaim.Id.ToString());
                 plan.ModifiedDate = DateTime.UtcNow;
 
                 await _unitOfWork.SaveChangeAsync();
@@ -191,21 +163,6 @@ namespace Application.Services
                 return new ApiResponse().SetBadRequest($"Error retrieving active plans: {ex.Message}");
             }
         }
-
-        public async Task<ApiResponse> GetPlansByPriceRangeAsync(decimal minPrice, decimal maxPrice)
-        {
-            try
-            {
-                var plans = await _unitOfWork.SubscriptionPlan.GetPlansByPriceRange(minPrice, maxPrice);
-                var response = _mapper.Map<List<SubscriptionPlanResponse>>(plans);
-                return new ApiResponse().SetOk(response);
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse().SetBadRequest($"Error retrieving plans by price range: {ex.Message}");
-            }
-        }
-
         public async Task<ApiResponse> GetPlanDetailsWithSubscribersAsync(int planId)
         {
             try
@@ -268,7 +225,7 @@ namespace Application.Services
                 }
 
                 plan.IsActive = true;
-                plan.ModifiedBy = Guid.Parse(userClaim.Id.ToString());
+
                 plan.ModifiedDate = DateTime.UtcNow;
 
                 await _unitOfWork.SaveChangeAsync();
@@ -298,7 +255,6 @@ namespace Application.Services
                 }
 
                 plan.IsActive = false;
-                plan.ModifiedBy = Guid.Parse(userClaim.Id.ToString());
                 plan.ModifiedDate = DateTime.UtcNow;
 
                 await _unitOfWork.SaveChangeAsync();
@@ -328,7 +284,7 @@ namespace Application.Services
                 }
 
                 plan.Price = newPrice;
-                plan.ModifiedBy = Guid.Parse(userClaim.Id.ToString());
+
                 plan.ModifiedDate = DateTime.UtcNow;
 
                 await _unitOfWork.SaveChangeAsync();
@@ -354,7 +310,7 @@ namespace Application.Services
                     return new ApiResponse().SetBadRequest("Duration must be greater than zero");
                 }
 
-                var planExists = await _unitOfWork.SubscriptionPlan.IsPlanNameExists(request.Name.ToString());
+                var planExists = await _unitOfWork.SubscriptionPlan.IsPlanNameExists(request.Name);
                 if (planExists)
                 {
                     return new ApiResponse().SetBadRequest("A plan with this name already exists");

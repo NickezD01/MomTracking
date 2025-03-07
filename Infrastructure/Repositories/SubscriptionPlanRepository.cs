@@ -46,10 +46,9 @@ namespace Infrastructure.Repositories
                           .ToListAsync();
         }
 
-        public async Task<bool> IsPlanNameExists(string planName)
+        public async Task<bool> IsPlanNameExists(SubscriptionPlanName planName)
         {
-            return await _db.AnyAsync(p => p.Name.ToString().ToLower() == planName.ToLower() && 
-                                         !p.IsDeleted);
+     return await _db.AnyAsync(p => p.Name == planName && !p.IsDeleted);
         }
 
         public async Task<SubscriptionPlan> GetPlanByName(SubscriptionPlanName name)

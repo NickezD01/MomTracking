@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using API.Middleware;
 using Application;
 using Application.Interface;
@@ -67,6 +68,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration!.SecretToken.Value)),
             ValidateIssuer = false,
             ValidateAudience = false,
+            RoleClaimType = ClaimTypes.Role
         };
 
         opt.Events = new JwtBearerEvents
@@ -81,9 +83,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 }
                 return Task.CompletedTask;
             }
+            
         };
+        opt.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async context =>
+            {
+                var claims = context.Principal?.Claims;
+                foreach (var claim in claims!)
+                {
+                    Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
+                }
+            }
+        };
+        
+        
     });
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile).Assembly);
 builder.Services.AddSingleton(configuration!);
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
@@ -121,7 +138,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

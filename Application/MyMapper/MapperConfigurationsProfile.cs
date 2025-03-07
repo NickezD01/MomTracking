@@ -1,4 +1,3 @@
-
 using Application.Services;
 using AutoMapper;
 using Domain.Entity;
@@ -36,7 +35,12 @@ namespace Application.MyMapper
             // SubscriptionPlan mappings
             CreateMap<CreateSubscriptionPlanRequest, SubscriptionPlan>()
                 .ForMember(dest => dest.DurationMonth, opt => opt.MapFrom(src => src.DurationInMonths))
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+            CreateMap<UpdateSubscriptionPlanRequest, SubscriptionPlan>()
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<SubscriptionPlan, SubscriptionPlanResponse>()
                 .ForMember(dest => dest.DurationInMonths, opt => opt.MapFrom(src => src.DurationMonth))
@@ -56,11 +60,16 @@ namespace Application.MyMapper
                         EndDate = s.EndDate,
                         Status = s.Status
                     })));
-            
+
             // Subscription mappings
             CreateMap<CreateSubscriptionRequest, Subscription>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => "Active"))
-                .ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(src => "Pending"));
+                .ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(src => "Pending"))
+                .ForMember(dest => dest.EndDate, opt => opt.Ignore()); // Will be calculated in service
+
+            CreateMap<UpdateSubscriptionRequest, Subscription>()
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<Subscription, SubscriptionResponse>()
                 .ForMember(dest => dest.AccountName, opt => 
@@ -75,9 +84,6 @@ namespace Application.MyMapper
                 .ForMember(dest => dest.Features, opt => 
                     opt.MapFrom(src => src.SubscriptionPlans != null ? 
                         src.SubscriptionPlans.Feature : ""));
-
-            CreateMap<UpdateSubscriptionRequest, Subscription>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             //Comment
 
 

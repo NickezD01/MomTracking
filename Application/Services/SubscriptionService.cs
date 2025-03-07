@@ -30,7 +30,6 @@ namespace Application.Services
         {
             try
             {
-                // Validate user and plan
                 var user = await _unitOfWork.UserAccounts.GetAsync(u => u.Id == request.AccountId);
                 if (user == null)
                     return new ApiResponse().SetNotFound("User not found");
@@ -39,29 +38,16 @@ namespace Application.Services
                 if (plan == null || !plan.IsActive)
                     return new ApiResponse().SetNotFound("Subscription plan not found or inactive");
 
-                // Check if user has active subscription
-                var hasActiveSubscription = await _unitOfWork.Subscription.HasActiveSubscription(request.AccountId);
-                if (hasActiveSubscription)
+                if (await _unitOfWork.Subscription.HasActiveSubscription(request.AccountId))
                     return new ApiResponse().SetBadRequest("User already has an active subscription");
 
-                // Calculate subscription period
-                var startDate = request.StartDate;
-                var endDate = startDate.AddMonths(plan.DurationMonth);
-
-                // Create new subscription
-                var subscription = new Subscription
-                {
-                    AccountId = request.AccountId,
-                    PlanId = request.PlanId,
-                    StartDate = startDate,
-                    EndDate = endDate,
-                    Status = "Active",
-                    PaymentStatus = "Pending",
-                    NextBillingDate = endDate
-                };
+                var subscription = _mapper.Map<Subscription>(request);
+                subscription.EndDate = request.StartDate.AddMonths(plan.DurationMonth);
+                subscription.NextBillingDate = subscription.EndDate;
 
                 await _unitOfWork.Subscription.AddAsync(subscription);
                 await _unitOfWork.SaveChangeAsync();
+
                 var response = _mapper.Map<SubscriptionResponse>(subscription);
                 return new ApiResponse().SetOk(response);
             }
@@ -79,20 +65,14 @@ namespace Application.Services
                 if (subscription == null)
                     return new ApiResponse().SetNotFound("Subscription not found");
 
-                // Update subscription details
                 if (request.PlanId != subscription.PlanId)
                 {
                     var newPlan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == request.PlanId);
                     if (newPlan == null || !newPlan.IsActive)
                         return new ApiResponse().SetBadRequest("Invalid subscription plan");
-
-                    subscription.PlanId = request.PlanId;
                 }
 
-                subscription.Status = request.Status ?? subscription.Status;
-                subscription.EndDate = request.EndDate ?? subscription.EndDate;
-                subscription.ModifiedDate = DateTime.UtcNow;
-
+                _mapper.Map(request, subscription);
                 await _unitOfWork.SaveChangeAsync();
 
                 var response = _mapper.Map<SubscriptionResponse>(subscription);
@@ -171,46 +151,6 @@ namespace Application.Services
                 return new ApiResponse().SetBadRequest($"Error retrieving active subscription: {ex.Message}");
             }
         }
-
-        public async Task<ApiResponse> RenewSubscriptionAsync(int subscriptionId)
-        {
-            try
-            {
-                var subscription = await _unitOfWork.Subscription.GetSubscriptionWithDetails(subscriptionId);
-                if (subscription == null)
-                    return new ApiResponse().SetNotFound("Subscription not found");
-
-                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == subscription.PlanId);
-                if (plan == null || !plan.IsActive)
-                    return new ApiResponse().SetBadRequest("Subscription plan is no longer active");
-
-                // Create new subscription period
-                var newStartDate = subscription.EndDate;
-                var newEndDate = newStartDate.AddMonths(plan.DurationMonth);
-
-                var newSubscription = new Subscription
-                {
-                    AccountId = subscription.AccountId,
-                    PlanId = subscription.PlanId,
-                    StartDate = newStartDate,
-                    EndDate = newEndDate,
-                    Status = "Active",
-                    PaymentStatus = "Pending",
-                    NextBillingDate = newEndDate
-                };
-
-                await _unitOfWork.Subscription.AddAsync(newSubscription);
-                await _unitOfWork.SaveChangeAsync();
-
-                var response = _mapper.Map<SubscriptionResponse>(newSubscription);
-                return new ApiResponse().SetOk(response);
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse().SetBadRequest($"Error renewing subscription: {ex.Message}");
-            }
-        }
-
         public Task<ApiResponse> UpgradeSubscriptionPlanAsync(int subscriptionId, int newPlanId)
         {
             throw new NotImplementedException();
@@ -242,15 +182,7 @@ namespace Application.Services
             }
         }
 
-        public Task<ApiResponse> HandleSubscriptionRenewalsAsync()
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<ApiResponse> GetSubscriptionMetricsAsync(DateTime startDate, DateTime endDate)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<ApiResponse> CheckSubscriptionStatusAsync(int accountId)
         {

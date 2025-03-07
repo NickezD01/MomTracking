@@ -81,41 +81,6 @@ namespace API.Controller
         return response.IsSuccess ? Ok(response) : BadRequest(response);
     }
 
-        [HttpPost("{subscriptionId}/renew")]
-        public async Task<IActionResult> RenewSubscription(int subscriptionId)
-    {
-            var response = await _subscriptionService.RenewSubscriptionAsync(subscriptionId);
-        return response.IsSuccess ? Ok(response) : BadRequest(response);
-    }
 
-        [HttpPost("{subscriptionId}/upgrade")]
-        public async Task<IActionResult> UpgradeSubscription(int subscriptionId, [FromBody] int newPlanId)
-        {
-            var response = await _subscriptionService.UpgradeSubscriptionPlanAsync(subscriptionId, newPlanId);
-            return response.IsSuccess ? Ok(response) : BadRequest(response);
-}
-    [Authorize(Roles = "Manager")]
-        [HttpGet("metrics")]
-        public async Task<IActionResult> GetSubscriptionMetrics([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
-    {
-            var response = await _subscriptionService.GetSubscriptionMetricsAsync(startDate, endDate);
-        return response.IsSuccess ? Ok(response) : BadRequest(response);
-    }
-
-        [Authorize(Roles = "Manager")]
-        [HttpPost("process-expired")]
-        public async Task<IActionResult> ProcessExpiredSubscriptions()
-        {
-            var response = await _subscriptionService.HandleExpiredSubscriptionsAsync();
-            return response.IsSuccess ? Ok(response) : BadRequest(response);
-}
-
-        [Authorize(Roles = "Manager")]
-        [HttpPost("process-renewals")]
-        public async Task<IActionResult> ProcessSubscriptionRenewals()
-        {
-            var response = await _subscriptionService.HandleSubscriptionRenewalsAsync();
-            return response.IsSuccess ? Ok(response) : BadRequest(response);
-}
     }
 }

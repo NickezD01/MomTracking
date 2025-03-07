@@ -23,16 +23,11 @@ namespace Application.Interface
         Task<ApiResponse> GetActiveUserSubscriptionAsync(int accountId);
         
         // Subscription management operations
-        Task<ApiResponse> RenewSubscriptionAsync(int subscriptionId);
-        Task<ApiResponse> UpgradeSubscriptionPlanAsync(int subscriptionId, int newPlanId);
         Task<ApiResponse> ProcessSubscriptionPaymentAsync(int subscriptionId);
         
         // Subscription status operations
         Task<ApiResponse> CheckSubscriptionStatusAsync(int accountId);
         Task<ApiResponse> HandleExpiredSubscriptionsAsync();
-        Task<ApiResponse> HandleSubscriptionRenewalsAsync();
         
-        // Subscription analytics
-        Task<ApiResponse> GetSubscriptionMetricsAsync(DateTime startDate, DateTime endDate);
     }
 }

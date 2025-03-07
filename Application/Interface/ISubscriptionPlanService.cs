@@ -18,7 +18,6 @@ namespace Application.Interface
         // Plan listing operations
         Task<ApiResponse> GetAllPlansAsync();
         Task<ApiResponse> GetActivePlansAsync();
-        Task<ApiResponse> GetPlansByPriceRangeAsync(decimal minPrice, decimal maxPrice);
         
         // Plan detail operations
         Task<ApiResponse> GetPlanDetailsWithSubscribersAsync(int planId);
