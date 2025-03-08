@@ -45,6 +45,12 @@ namespace API.Controller
             var resposne = await _heathMetricService.UpdateHealthMetric(id, healthMetricRequest);
             return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
         }
+        [HttpGet("CompareHealthMetricData/{id}")]
+        public async Task<IActionResult> CompareData(int id)
+        {
+            var result = await _heathMetricService.CompareData(id);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
     }
 }
     

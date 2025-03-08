@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250306085916_init")]
+    [Migration("20250308140021_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -186,10 +186,10 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("HeadCircumference")
+                    b.Property<double?>("HeadCircumference")
                         .HasColumnType("float");
 
-                    b.Property<double>("HearRate")
+                    b.Property<double?>("HearRate")
                         .HasColumnType("float");
 
                     b.Property<bool>("IsAlert")
@@ -198,7 +198,7 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<double>("Lenght")
+                    b.Property<double?>("Lenght")
                         .HasColumnType("float");
 
                     b.Property<Guid?>("ModifiedBy")
@@ -210,16 +210,16 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PregnancyWeek")
+                    b.Property<int?>("PregnancyWeek")
                         .HasColumnType("int");
 
-                    b.Property<double>("SacDiameter")
+                    b.Property<double?>("SacDiameter")
                         .HasColumnType("float");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<double>("Weight")
+                    b.Property<double?>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -424,15 +424,17 @@ namespace Infrastructure.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -628,7 +630,10 @@ namespace Infrastructure.Migrations
                     b.Property<double?>("HeadCircumference")
                         .HasColumnType("float");
 
-                    b.Property<double?>("HearRate")
+                    b.Property<double?>("HearRateMax")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HearRateMin")
                         .HasColumnType("float");
 
                     b.Property<double?>("Lenght")
