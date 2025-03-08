@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class fix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,7 +57,8 @@ namespace Infrastructure.Migrations
                     Weight = table.Column<double>(type: "float", nullable: true),
                     Lenght = table.Column<double>(type: "float", nullable: true),
                     SacDiameter = table.Column<double>(type: "float", nullable: true),
-                    HearRate = table.Column<double>(type: "float", nullable: true)
+                    HearRateMin = table.Column<double>(type: "float", nullable: true),
+                    HearRateMax = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -242,7 +243,8 @@ namespace Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AccountId = table.Column<int>(type: "int", nullable: false),
                     IsNoti = table.Column<bool>(type: "bit", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
