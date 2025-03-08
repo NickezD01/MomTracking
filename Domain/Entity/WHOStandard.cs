@@ -14,7 +14,9 @@ namespace Domain.Entity
         public double? Weight { get; set; }
         public double? Lenght { get; set; }
         public double? SacDiameter { get; set; }
-        public double? HearRate { get; set; }
+        public double? HearRateMin { get; set; }
 
+        public double? HearRateMax { get; set; }
     }
+
 }

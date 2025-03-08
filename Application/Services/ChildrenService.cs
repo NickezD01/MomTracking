@@ -38,9 +38,10 @@ namespace Application.Services
                 {
                     await _unitOfWork.Childrens.AddAsync(children);
                     await _unitOfWork.SaveChangeAsync();
-                    return apiResponse.SetOk("Children's details added successfully!");
+                    int childrenId = children.Id;
+                    return apiResponse.SetOk(childrenId);
                 }
-                return apiResponse.SetBadRequest("...");
+                return apiResponse.SetBadRequest("Children already exist!!!");
             }
             catch (Exception e)
             {
@@ -60,7 +61,7 @@ namespace Application.Services
                 }
                 await _unitOfWork.Childrens.RemoveByIdAsync(Id);
                 await _unitOfWork.SaveChangeAsync();
-                return apiResponse.SetOk("Delele successfully!");
+                return apiResponse.SetOk("Deleled successfully!");
 
 
             }
