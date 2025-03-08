@@ -52,11 +52,7 @@ namespace Application.Services
             }
         }
 
-<<<<<<< HEAD
-        public Task<ApiResponse> CompareData(int Id, HealthMetricUpdateRequest healthMetricRequest)
-        {
-            throw new NotImplementedException();
-=======
+
         public async Task<ApiResponse> CompareData(int Id)
         {
             ApiResponse apiResponse = new ApiResponse();
@@ -132,7 +128,7 @@ namespace Application.Services
             {
                 return apiResponse.SetBadRequest(e.Message);
             }
->>>>>>> CompareData
+
         }
 
         public async Task<ApiResponse> DeleteHealthMetric(int Id)

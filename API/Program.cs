@@ -95,10 +95,8 @@ builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddScoped<IHeathMetricService, HealthMetricService>();
 builder.Services.AddScoped<IChildenService, ChildrenService>();
 builder.Services.AddScoped<IWHOStandardService, WHOStandardService>();
-<<<<<<< HEAD
-=======
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
->>>>>>> CompareData
+
 
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 

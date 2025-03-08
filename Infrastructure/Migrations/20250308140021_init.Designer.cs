@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250307094225_fix")]
-    partial class fix
+    [Migration("20250308140021_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -186,10 +186,10 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("HeadCircumference")
+                    b.Property<double?>("HeadCircumference")
                         .HasColumnType("float");
 
-                    b.Property<double>("HearRate")
+                    b.Property<double?>("HearRate")
                         .HasColumnType("float");
 
                     b.Property<bool>("IsAlert")
@@ -198,7 +198,7 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<double>("Lenght")
+                    b.Property<double?>("Lenght")
                         .HasColumnType("float");
 
                     b.Property<Guid?>("ModifiedBy")
@@ -210,16 +210,16 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PregnancyWeek")
+                    b.Property<int?>("PregnancyWeek")
                         .HasColumnType("int");
 
-                    b.Property<double>("SacDiameter")
+                    b.Property<double?>("SacDiameter")
                         .HasColumnType("float");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<double>("Weight")
+                    b.Property<double?>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
