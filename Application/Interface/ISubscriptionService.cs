@@ -14,7 +14,7 @@ namespace Application.Interface
     {
         // Subscription CRUD operations
         Task<ApiResponse> CreateSubscriptionAsync(CreateSubscriptionRequest request);
-        Task<ApiResponse> UpdateSubscriptionAsync(UpdateSubscriptionRequest request);
+        Task<ApiResponse> UpdateSubscriptionAsync(int Id,UpdateSubscriptionRequest request);
         Task<ApiResponse> CancelSubscriptionAsync(int subscriptionId);
         Task<ApiResponse> GetSubscriptionByIdAsync(int subscriptionId);
         
