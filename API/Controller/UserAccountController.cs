@@ -43,5 +43,12 @@ namespace API.Controller
             var result = await _service.GetUserIdAsync();
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
+        [Authorize(Roles = "Manager")]
+        [HttpPut("UpdateUserRoleProfile")]
+        public async Task<IActionResult> UpdateUserRole(int customerId, UpdateUserRoleRequest request)
+        {
+            var resposne = await _service.UpdateUserRoleProfileAsync(customerId, request);
+            return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
+        }
     }
 }
