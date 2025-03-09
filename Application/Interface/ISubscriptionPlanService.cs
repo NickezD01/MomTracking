@@ -11,7 +11,7 @@ namespace Application.Interface
     {
         // Plan CRUD operations
         Task<ApiResponse> CreatePlanAsync(CreateSubscriptionPlanRequest request);
-        Task<ApiResponse> UpdatePlanAsync(UpdateSubscriptionPlanRequest request);
+        Task<ApiResponse> UpdatePlanAsync(int Id, UpdateSubscriptionPlanRequest request);
         Task<ApiResponse> DeletePlanAsync(int planId);
         Task<ApiResponse> GetPlanByIdAsync(int planId);
         

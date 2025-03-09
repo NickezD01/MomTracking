@@ -54,7 +54,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> UpdatePlanAsync(UpdateSubscriptionPlanRequest request)
+        public async Task<ApiResponse> UpdatePlanAsync(int Id, UpdateSubscriptionPlanRequest request)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Application.Services
                     return new ApiResponse().SetBadRequest("Only managers can update subscription plans");
                 }
 
-                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == request.PlanId);
+                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == Id);
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");

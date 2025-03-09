@@ -65,11 +65,8 @@ namespace API.Controller
         [HttpPut("{planId}")]
         public async Task<IActionResult> UpdatePlan(int planId, [FromBody] UpdateSubscriptionPlanRequest request)
         {
-            if (planId != request.PlanId)
-                return BadRequest("Plan ID mismatch");
-
-            var response = await _subscriptionPlanService.UpdatePlanAsync(request);
-            return response.IsSuccess ? Ok(response) : BadRequest(response);
+            var resposne = await _subscriptionPlanService.UpdatePlanAsync(planId, request);
+            return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
         }
 
         [Authorize(Roles = "Manager")]
