@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,6 @@ namespace Application.Response.UserAccount
         public string PhoneNumber { get; set; }
         //public bool? IsEmailVerified { get; set; } = false;
         public string? ImgUrl { get; set; }
+        public Role Role { get; set; }
     }
 }

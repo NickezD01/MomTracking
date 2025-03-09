@@ -1,8 +1,10 @@
 ﻿using Application.Interface;
+using Application.Request.Schedule;
 using Application.Request.UserAccount;
 using Application.Response;
 using Application.Response.UserAccount;
 using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Domain.Entity;
 using System;
 using System.Collections.Generic;
@@ -91,6 +93,30 @@ namespace Application.Services
             catch (Exception ex)
             {
                 return apiResponse.SetBadRequest(ex.Message);
+            }
+        }
+
+        public async Task<ApiResponse> UpdateUserRoleProfileAsync(int Id, UpdateUserRoleRequest updateUserRoleRequest)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                // Tìm customer theo ID
+                var customer = await _unitOfWork.UserAccounts.GetAsync(s => s.Id == Id);
+                if (customer == null)
+                {
+                    return apiResponse.SetNotFound("Customer not found!");
+                }
+
+                // Cập nhật Role
+                _mapper.Map(updateUserRoleRequest, customer);
+                await _unitOfWork.SaveChangeAsync();
+
+                return apiResponse.SetOk("Role updated successfully!");
+            }
+            catch (Exception e)
+            {
+                return apiResponse.SetBadRequest(e.Message);
             }
         }
     }

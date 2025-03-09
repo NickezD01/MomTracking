@@ -29,6 +29,8 @@ namespace Application.MyMapper
         {
             //UserAccount
             //CreateMap<UserProfileResponse, UserAccount>();
+
+            CreateMap<UpdateUserRoleRequest, UserAccount>();
             CreateMap<UpdateUserRequest, UserAccount>();
             CreateMap<UserAccount, UserProfileResponse>();
             CreateMap<UserAccount, AccountResponse>();
