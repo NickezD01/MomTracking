@@ -248,6 +248,7 @@ namespace Application.Services
             { 
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.ToString()),
+                new Claim("Role", user.Role.ToString()),
                 new Claim( "Email" , user.Email!),
                 new Claim("UserId", user.Id.ToString()),
                 new Claim("FullName", fullName),
