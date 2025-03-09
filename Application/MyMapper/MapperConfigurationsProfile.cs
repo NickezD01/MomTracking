@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Application.Response.UserAccount;
 using Application.Request.Children;
 using Application.Response.Children;
-<<<<<<< HEAD
 using Application.Request.HealthMetric;
 using Application.Response;
 using Application.Request.UserAccount;
@@ -18,13 +17,10 @@ using Application.Request.WHO;
 using Application.Response.WHO;
 using Application.Request.Schedule;
 using Application.Response.Schedule;
-
-=======
 using Application.Request.Subscription;
 using Application.Request.SubscriptionPlan;
 using Application.Response.Subscription;
 using Application.Response.SubscriptionPlan;
->>>>>>> Hdev
 
 
 namespace Application.MyMapper
@@ -44,9 +40,9 @@ namespace Application.MyMapper
             //Children
             CreateMap<ChildrenRequest, Children>();
             CreateMap<Children, ChildrenResponse>();
-<<<<<<< HEAD
+
             CreateMap<ChildrenUpdateRequest, Children>();
-=======
+
 
             // SubscriptionPlan mappings
             CreateMap<CreateSubscriptionPlanRequest, SubscriptionPlan>()
@@ -100,7 +96,6 @@ namespace Application.MyMapper
                 .ForMember(dest => dest.Features, opt => 
                     opt.MapFrom(src => src.SubscriptionPlans != null ? 
                         src.SubscriptionPlans.Feature : ""));
->>>>>>> Hdev
             //Comment
 
 
