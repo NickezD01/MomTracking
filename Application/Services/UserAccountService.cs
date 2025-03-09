@@ -67,7 +67,7 @@ namespace Application.Services
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var user = await _unitOfWork.UserAccounts.GetAllAsync(x => x.Role == Role.Customer);
+                var user = await _unitOfWork.UserAccounts.GetAllAsync(null);
                 var userResponse = _mapper.Map<List<AccountResponse>>(user);
                 return apiResponse.SetOk(userResponse);
             }
