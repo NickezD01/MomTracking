@@ -10,5 +10,6 @@ namespace Application.Interface
     public interface IEmailService
     {
         Task<ApiResponse> SendValidationEmail(string recievedUser, string emailContent);
+        Task<ApiResponse> SendNotiMail(string recievedUser, string emailContent);
     }
 }
