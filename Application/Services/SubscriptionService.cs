@@ -57,17 +57,17 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> UpdateSubscriptionAsync(UpdateSubscriptionRequest request)
+        public async Task<ApiResponse> UpdateSubscriptionAsync(int Id, UpdateSubscriptionRequest request)
         {
             try
             {
-                var subscription = await _unitOfWork.Subscription.GetSubscriptionWithDetails(request.SubscriptionId);
+                var subscription = await _unitOfWork.Subscription.GetSubscriptionWithDetails(Id);
                 if (subscription == null)
                     return new ApiResponse().SetNotFound("Subscription not found");
 
                 if (request.PlanId != subscription.PlanId)
                 {
-                    var newPlan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == request.PlanId);
+                    var newPlan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == Id);
                     if (newPlan == null || !newPlan.IsActive)
                         return new ApiResponse().SetBadRequest("Invalid subscription plan");
                 }

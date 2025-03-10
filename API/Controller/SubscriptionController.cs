@@ -1,8 +1,10 @@
 using Application.Interface;
 using Application.Request.Subscription;
+using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace API.Controller
@@ -67,12 +69,9 @@ namespace API.Controller
         [HttpPut("{subscriptionId}")]
         public async Task<IActionResult> UpdateSubscription(int subscriptionId, [FromBody] UpdateSubscriptionRequest request)
     {
-            if (subscriptionId != request.SubscriptionId)
-                return BadRequest("Subscription ID mismatch");
-
-            var response = await _subscriptionService.UpdateSubscriptionAsync(request);
-        return response.IsSuccess ? Ok(response) : BadRequest(response);
-    }
+            var resposne = await _subscriptionService.UpdateSubscriptionAsync(subscriptionId, request);
+            return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
+        }
 
         [HttpPost("{subscriptionId}/cancel")]
         public async Task<IActionResult> CancelSubscription(int subscriptionId)
