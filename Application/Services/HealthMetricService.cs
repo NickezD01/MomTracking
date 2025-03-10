@@ -60,7 +60,7 @@ namespace Application.Services
             {
 
                 var healthMetric = await _unitOfWork.HeathMetrics.GetAsync(c => c.Id == Id && c.Status == true);
-                var standard = await _unitOfWork.WHOStandard.GetAsync(s => s.PregnancyWeek == healthMetric.PregnancyWeek);
+                var standard = await _unitOfWork.WHOStandards.GetAsync(s => s.PregnancyWeek == healthMetric.PregnancyWeek);
                 if (standard == null)
                 {
                     return apiResponse.SetNotFound("The pregnancy is still in its development cycle and there is no specific data yet!");
