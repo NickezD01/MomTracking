@@ -17,6 +17,7 @@ namespace Domain.Entity
         public OrderStatus Status { get; set; } = OrderStatus.Pending; // Pending, Paid, Canceled
         public bool IsDelete { get; set; }
         public UserAccount? Account { get; set; }
+        public Subscription? Subscription { get; set; }
         public SubscriptionPlan? SubscriptionPlans { get; set; }
         public List<Payment>? Payments { get; set; }
     }

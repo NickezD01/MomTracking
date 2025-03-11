@@ -19,6 +19,12 @@ namespace Infrastructure.Configuration
                  .HasForeignKey(p => p.OrderId)
                  .OnDelete(DeleteBehavior.Restrict);
 
+            ////Order-Sub relationship
+            //builder.HasOne(o => o.Subscription)
+            //    .WithOne(o => o.Order)
+            //    .HasForeignKey(o => o.SubscriptionId)
+            //    .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

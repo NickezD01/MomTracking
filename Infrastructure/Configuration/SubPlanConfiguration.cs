@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Configuration
 {
-    public class SubPlanConfiguration : IEntityTypeConfiguration<SubscriptionPlan>
+    public class SubplanConfiguration : IEntityTypeConfiguration<SubscriptionPlan>
     {
         public void Configure(EntityTypeBuilder<SubscriptionPlan> builder)
         {

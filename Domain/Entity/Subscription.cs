@@ -21,5 +21,6 @@ namespace Domain.Entity
         public UserAccount? Account { get; set; }
         public SubscriptionPlan? SubscriptionPlans { get; set; }
         public DateTime ModifiedDate { get; set; }
+        public Order? Order { get; set; }
     }
 }
