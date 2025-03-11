@@ -19,13 +19,13 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private IClaimService _claim;
-        private IEmailService _emailService;
-        public ScheduleService(IUnitOfWork unitOfWork, IMapper mapper, IClaimService claim, IEmailService emailService)
+    
+        public ScheduleService(IUnitOfWork unitOfWork, IMapper mapper, IClaimService claim)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _claim = claim;
-            _emailService = emailService;
+         
         }
         public async Task<ApiResponse> CreateSchedule(ScheduleRequest scheduleRequest)
         {
@@ -35,18 +35,12 @@ namespace Application.Services
                 var claim = _claim.GetUserClaim();
                 var user = await _unitOfWork.UserAccounts.GetAsync(a => a.Id == claim.Id); 
                 var schedule = _mapper.Map<Schedule>(scheduleRequest);
-                var currentDate = DateTime.Now.Date;
                 schedule.AccountId = claim.Id;
                 var scheduleExist = await _unitOfWork.Schedule.GetAsync(s => s.AppointmentDate == schedule.AppointmentDate);
-                if (scheduleExist == null)
+                if (scheduleExist == null || user.Id != schedule.AccountId)
                 {
                     await _unitOfWork.Schedule.AddAsync(schedule);
-                    await _unitOfWork.SaveChangeAsync();
-                    if (currentDate == schedule.AppointmentDate.Date.AddDays(-2))
-                    {
-                        var emailContent = EmailContentBuilder.BuildNotiMail(user.FirstName, schedule.AppointmentDate);
-                        var emailResponse = await _emailService.SendNotiMail(user.Email, emailContent);
-                    }
+                    await _unitOfWork.SaveChangeAsync();                 
                     return apiResponse.SetOk("Schedule created successfully!!!");
                     
 
