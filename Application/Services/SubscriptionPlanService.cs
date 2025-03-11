@@ -1,4 +1,4 @@
-using Application.Interface;
+﻿using Application.Interface;
 using Application.Request.SubscriptionPlan;
 using Application.Response;
 using Application.Response.SubscriptionPlan;
@@ -40,6 +40,9 @@ namespace Application.Services
                 {
                     return apiResponse.SetBadRequest("A plan with this name already exists");
                 }
+
+                // Đảm bảo isActive luôn là false (no) khi tạo mới
+                request.IsActive = "false";
 
                 var plan = _mapper.Map<SubscriptionPlan>(request);
                 await _unitOfWork.SubscriptionPlan.AddAsync(plan);
