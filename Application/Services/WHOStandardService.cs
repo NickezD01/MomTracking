@@ -28,9 +28,20 @@ namespace Application.Services
             try
             {
                 var standard = _mapper.Map<WHOStandard>(standardRequest);
+<<<<<<< HEAD
                 await _unitOfWork.WHOStandards.AddAsync(standard);
                 await _unitOfWork.SaveChangeAsync();
                 return apiResponse.SetOk("Added successfully!");
+=======
+                var existStandard = await _unitOfWork.WHOStandard.GetAsync(s => s.PregnancyWeek == standard.PregnancyWeek);
+                if (existStandard == null)
+                {
+                    await _unitOfWork.WHOStandard.AddAsync(standard);
+                    await _unitOfWork.SaveChangeAsync();
+                    return apiResponse.SetOk("Added successfully!");
+                }
+                return apiResponse.SetBadRequest("This gestational age standard has been entered!!!");
+>>>>>>> main
             }
             catch(Exception e)
             {

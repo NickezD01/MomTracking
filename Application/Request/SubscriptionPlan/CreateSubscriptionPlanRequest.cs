@@ -9,4 +9,5 @@ public class CreateSubscriptionPlanRequest
     public int DurationInMonths { get; set; }
     public string Description { get; set; }
     public string Feature { get; set; }
+    public bool IsActive { get; set; }
 }

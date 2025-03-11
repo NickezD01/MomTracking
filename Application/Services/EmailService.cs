@@ -14,6 +14,37 @@ namespace Application.Services
     {
         public const string EmailUserSystem = "vinhngalong123@gmail.com";
         public const string EmailPasswordSystem = "yyqh dpoe mdmm eyge";
+
+        public async Task<ApiResponse> SendNotiMail(string recievedUser, string emailContent)
+        {
+
+            try
+            {
+               
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("MomCare", "MomCare@gmail.com"));
+                message.To.Add(new MailboxAddress("", recievedUser));
+                message.Subject = $"Notification";
+
+                var bodyBuilder = new BodyBuilder();
+                bodyBuilder.HtmlBody = emailContent; 
+                message.Body = bodyBuilder.ToMessageBody();
+
+                using (var client = new SmtpClient())
+                {
+                    await client.ConnectAsync("smtp.gmail.com", 465, true);
+                    await client.AuthenticateAsync(EmailUserSystem, EmailPasswordSystem);
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
+                }
+                return new ApiResponse().SetOk("Mail Sent!");
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse().SetBadRequest($"Something went wrong: {ex.Message}");
+            }
+        }
+
         public async Task<ApiResponse> SendValidationEmail(string recievedUser, string emailContent)
         {
             try
