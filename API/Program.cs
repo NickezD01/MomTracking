@@ -3,14 +3,12 @@ using API.Middleware;
 using Application;
 using Application.Interface;
 using Application.MyMapper;
-using Application.Repository;
 using Application.Services;
 using Application.Validation;
 using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure;
-using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +17,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using Hangfire;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +31,6 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddFluentValidationAutoValidation();
 
 
-
 //config api 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -40,7 +39,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.ConfigureWarnings(warnings =>
             warnings.Ignore(CoreEventId.NavigationBaseIncludeIgnored));
 });
-
+//HangFire
+builder.Services.AddHangfire(config =>
+    config.UseSqlServerStorage(configuration!.ConnectionStrings.DefaultConnection));
+builder.Services.AddHangfireServer();
 //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 builder.Services.AddSwaggerGen
@@ -119,6 +121,8 @@ builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
 
+builder.Services.AddScoped<IScheduleReminderService, ScheduleReminderService>();
+
 
 //builder.Services.AddScoped<IVnPayService, VnPayService>();
 
@@ -130,6 +134,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+//HangFire
+app.UseHangfireDashboard();
 
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -143,8 +150,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+RecurringJob.AddOrUpdate<ScheduleReminderService>("daily-reminder-job",x => x.CheckAndSendReminders(),Cron.Daily(13,15));
 app.MapControllers();
-
 app.Run();
 
 
