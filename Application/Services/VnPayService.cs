@@ -52,7 +52,7 @@ namespace Application.Services
                 }
             }
             //payment.Amount = order.TotalPrice;
-            model.Amount = order.TotalPrice.Value;
+            model.Amount = order.Price.Value;
             model.Name = "Mom Care";
             model.OrderDescription = "Mom Care";
             model.OrderType = "VnPay";
@@ -118,7 +118,7 @@ namespace Application.Services
                             {
 
                                 Payment payment = new Payment();
-                                if (amount == order.TotalPrice)
+                                if (amount == order.Price)
                                 {
                                     payment.Amount = amount;
                                     payment.StatusPayment = StatusPayment.Paid;

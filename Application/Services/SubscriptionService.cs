@@ -42,6 +42,7 @@ namespace Application.Services
                     return new ApiResponse().SetBadRequest("User already has an active subscription");
 
                 var subscription = _mapper.Map<Subscription>(request);
+                subscription.Price = plan.Price;
                 subscription.EndDate = request.StartDate.AddMonths(plan.DurationMonth);
                 subscription.NextBillingDate = subscription.EndDate;
 
@@ -59,6 +60,7 @@ namespace Application.Services
 
         public async Task<ApiResponse> UpdateSubscriptionAsync(int Id, UpdateSubscriptionRequest request)
         {
+
             try
             {
                 var subscription = await _unitOfWork.Subscriptions.GetSubscriptionWithDetails(Id);
@@ -197,5 +199,26 @@ namespace Application.Services
             }
         }
 
+        public async Task<ApiResponse> DeleteSubPlanData(int Id)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var children = await _unitOfWork.SubscriptionPlans.GetAsync(c => c.Id == Id);
+                if (children == null)
+                {
+                    return apiResponse.SetNotFound("Can not found the Children detail");
+                }
+                await _unitOfWork.SubscriptionPlans.RemoveByIdAsync(Id);
+                await _unitOfWork.SaveChangeAsync();
+                return apiResponse.SetOk("Deleled successfully!");
+
+
+            }
+            catch (Exception e)
+            {
+                return apiResponse.SetBadRequest(e.Message);
+            }
+        }
     }
 }

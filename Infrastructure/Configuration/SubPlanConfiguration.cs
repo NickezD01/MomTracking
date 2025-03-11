@@ -19,11 +19,11 @@ namespace Infrastructure.Configuration
                  .HasForeignKey(s => s.PlanId)
                  .OnDelete(DeleteBehavior.Restrict);
 
-            //SubPlan-Order relationship
-            builder.HasMany(o => o.Orders)
-                .WithOne(o => o.SubscriptionPlans)
-                .HasForeignKey(o => o.PlanId)
-                .OnDelete(DeleteBehavior.Restrict);
+            ////SubPlan-Order relationship
+            //builder.HasMany(o => o.Orders)
+            //    .WithOne(o => o.SubscriptionPlans)
+            //    .HasForeignKey(o => o.PlanId)
+            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

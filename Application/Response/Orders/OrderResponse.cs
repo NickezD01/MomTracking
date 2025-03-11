@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.Response.Subscription;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,11 @@ namespace Application.Response.Orders
     {
         public int Id { get; set; }
         public int SubscriptionId { get; set; }
-        public int? PlanId { get; set; }
-        public decimal TotalPrice { get; set; }
-        public string Status { get; set; }
+        //public int? PlanId { get; set; }
+        public decimal? Price { get; set; }
+        //public string Status { get; set; }
+
+        //public SubscriptionResponse Subscription { get; set; }
+
     }
 }

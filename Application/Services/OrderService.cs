@@ -1,5 +1,7 @@
 ﻿using Application.Interface;
 using Application.Response;
+using Application.Response.Orders;
+using Application.Response.Subscription;
 using Domain.Entity;
 using System;
 using System.Collections.Generic;
@@ -26,39 +28,56 @@ namespace Application.Services
             var claim = _claimService.GetUserClaim();
             var userId = claim.Id;
 
-            // Lấy thông tin subscription
-            var subscription = await _unitOfWork.Subscriptions.GetSubscriptionWithDetails(subscriptionId);
-            if (subscription == null)
+            try
             {
-                return response.SetNotFound("Subscription not found");
+                // 🔹 Lấy thông tin Subscription đầy đủ
+                var subscription = await _unitOfWork.Subscriptions.GetSubscriptionWithDetails(subscriptionId);
+                if (subscription == null)
+                {
+                    return response.SetNotFound("Subscription not found");
+                }
+
+                // 🔹 Kiểm tra Subscription có hợp lệ
+                if (subscription.Status != "Active")
+                {
+                    return response.SetBadRequest("Subscription is not active");
+                }
+
+                // 🔹 Kiểm tra Subscription đã có đơn hàng chưa
+                var existingOrder = await _unitOfWork.Orders.GetAsync(o => o.SubscriptionId == subscriptionId);
+                if (existingOrder != null)
+                {
+                    return response.SetBadRequest("An order for this subscription already exists.");
+                }
+
+                // 🔹 Tạo đơn hàng mới từ Subscription
+                var order = new Order
+                {
+                    AccountId = userId,
+                    SubscriptionId = subscriptionId,
+                    Price = subscription.Price,
+                    Status = OrderStatus.Pending, // Chờ thanh toán
+                    Note = "Order created from subscription",
+                    IsDelete = false
+                };
+
+                await _unitOfWork.Orders.AddAsync(order);
+                await _unitOfWork.SaveChangeAsync();
+
+                // 🔹 Trả về OrderResponse chỉ chứa các trường cần thiết
+                var orderResponse = new OrderResponse
+                {
+                    Id = order.Id,
+                    SubscriptionId = order.SubscriptionId,
+                    Price = order.Price
+                };
+
+                return response.SetOk(orderResponse);
             }
-
-            // Kiểm tra subscription có hợp lệ không
-            if (subscription.Status != "Active")
+            catch (Exception ex)
             {
-                return response.SetBadRequest("Subscription is not active");
+                return response.SetBadRequest($"An error occurred: {ex.Message}");
             }
-
-            // Lấy thông tin gói subscription
-            var plan = await _unitOfWork.SubscriptionPlans.GetAsync(x => x.Id == subscription.PlanId);
-            if (plan == null)
-            {
-                return response.SetNotFound("Subscription plan not found");
-            }
-
-            // Tạo đơn hàng mới dựa trên subscription
-            var order = new Order
-            {
-                AccountId = userId,
-                SubscriptionId = subscriptionId,
-                TotalPrice = plan.Price,
-                Status = OrderStatus.Pending // Chờ thanh toán qua VNPay
-            };
-
-            await _unitOfWork.Orders.AddAsync(order);
-            await _unitOfWork.SaveChangeAsync();
-
-            return response.SetOk(new { order.Id, order.TotalPrice });
         }
 
         public async Task<ApiResponse> GetOrderById(int orderId)

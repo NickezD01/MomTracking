@@ -12,6 +12,7 @@ namespace Domain.Entity
         public int Id { get; set; }
         public int AccountId { get; set; }
         public int PlanId { get; set; }
+        public decimal Price { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Status { get; set; } // Active, Expired, Cancelled, PendingPayment
@@ -21,6 +22,6 @@ namespace Domain.Entity
         public UserAccount? Account { get; set; }
         public SubscriptionPlan? SubscriptionPlans { get; set; }
         public DateTime ModifiedDate { get; set; }
-        public Order? Order { get; set; }
+        public Order Order { get; set; }
     }
 }

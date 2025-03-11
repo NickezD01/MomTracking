@@ -275,8 +275,8 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PlanId")
-                        .HasColumnType("int");
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -284,14 +284,17 @@ namespace Infrastructure.Migrations
                     b.Property<int>("SubscriptionId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int?>("SubscriptionPlanId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("PlanId");
+                    b.HasIndex("SubscriptionId")
+                        .IsUnique();
+
+                    b.HasIndex("SubscriptionPlanId");
 
                     b.ToTable("Orders");
                 });
@@ -500,6 +503,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<int>("PlanId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -771,14 +777,19 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entity.SubscriptionPlan", "SubscriptionPlans")
+                    b.HasOne("Domain.Entity.Subscription", "Subscription")
+                        .WithOne("Order")
+                        .HasForeignKey("Domain.Entity.Order", "SubscriptionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entity.SubscriptionPlan", null)
                         .WithMany("Orders")
-                        .HasForeignKey("PlanId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SubscriptionPlanId");
 
                     b.Navigation("Account");
 
-                    b.Navigation("SubscriptionPlans");
+                    b.Navigation("Subscription");
                 });
 
             modelBuilder.Entity("Domain.Entity.Payment", b =>
@@ -880,6 +891,12 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entity.Post", b =>
                 {
                     b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("Domain.Entity.Subscription", b =>
+                {
+                    b.Navigation("Order")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entity.SubscriptionPlan", b =>
