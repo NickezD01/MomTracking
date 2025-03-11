@@ -9,7 +9,7 @@ namespace Application.Response
     public class HealthMetricResponse
     {
         public int Id { get; set; }
-        public int ChildrenId { get; set; }
+        public int ChildrentId { get; set; }
         public int PregnancyWeek { get; set; }
         public double HeadCircumference { get; set; }
         public double Weight { get; set; }
