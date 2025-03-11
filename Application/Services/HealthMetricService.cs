@@ -28,9 +28,9 @@ namespace Application.Services
             try
             {
                 var healthMetric = _mapper.Map<HealthMetric>(healthMetricRequest);
-                healthMetric.ChildrentId = healthMetricRequest.childrenId;
+                healthMetric.ChildrentId = healthMetricRequest.ChildrentId;
                 var DetailsExist = await _unitOfWork.HeathMetrics.GetAsync(x => x.PregnancyWeek == healthMetric.PregnancyWeek);
-                if (DetailsExist == null)
+                if (DetailsExist == null || DetailsExist.ChildrentId != healthMetric.ChildrentId)
                 {
                     if(healthMetric.PregnancyWeek > 3 && healthMetric.PregnancyWeek < 43)
                     {
@@ -51,6 +51,7 @@ namespace Application.Services
                 return apiResponse.SetBadRequest(e.Message);
             }
         }
+
 
         public async Task<ApiResponse> CompareData(int Id)
         {
@@ -127,6 +128,7 @@ namespace Application.Services
             {
                 return apiResponse.SetBadRequest(e.Message);
             }
+
         }
 
         public async Task<ApiResponse> DeleteHealthMetric(int Id)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class fix : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,9 +32,11 @@ namespace Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DurationMonth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    DurationMonth = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Feature = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -272,7 +274,11 @@ namespace Infrastructure.Migrations
                     PlanId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false)
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastPaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    NextBillingDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -298,12 +304,12 @@ namespace Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ChildrentId = table.Column<int>(type: "int", nullable: false),
-                    PregnancyWeek = table.Column<int>(type: "int", nullable: false),
-                    HeadCircumference = table.Column<double>(type: "float", nullable: false),
-                    Weight = table.Column<double>(type: "float", nullable: false),
-                    Lenght = table.Column<double>(type: "float", nullable: false),
-                    SacDiameter = table.Column<double>(type: "float", nullable: false),
-                    HearRate = table.Column<double>(type: "float", nullable: false),
+                    PregnancyWeek = table.Column<int>(type: "int", nullable: true),
+                    HeadCircumference = table.Column<double>(type: "float", nullable: true),
+                    Weight = table.Column<double>(type: "float", nullable: true),
+                    Lenght = table.Column<double>(type: "float", nullable: true),
+                    SacDiameter = table.Column<double>(type: "float", nullable: true),
+                    HearRate = table.Column<double>(type: "float", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<bool>(type: "bit", nullable: false),
                     IsAlert = table.Column<bool>(type: "bit", nullable: false),

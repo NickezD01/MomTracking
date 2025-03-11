@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.Request.UserAccount
 {
-    public class UpdateUserRequest
+    public class UpdateUserRoleRequest
     {
-
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? ImgUrl { get; set; }
+        //public int Id { get; set; }
         public Role Role { get; set; }
-
     }
 }

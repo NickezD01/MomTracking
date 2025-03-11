@@ -245,11 +245,10 @@ namespace Application.Services
         {
             var fullName = user.FirstName + " " + user.LastName;
             List<Claim> claims = new List<Claim>
-            {
+            { 
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim("Role", user.Role.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.ToString()),
+                new Claim("Role", user.Role.ToString()),
                 new Claim( "Email" , user.Email!),
                 new Claim("UserId", user.Id.ToString()),
                 new Claim("FullName", fullName),

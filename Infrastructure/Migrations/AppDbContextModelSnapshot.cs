@@ -183,10 +183,10 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("HeadCircumference")
+                    b.Property<double?>("HeadCircumference")
                         .HasColumnType("float");
 
-                    b.Property<double>("HearRate")
+                    b.Property<double?>("HearRate")
                         .HasColumnType("float");
 
                     b.Property<bool>("IsAlert")
@@ -195,7 +195,7 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<double>("Lenght")
+                    b.Property<double?>("Lenght")
                         .HasColumnType("float");
 
                     b.Property<Guid?>("ModifiedBy")
@@ -207,16 +207,16 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PregnancyWeek")
+                    b.Property<int?>("PregnancyWeek")
                         .HasColumnType("int");
 
-                    b.Property<double>("SacDiameter")
+                    b.Property<double?>("SacDiameter")
                         .HasColumnType("float");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<double>("Weight")
+                    b.Property<double?>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -466,14 +466,28 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("LastPaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("NextBillingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PlanId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -499,11 +513,16 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DurationMonth")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("DurationMonth")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Feature")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -518,6 +537,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");

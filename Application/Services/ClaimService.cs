@@ -1,4 +1,5 @@
-﻿using Application.Interface;
+﻿using System.Security.Claims;
+using Application.Interface;
 using Domain.Entity;
 using Microsoft.AspNetCore.Http;
 
@@ -31,8 +32,9 @@ namespace Application.Services
                 Name = fullName,
             };
 
+
             return userClaim;
-        }      
+        }     
        
     }
     public class ClaimDTO
