@@ -284,17 +284,12 @@ namespace Infrastructure.Migrations
                     b.Property<int>("SubscriptionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SubscriptionPlanId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
                     b.HasIndex("SubscriptionId")
                         .IsUnique();
-
-                    b.HasIndex("SubscriptionPlanId");
 
                     b.ToTable("Orders");
                 });
@@ -783,10 +778,6 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entity.SubscriptionPlan", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("SubscriptionPlanId");
-
                     b.Navigation("Account");
 
                     b.Navigation("Subscription");
@@ -901,8 +892,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entity.SubscriptionPlan", b =>
                 {
-                    b.Navigation("Orders");
-
                     b.Navigation("Subscriptions");
                 });
 
