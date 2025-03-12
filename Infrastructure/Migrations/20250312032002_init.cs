@@ -343,22 +343,16 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: true),
                     SubscriptionId = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
-                    SubscriptionPlanId = table.Column<int>(type: "int", nullable: true)
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_Plans_SubscriptionPlanId",
-                        column: x => x.SubscriptionPlanId,
-                        principalTable: "Plans",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_Subscriptions_SubscriptionId",
                         column: x => x.SubscriptionId,
@@ -369,8 +363,7 @@ namespace Infrastructure.Migrations
                         name: "FK_Orders_Users_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -405,13 +398,12 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
-                    MethodId = table.Column<int>(type: "int", nullable: false),
                     TransactionId = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StatusPayment = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false),
+                    PaymentMethodId = table.Column<int>(type: "int", nullable: true),
+                    UserAccountId = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -422,11 +414,10 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Payments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payments_Methods_MethodId",
-                        column: x => x.MethodId,
+                        name: "FK_Payments_Methods_PaymentMethodId",
+                        column: x => x.PaymentMethodId,
                         principalTable: "Methods",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Payments_Orders_OrderId",
                         column: x => x.OrderId,
@@ -440,11 +431,10 @@ namespace Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Payments_Users_AccountId",
-                        column: x => x.AccountId,
+                        name: "FK_Payments_Users_UserAccountId",
+                        column: x => x.UserAccountId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -495,29 +485,24 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_SubscriptionPlanId",
-                table: "Orders",
-                column: "SubscriptionPlanId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Payments_AccountId",
-                table: "Payments",
-                column: "AccountId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Payments_MethodId",
-                table: "Payments",
-                column: "MethodId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Payments_OrderId",
                 table: "Payments",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Payments_PaymentMethodId",
+                table: "Payments",
+                column: "PaymentMethodId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Payments_TransactionId",
                 table: "Payments",
                 column: "TransactionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_UserAccountId",
+                table: "Payments",
+                column: "UserAccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_AccountId",
