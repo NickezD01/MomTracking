@@ -36,19 +36,12 @@ namespace Application.Services
                 var user = await _unitOfWork.UserAccounts.GetAsync(a => a.Id == claim.Id); 
                 var schedule = _mapper.Map<Schedule>(scheduleRequest);
                 schedule.AccountId = claim.Id;
-<<<<<<< HEAD
                 var scheduleExist = await _unitOfWork.Schedules.GetAsync(s => s.AppointmentDate == schedule.AppointmentDate);
                 if (scheduleExist == null)
                 {
                     await _unitOfWork.Schedules.AddAsync(schedule);
                     await _unitOfWork.SaveChangeAsync();            
-=======
-                var scheduleExist = await _unitOfWork.Schedule.GetAsync(s => s.AppointmentDate == schedule.AppointmentDate);
-                if (scheduleExist == null || user.Id != schedule.AccountId)
-                {
-                    await _unitOfWork.Schedule.AddAsync(schedule);
-                    await _unitOfWork.SaveChangeAsync();                 
->>>>>>> main
+
                     return apiResponse.SetOk("Schedule created successfully!!!");
                     
 

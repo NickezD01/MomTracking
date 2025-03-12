@@ -53,7 +53,10 @@ namespace Infrastructure.Configuration
                 .HasForeignKey(h => h.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
 
- 
+
+            builder.HasMany(x => x.Orders)
+                .WithOne(x => x.UserAccount)
+                .HasForeignKey(x => x.AccountId);
         }
     }
 }

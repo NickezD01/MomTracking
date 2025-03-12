@@ -278,9 +278,6 @@ namespace Infrastructure.Migrations
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.Property<int>("SubscriptionId")
                         .HasColumnType("int");
 
@@ -317,9 +314,6 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("MethodId")
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -333,6 +327,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
                     b.Property<int>("StatusPayment")
                         .HasColumnType("int");
 
@@ -343,41 +340,11 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("MethodId");
-
                     b.HasIndex("OrderId");
 
                     b.HasIndex("TransactionId");
 
                     b.ToTable("Payments");
-                });
-
-            modelBuilder.Entity("Domain.Entity.PaymentMethod", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrderDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrderType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Methods");
                 });
 
             modelBuilder.Entity("Domain.Entity.Post", b =>
@@ -766,8 +733,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entity.Order", b =>
                 {
-                    b.HasOne("Domain.Entity.UserAccount", "Account")
-                        .WithMany()
+                    b.HasOne("Domain.Entity.UserAccount", "UserAccount")
+                        .WithMany("Orders")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -778,9 +745,9 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Account");
-
                     b.Navigation("Subscription");
+
+                    b.Navigation("UserAccount");
                 });
 
             modelBuilder.Entity("Domain.Entity.Payment", b =>
@@ -788,12 +755,6 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entity.UserAccount", "Account")
                         .WithMany("Payments")
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entity.PaymentMethod", "PaymentMethod")
-                        .WithMany("Payments")
-                        .HasForeignKey("MethodId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -812,8 +773,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Order");
-
-                    b.Navigation("PaymentMethod");
 
                     b.Navigation("TransactionHistory");
                 });
@@ -874,11 +833,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("Domain.Entity.PaymentMethod", b =>
-                {
-                    b.Navigation("Payments");
-                });
-
             modelBuilder.Entity("Domain.Entity.Post", b =>
                 {
                     b.Navigation("Comments");
@@ -909,6 +863,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("EmailVerifications");
 
                     b.Navigation("Notifications");
+
+                    b.Navigation("Orders");
 
                     b.Navigation("Payments");
 

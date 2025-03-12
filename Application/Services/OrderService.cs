@@ -56,7 +56,7 @@ namespace Application.Services
                     AccountId = userId,
                     SubscriptionId = subscriptionId,
                     Price = subscription.Price,
-                    Status = OrderStatus.Pending, // Chờ thanh toán
+                    //Status = OrderStatus.Pending, // Chờ thanh toán
                     Note = "Order created from subscription",
                     IsDelete = false
                 };
@@ -115,12 +115,12 @@ namespace Application.Services
                 return response.SetNotFound("Order not found or does not belong to the user.");
             }
 
-            if (order.Status == OrderStatus.Paid)
-            {
-                return response.SetBadRequest("Cannot cancel a paid order.");
-            }
+            //if (order.Status == OrderStatus.Paid)
+            //{
+            //    return response.SetBadRequest("Cannot cancel a paid order.");
+            //}
 
-            order.Status = OrderStatus.Canceled;
+            //order.Status = OrderStatus.Canceled;
             await _unitOfWork.SaveChangeAsync();
 
             return response.SetOk("Order canceled successfully.");

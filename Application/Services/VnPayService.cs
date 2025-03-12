@@ -2,6 +2,7 @@
 using Application.Request.Payment;
 using Application.Response;
 using Domain.Entity;
+using MaxMind.GeoIP2.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -81,15 +82,100 @@ namespace Application.Services
         }
         public async Task<ApiResponse> PaymentExecute(IQueryCollection collections)
         {
+            //try
+            //{
+            //    ApiResponse apiResponse = new ApiResponse();
+            //    var pay = new VnPayLibrary();
+            //    var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
+
+            //    if (collections.TryGetValue("vnp_ResponseCode", out var responseCode))
+            //    {
+            //        // Handle cancellation or failure
+            //        if (responseCode != "00")
+            //        {
+            //            return apiResponse.SetBadRequest("Payment was canceled or failed.");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return apiResponse.SetBadRequest("Missing response code.");
+            //    }
+
+            //    // Extract userId from query parameters
+            //    if (collections.TryGetValue("userId", out var userIdValue) &&
+            //        int.TryParse(userIdValue, out int userId) &&
+            //        collections.TryGetValue("orderId", out var orderIdValue) &&
+            //        int.TryParse(orderIdValue, out int orderId))
+            //    {
+            //        // Check the response code to ensure the payment was successful
+            //        if (response.Success)
+            //        {
+            //            // Payment was successful
+            //            var user = await _unitOfWork.UserAccounts.GetAsync(x => x.Id == userId);
+            //            var order = await _unitOfWork.Orders.GetAsync(x => x.Id == orderId);
+            //            if (user != null && order is not null)
+            //            {
+            //                if (collections.TryGetValue("amount", out var amountValue) && decimal.TryParse(amountValue, out decimal amount))
+            //                {
+
+            //                    Payment payment = new Payment();
+            //                    if (amount == order.Price)
+            //                    {
+            //                        payment.Amount = amount;
+            //                        payment.StatusPayment = StatusPayment.Paid;
+            //                        payment.OrderId = orderId;
+            //                    }
+            //                    else
+            //                    {
+            //                        payment.StatusPayment = StatusPayment.Failed;
+            //                        payment.OrderId = orderId;
+            //                        apiResponse.SetBadRequest("The payment amount does not match the order amount.");
+            //                        return apiResponse;
+            //                    }
+            //                    await _unitOfWork.Payments.AddAsync(payment);
+
+            //                }
+            //                else
+            //                {
+            //                    return apiResponse.SetBadRequest("parse error");
+            //                }
+
+            //                await _unitOfWork.SaveChangeAsync();
+            //                var redirectUrl = "http://localhost:3000/paymentfail";
+            //                return apiResponse.SetOk(redirectUrl);
+            //            }
+            //            else
+            //            {
+            //                return apiResponse.SetBadRequest("User not found");
+            //            }
+            //        }
+            //        else
+            //        {
+            //            // Payment failed
+            //            return apiResponse.SetOk("VN Pay api respone fail");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return apiResponse.SetBadRequest("Invalid or missing userId From call back url");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+
+            //    throw;
+            //}
+
             try
             {
                 ApiResponse apiResponse = new ApiResponse();
                 var pay = new VnPayLibrary();
                 var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
 
+                // Kiểm tra Response Code của VNPay
                 if (collections.TryGetValue("vnp_ResponseCode", out var responseCode))
                 {
-                    // Handle cancellation or failure
+                    Console.WriteLine($"VNPAY Response Code: {responseCode}");
                     if (responseCode != "00")
                     {
                         return apiResponse.SetBadRequest("Payment was canceled or failed.");
@@ -100,68 +186,87 @@ namespace Application.Services
                     return apiResponse.SetBadRequest("Missing response code.");
                 }
 
-                // Extract userId from query parameters
+                // Lấy userId và orderId từ callback URL
                 if (collections.TryGetValue("userId", out var userIdValue) &&
                     int.TryParse(userIdValue, out int userId) &&
                     collections.TryGetValue("orderId", out var orderIdValue) &&
                     int.TryParse(orderIdValue, out int orderId))
                 {
-                    // Check the response code to ensure the payment was successful
+                    Console.WriteLine($"UserId: {userId}, OrderId: {orderId}");
+
+                    // Kiểm tra phản hồi từ VNPay
                     if (response.Success)
                     {
-                        // Payment was successful
+                        Console.WriteLine("Payment success from VNPay.");
+
                         var user = await _unitOfWork.UserAccounts.GetAsync(x => x.Id == userId);
                         var order = await _unitOfWork.Orders.GetAsync(x => x.Id == orderId);
-                        if (user != null && order is not null)
+
+                        if (user != null && order != null)
                         {
+                            Console.WriteLine($"User found: {user.Id}, Order found: {order.Id}, Order Price: {order.Price}");
+
                             if (collections.TryGetValue("amount", out var amountValue) && decimal.TryParse(amountValue, out decimal amount))
                             {
+                                Console.WriteLine($"Received Amount: {amount}");
 
-                                Payment payment = new Payment();
-                                if (amount == order.Price)
+                                Payment payment = new Payment
                                 {
-                                    payment.Amount = amount;
-                                    payment.StatusPayment = StatusPayment.Paid;
-                                    payment.OrderId = orderId;
-                                }
-                                else
+                                    OrderId = orderId,
+                                    Amount = amount,
+                                    StatusPayment = (amount == order.Price) ? StatusPayment.Paid : StatusPayment.Failed
+                                };
+
+                                if (amount != order.Price)
                                 {
-                                    payment.StatusPayment = StatusPayment.Failed;
-                                    payment.OrderId = orderId;
-                                    apiResponse.SetBadRequest("The payment amount does not match the order amount.");
-                                    return apiResponse;
+                                    Console.WriteLine("Error: Payment amount does not match order amount.");
+                                    return apiResponse.SetBadRequest("The payment amount does not match the order amount.");
                                 }
+
                                 await _unitOfWork.Payments.AddAsync(payment);
 
+                                // Lưu dữ liệu vào database
+                                try
+                                {
+                                    Console.WriteLine("Saving payment to database...");
+                                    await _unitOfWork.SaveChangeAsync();
+                                    Console.WriteLine("Payment saved successfully!");
+
+                                    var redirectUrl = "http://localhost:3000/payment-success";
+                                    return apiResponse.SetOk(redirectUrl);
+                                }
+                                catch (Exception dbEx)
+                                {
+                                    Console.WriteLine($"Database error: {dbEx.Message}");
+                                    return apiResponse.SetBadRequest("Failed to save payment data.");
+                                }
                             }
                             else
                             {
-                                return apiResponse.SetBadRequest("parse error");
+                                Console.WriteLine("Error: Invalid or missing amount.");
+                                return apiResponse.SetBadRequest("Parse error: Invalid amount.");
                             }
-
-                            await _unitOfWork.SaveChangeAsync();
-                            var redirectUrl = "http://localhost:3000/paymentfail";
-                            return apiResponse.SetOk(redirectUrl);
                         }
                         else
                         {
-                            return apiResponse.SetBadRequest("User not found");
+                            Console.WriteLine("Error: User or order not found.");
+                            return apiResponse.SetBadRequest("User or Order not found.");
                         }
                     }
                     else
                     {
-                        // Payment failed
-                        return apiResponse.SetOk("VN Pay api respone fail");
+                        Console.WriteLine("VNPay API response failed.");
+                        return apiResponse.SetOk("VN Pay API response fail.");
                     }
                 }
                 else
                 {
-                    return apiResponse.SetBadRequest("Invalid or missing userId From call back url");
+                    Console.WriteLine("Error: Invalid or missing userId in callback URL.");
+                    return apiResponse.SetBadRequest("Invalid or missing userId from callback URL.");
                 }
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
