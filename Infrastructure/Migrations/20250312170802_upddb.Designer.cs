@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250309134610_init")]
-    partial class init
+    [Migration("20250312170802_upddb")]
+    partial class upddb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -278,17 +278,18 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PlanId")
-                        .HasColumnType("int");
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("float");
+                    b.Property<int>("SubscriptionId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("PlanId");
+                    b.HasIndex("SubscriptionId")
+                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
@@ -304,6 +305,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -313,9 +317,6 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("MethodId")
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -323,47 +324,29 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TransactionId")
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StatusPayment")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TransactionHId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("MethodId");
-
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("TransactionId");
+                    b.HasIndex("TransactionHId");
 
                     b.ToTable("Payments");
-                });
-
-            modelBuilder.Entity("Domain.Entity.PaymentMethod", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Methods");
                 });
 
             modelBuilder.Entity("Domain.Entity.Post", b =>
@@ -484,6 +467,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<int>("PlanId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -749,21 +735,21 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entity.Order", b =>
                 {
-                    b.HasOne("Domain.Entity.UserAccount", "Account")
-                        .WithMany()
+                    b.HasOne("Domain.Entity.UserAccount", "UserAccount")
+                        .WithMany("Orders")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entity.SubscriptionPlan", "SubscriptionPlans")
-                        .WithMany("Orders")
-                        .HasForeignKey("PlanId")
+                    b.HasOne("Domain.Entity.Subscription", "Subscription")
+                        .WithOne("Order")
+                        .HasForeignKey("Domain.Entity.Order", "SubscriptionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("Subscription");
 
-                    b.Navigation("SubscriptionPlans");
+                    b.Navigation("UserAccount");
                 });
 
             modelBuilder.Entity("Domain.Entity.Payment", b =>
@@ -771,12 +757,6 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entity.UserAccount", "Account")
                         .WithMany("Payments")
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entity.PaymentMethod", "PaymentMethod")
-                        .WithMany("Payments")
-                        .HasForeignKey("MethodId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -788,15 +768,12 @@ namespace Infrastructure.Migrations
 
                     b.HasOne("Domain.Entity.TransactionHistory", "TransactionHistory")
                         .WithMany("Payments")
-                        .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("TransactionHId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Account");
 
                     b.Navigation("Order");
-
-                    b.Navigation("PaymentMethod");
 
                     b.Navigation("TransactionHistory");
                 });
@@ -857,20 +834,19 @@ namespace Infrastructure.Migrations
                     b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("Domain.Entity.PaymentMethod", b =>
-                {
-                    b.Navigation("Payments");
-                });
-
             modelBuilder.Entity("Domain.Entity.Post", b =>
                 {
                     b.Navigation("Comments");
                 });
 
+            modelBuilder.Entity("Domain.Entity.Subscription", b =>
+                {
+                    b.Navigation("Order")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Entity.SubscriptionPlan", b =>
                 {
-                    b.Navigation("Orders");
-
                     b.Navigation("Subscriptions");
                 });
 
@@ -888,6 +864,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("EmailVerifications");
 
                     b.Navigation("Notifications");
+
+                    b.Navigation("Orders");
 
                     b.Navigation("Payments");
 

@@ -26,7 +26,6 @@ namespace Infrastructure
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Payment> Payments { get; set; }
-        public DbSet<PaymentMethod> Methods { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }

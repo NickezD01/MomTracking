@@ -1,4 +1,4 @@
-﻿using Application.Interface;
+using Application.Interface;
 using Application.Request.SubscriptionPlan;
 using Application.Response;
 using Application.Response.SubscriptionPlan;
@@ -36,23 +36,16 @@ namespace Application.Services
                     return apiResponse.SetBadRequest("Only managers can create subscription plans");
                 }
 
-                if (await _unitOfWork.SubscriptionPlan.IsPlanNameExists(request.Name))
+                if (await _unitOfWork.SubscriptionPlans.IsPlanNameExists(request.Name))
                 {
                     return apiResponse.SetBadRequest("A plan with this name already exists");
                 }
 
                 var plan = _mapper.Map<SubscriptionPlan>(request);
-
-                // Đảm bảo isActive luôn là false khi tạo mới - ghi đè sau khi mapping
-                plan.IsActive = false;
-
-                await _unitOfWork.SubscriptionPlan.AddAsync(plan);
+                await _unitOfWork.SubscriptionPlans.AddAsync(plan);
                 await _unitOfWork.SaveChangeAsync();
 
-                // Đảm bảo response cũng có isActive = false
                 var response = _mapper.Map<SubscriptionPlanResponse>(plan);
-                response.IsActive = false; // Đảm bảo response cũng có giá trị đúng
-
                 return apiResponse.SetOk(response);
             }
             catch (Exception ex)
@@ -60,7 +53,6 @@ namespace Application.Services
                 return apiResponse.SetBadRequest($"Error creating subscription plan: {ex.Message}");
             }
         }
-
 
         public async Task<ApiResponse> UpdatePlanAsync(int Id, UpdateSubscriptionPlanRequest request)
         {
@@ -72,7 +64,7 @@ namespace Application.Services
                     return new ApiResponse().SetBadRequest("Only managers can update subscription plans");
                 }
 
-                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == Id);
+                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == Id);
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
@@ -100,14 +92,14 @@ namespace Application.Services
                 {
                     return new ApiResponse().SetBadRequest("Only managers can delete subscription plans");
                 }
-                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == planId);
+                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId);
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
                 }
 
                 // Check if plan has active subscribers
-                var activeSubscribers = await _unitOfWork.SubscriptionPlan.GetTotalSubscribersCount(planId);
+                var activeSubscribers = await _unitOfWork.SubscriptionPlans.GetTotalSubscribersCount(planId);
                 if (activeSubscribers > 0)
                 {
                     return new ApiResponse().SetBadRequest("Cannot delete plan with active subscribers");
@@ -129,7 +121,7 @@ namespace Application.Services
         {
             try
             {
-                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == planId && !p.IsDeleted);
+                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId && !p.IsDeleted);
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
@@ -148,7 +140,7 @@ namespace Application.Services
         {
             try
             {
-                var plans = await _unitOfWork.SubscriptionPlan.GetAllAsync(p => !p.IsDeleted);
+                var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(p => !p.IsDeleted);
                 var response = _mapper.Map<List<SubscriptionPlanResponse>>(plans);
                 return new ApiResponse().SetOk(response);
             }
@@ -162,7 +154,7 @@ namespace Application.Services
         {
             try
             {
-                var plans = await _unitOfWork.SubscriptionPlan.GetActivePlans();
+                var plans = await _unitOfWork.SubscriptionPlans.GetActivePlans();
                 var response = _mapper.Map<List<SubscriptionPlanResponse>>(plans);
                 return new ApiResponse().SetOk(response);
             }
@@ -182,7 +174,7 @@ namespace Application.Services
                     return new ApiResponse().SetBadRequest("Only managers can view subscriber details");
                 }
 
-                var plan = await _unitOfWork.SubscriptionPlan.GetPlanWithSubscribers(planId);
+                var plan = await _unitOfWork.SubscriptionPlans.GetPlanWithSubscribers(planId);
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
@@ -201,7 +193,7 @@ namespace Application.Services
         {
             try
             {
-                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == planId && !p.IsDeleted);
+                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId && !p.IsDeleted);
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
@@ -226,7 +218,7 @@ namespace Application.Services
                     return new ApiResponse().SetBadRequest("Only managers can activate subscription plans");
                 }
 
-                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == planId);
+                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId);
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
@@ -256,7 +248,7 @@ namespace Application.Services
                     return new ApiResponse().SetBadRequest("Only managers can deactivate subscription plans");
                 }
 
-                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == planId);
+                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId);
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
@@ -285,7 +277,7 @@ namespace Application.Services
                     return new ApiResponse().SetBadRequest("Only managers can update plan pricing");
                 }
 
-                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == planId);
+                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId);
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
@@ -318,7 +310,7 @@ namespace Application.Services
                     return new ApiResponse().SetBadRequest("Duration must be greater than zero");
                 }
 
-                var planExists = await _unitOfWork.SubscriptionPlan.IsPlanNameExists(request.Name);
+                var planExists = await _unitOfWork.SubscriptionPlans.IsPlanNameExists(request.Name);
                 if (planExists)
                 {
                     return new ApiResponse().SetBadRequest("A plan with this name already exists");

@@ -28,10 +28,12 @@ namespace Application.Services
             try
             {
                 var standard = _mapper.Map<WHOStandard>(standardRequest);
-                var existStandard = await _unitOfWork.WHOStandard.GetAsync(s => s.PregnancyWeek == standard.PregnancyWeek);
+
+                var existStandard = await _unitOfWork.WHOStandards.GetAsync(s => s.PregnancyWeek == standard.PregnancyWeek);
                 if (existStandard == null)
                 {
-                    await _unitOfWork.WHOStandard.AddAsync(standard);
+                    await _unitOfWork.WHOStandards.AddAsync(standard);
+
                     await _unitOfWork.SaveChangeAsync();
                     return apiResponse.SetOk("Added successfully!");
                 }
@@ -48,12 +50,12 @@ namespace Application.Services
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var standard = await _unitOfWork.WHOStandard.GetAsync(s => s.Id == Id );
+                var standard = await _unitOfWork.WHOStandards.GetAsync(s => s.Id == Id );
                 if (standard == null)
                 {
                     return apiResponse.SetNotFound("Data does not exist!");
                 }
-                await _unitOfWork.WHOStandard.RemoveByIdAsync(Id);
+                await _unitOfWork.WHOStandards.RemoveByIdAsync(Id);
                 await _unitOfWork.SaveChangeAsync();
                 return apiResponse.SetOk("Deleted successfully!");
             }
@@ -68,7 +70,7 @@ namespace Application.Services
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var standard = await _unitOfWork.WHOStandard.GetAllAsync(null);
+                var standard = await _unitOfWork.WHOStandards.GetAllAsync(null);
                 var resStandard = _mapper.Map<List<StandardResponse>>(standard);
                 return new ApiResponse().SetOk(resStandard);
             }
@@ -83,7 +85,7 @@ namespace Application.Services
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var standard = await _unitOfWork.WHOStandard.GetAsync(s => s.Id == Id);
+                var standard = await _unitOfWork.WHOStandards.GetAsync(s => s.Id == Id);
                 if (standard == null)
                 {
                     return apiResponse.SetNotFound("Data does not exist!");

@@ -32,7 +32,7 @@ namespace Domain.Entity
         public List<Post>? Posts { get; set; }
         public List<Notification>? Notifications { get; set; }
         public List<Comment> Comments { get; set; }
-
+        public List<Order>? Orders { get; set; }
     }
     public enum Role
     {

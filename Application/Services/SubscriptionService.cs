@@ -34,18 +34,19 @@ namespace Application.Services
                 if (user == null)
                     return new ApiResponse().SetNotFound("User not found");
 
-                var plan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == request.PlanId);
+                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == request.PlanId);
                 if (plan == null || !plan.IsActive)
                     return new ApiResponse().SetNotFound("Subscription plan not found or inactive");
 
-                if (await _unitOfWork.Subscription.HasActiveSubscription(request.AccountId))
+                if (await _unitOfWork.Subscriptions.HasActiveSubscription(request.AccountId))
                     return new ApiResponse().SetBadRequest("User already has an active subscription");
 
                 var subscription = _mapper.Map<Subscription>(request);
+                subscription.Price = plan.Price;
                 subscription.EndDate = request.StartDate.AddMonths(plan.DurationMonth);
                 subscription.NextBillingDate = subscription.EndDate;
 
-                await _unitOfWork.Subscription.AddAsync(subscription);
+                await _unitOfWork.Subscriptions.AddAsync(subscription);
                 await _unitOfWork.SaveChangeAsync();
 
                 var response = _mapper.Map<SubscriptionResponse>(subscription);
@@ -59,15 +60,16 @@ namespace Application.Services
 
         public async Task<ApiResponse> UpdateSubscriptionAsync(int Id, UpdateSubscriptionRequest request)
         {
+
             try
             {
-                var subscription = await _unitOfWork.Subscription.GetSubscriptionWithDetails(Id);
+                var subscription = await _unitOfWork.Subscriptions.GetSubscriptionWithDetails(Id);
                 if (subscription == null)
                     return new ApiResponse().SetNotFound("Subscription not found");
 
                 if (request.PlanId != subscription.PlanId)
                 {
-                    var newPlan = await _unitOfWork.SubscriptionPlan.GetAsync(p => p.Id == Id);
+                    var newPlan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == Id);
                     if (newPlan == null || !newPlan.IsActive)
                         return new ApiResponse().SetBadRequest("Invalid subscription plan");
                 }
@@ -88,7 +90,7 @@ namespace Application.Services
         {
             try
             {
-                var subscription = await _unitOfWork.Subscription.GetSubscriptionWithDetails(subscriptionId);
+                var subscription = await _unitOfWork.Subscriptions.GetSubscriptionWithDetails(subscriptionId);
                 if (subscription == null)
                     return new ApiResponse().SetNotFound("Subscription not found");
 
@@ -108,7 +110,7 @@ namespace Application.Services
         {
             try
             {
-                var subscription = await _unitOfWork.Subscription.GetSubscriptionWithDetails(subscriptionId);
+                var subscription = await _unitOfWork.Subscriptions.GetSubscriptionWithDetails(subscriptionId);
                 if (subscription == null)
                     return new ApiResponse().SetNotFound("Subscription not found");
 
@@ -125,7 +127,7 @@ namespace Application.Services
         {
             try
             {
-                var subscriptions = await _unitOfWork.Subscription.GetSubscriptionHistory(accountId);
+                var subscriptions = await _unitOfWork.Subscriptions.GetSubscriptionHistory(accountId);
                 var response = _mapper.Map<List<SubscriptionResponse>>(subscriptions);
                 return new ApiResponse().SetOk(response);
             }
@@ -139,7 +141,7 @@ namespace Application.Services
         {
             try
             {
-                var subscriptions = await _unitOfWork.Subscription.GetActiveSubscriptionsByAccountId(accountId);
+                var subscriptions = await _unitOfWork.Subscriptions.GetActiveSubscriptionsByAccountId(accountId);
                 if (!subscriptions.Any())
                     return new ApiResponse().SetNotFound("No active subscription found");
 
@@ -165,16 +167,16 @@ namespace Application.Services
         {
             try
             {
-                var expiringSubscriptions = await _unitOfWork.Subscription
+                var expiringSubscriptionss = await _unitOfWork.Subscriptions
                     .GetExpiringSubscriptions(DateTime.UtcNow);
 
-                foreach (var subscription in expiringSubscriptions)
+                foreach (var subscription in expiringSubscriptionss)
                 {
                     subscription.Status = "Expired";
                 }
 
                 await _unitOfWork.SaveChangeAsync();
-                return new ApiResponse().SetOk($"Processed {expiringSubscriptions.Count} expired subscriptions");
+                return new ApiResponse().SetOk($"Processed {expiringSubscriptionss.Count} expired subscriptions");
             }
             catch (Exception ex)
             {
@@ -188,7 +190,7 @@ namespace Application.Services
         {
             try
             {
-                var hasActiveSubscription = await _unitOfWork.Subscription.HasActiveSubscription(accountId);
+                var hasActiveSubscription = await _unitOfWork.Subscriptions.HasActiveSubscription(accountId);
                 return new ApiResponse().SetOk(new { HasActiveSubscription = hasActiveSubscription });
             }
             catch (Exception ex)
@@ -197,5 +199,26 @@ namespace Application.Services
             }
         }
 
+        public async Task<ApiResponse> DeleteSubPlanData(int Id)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var children = await _unitOfWork.SubscriptionPlans.GetAsync(c => c.Id == Id);
+                if (children == null)
+                {
+                    return apiResponse.SetNotFound("Can not found the Children detail");
+                }
+                await _unitOfWork.SubscriptionPlans.RemoveByIdAsync(Id);
+                await _unitOfWork.SaveChangeAsync();
+                return apiResponse.SetOk("Deleled successfully!");
+
+
+            }
+            catch (Exception e)
+            {
+                return apiResponse.SetBadRequest(e.Message);
+            }
+        }
     }
 }

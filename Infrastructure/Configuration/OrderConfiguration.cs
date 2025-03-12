@@ -1,5 +1,4 @@
-﻿// Infrastructure/Configuration/OrderConfiguration.cs
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,17 +13,21 @@ namespace Infrastructure.Configuration
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            // Order-Payment relationship
+            //Order-Payment relationship
             builder.HasMany(p => p.Payments)
-                .WithOne(p => p.Order)
-                .HasForeignKey(p => p.OrderId)
-                .OnDelete(DeleteBehavior.Restrict);
+                 .WithOne(p => p.Order)
+                 .HasForeignKey(p => p.OrderId)
+                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Thêm mối quan hệ Order-Subscription
-            builder.HasOne(o => o.Subscription)
-                .WithMany()
-                .HasForeignKey(o => o.SubscriptionId)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.UserAccount)
+                .WithMany(x => x.Orders)
+                .HasForeignKey(x => x.AccountId);
+            ////Order-Sub relationship
+            //builder.HasOne(o => o.Subscription)
+            //    .WithOne(o => o.Order)
+            //    .HasForeignKey(o => o.SubscriptionId)
+            //    .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

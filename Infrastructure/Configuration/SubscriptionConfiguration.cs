@@ -10,9 +10,9 @@ namespace Infrastructure.Configuration
         public void Configure(EntityTypeBuilder<Subscription> builder)
         {
             // Subscription-Order relationship
-            builder.HasMany(s => s.Orders)
+            builder.HasOne(s => s.Order)
                 .WithOne(o => o.Subscription)
-                .HasForeignKey(o => o.SubscriptionId)
+                .HasForeignKey<Order>(o => o.SubscriptionId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

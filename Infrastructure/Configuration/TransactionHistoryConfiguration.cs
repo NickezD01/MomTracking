@@ -16,7 +16,7 @@ namespace Infrastructure.Configuration
             //Transaction-Payment relationship
             builder.HasMany(p => p.Payments)
                  .WithOne(p => p.TransactionHistory)
-                 .HasForeignKey(p => p.TransactionId)
+                 .HasForeignKey(p => p.TransactionHId)
                  .OnDelete(DeleteBehavior.Restrict);
 
         }
