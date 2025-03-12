@@ -1,4 +1,5 @@
-﻿using Domain.Entity;
+﻿// Infrastructure/Configuration/SubPlanConfiguration.cs
+using Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -15,15 +16,12 @@ namespace Infrastructure.Configuration
         {
             //SubPlan-Sub relationship
             builder.HasMany(s => s.Subscriptions)
-                 .WithOne(s => s.SubscriptionPlans)
-                 .HasForeignKey(s => s.PlanId)
-                 .OnDelete(DeleteBehavior.Restrict);
-
-            //SubPlan-Order relationship
-            builder.HasMany(o => o.Orders)
-                .WithOne(o => o.SubscriptionPlans)
-                .HasForeignKey(o => o.PlanId)
+                .WithOne(s => s.SubscriptionPlans)
+                .HasForeignKey(s => s.PlanId)
                 .OnDelete(DeleteBehavior.Restrict);
+             
+            // Xóa bỏ mối quan hệ trực tiếp với Order
+            // Không còn cần thiết vì Order sẽ liên kết với Subscription
         }
     }
 }
