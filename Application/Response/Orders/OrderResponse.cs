@@ -14,6 +14,7 @@ namespace Application.Response.Orders
         public int SubscriptionId { get; set; }
         //public int? PlanId { get; set; }
         public decimal? Price { get; set; }
+
         //public OrderStatus Status { get; set; }
 
         //public string Status { get; set; }

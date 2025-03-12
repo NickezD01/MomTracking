@@ -13,8 +13,8 @@ namespace Domain.Entity
         public StatusPayment StatusPayment { get; set; }
         public decimal Amount { get; set; }
         //public int OrderId { get; set; }
-        public int TransactionId { get; set; }
-        public string Note { get; set; }
+        public int? TransactionHId { get; set; }
+        public string? Note { get; set; }
         //public Order? Order { get; set; }
         public UserAccount? Account { get; set; }
         public PaymentMethodEnum PaymentMethod { get; set; } = PaymentMethodEnum.VNPay;

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250312050315_init")]
-    partial class init
+    [Migration("20250312170802_upddb")]
+    partial class upddb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -324,7 +324,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OrderId")
@@ -336,7 +335,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("StatusPayment")
                         .HasColumnType("int");
 
-                    b.Property<int>("TransactionId")
+                    b.Property<int?>("TransactionHId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -345,7 +344,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("TransactionId");
+                    b.HasIndex("TransactionHId");
 
                     b.ToTable("Payments");
                 });
@@ -769,9 +768,8 @@ namespace Infrastructure.Migrations
 
                     b.HasOne("Domain.Entity.TransactionHistory", "TransactionHistory")
                         .WithMany("Payments")
-                        .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("TransactionHId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Account");
 

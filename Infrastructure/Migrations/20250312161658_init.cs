@@ -385,7 +385,7 @@ namespace Infrastructure.Migrations
                     AccountId = table.Column<int>(type: "int", nullable: false),
                     StatusPayment = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TransactionId = table.Column<int>(type: "int", nullable: false),
+                    TransactionHId = table.Column<int>(type: "int", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PaymentMethod = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false),
@@ -405,8 +405,8 @@ namespace Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Payments_Transactions_TransactionId",
-                        column: x => x.TransactionId,
+                        name: "FK_Payments_Transactions_TransactionHId",
+                        column: x => x.TransactionHId,
                         principalTable: "Transactions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -476,9 +476,9 @@ namespace Infrastructure.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_TransactionId",
+                name: "IX_Payments_TransactionHId",
                 table: "Payments",
-                column: "TransactionId");
+                column: "TransactionHId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_AccountId",
