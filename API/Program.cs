@@ -121,6 +121,8 @@ builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
 
+builder.Services.AddScoped<IScheduleReminderService, ScheduleReminderService>();
+
 
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();

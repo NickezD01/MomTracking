@@ -19,11 +19,13 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private IClaimService _claim;
+    
         public ScheduleService(IUnitOfWork unitOfWork, IMapper mapper, IClaimService claim)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _claim = claim;
+         
         }
         public async Task<ApiResponse> CreateSchedule(ScheduleRequest scheduleRequest)
         {
@@ -31,14 +33,25 @@ namespace Application.Services
             try
             {
                 var claim = _claim.GetUserClaim();
+                var user = await _unitOfWork.UserAccounts.GetAsync(a => a.Id == claim.Id); 
                 var schedule = _mapper.Map<Schedule>(scheduleRequest);
                 schedule.AccountId = claim.Id;
+<<<<<<< HEAD
                 var scheduleExist = await _unitOfWork.Schedules.GetAsync(s => s.AppointmentDate == schedule.AppointmentDate);
                 if (scheduleExist == null)
                 {
                     await _unitOfWork.Schedules.AddAsync(schedule);
                     await _unitOfWork.SaveChangeAsync();            
+=======
+                var scheduleExist = await _unitOfWork.Schedule.GetAsync(s => s.AppointmentDate == schedule.AppointmentDate);
+                if (scheduleExist == null || user.Id != schedule.AccountId)
+                {
+                    await _unitOfWork.Schedule.AddAsync(schedule);
+                    await _unitOfWork.SaveChangeAsync();                 
+>>>>>>> main
                     return apiResponse.SetOk("Schedule created successfully!!!");
+                    
+
                 }
                 return apiResponse.SetBadRequest("Scheldule already exist!!!");
             }

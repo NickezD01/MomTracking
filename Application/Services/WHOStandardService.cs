@@ -28,11 +28,18 @@ namespace Application.Services
             try
             {
                 var standard = _mapper.Map<WHOStandard>(standardRequest);
+<<<<<<< HEAD
 
                 var existStandard = await _unitOfWork.WHOStandards.GetAsync(s => s.PregnancyWeek == standard.PregnancyWeek);
                 if (existStandard == null)
                 {
                     await _unitOfWork.WHOStandards.AddAsync(standard);
+=======
+                var existStandard = await _unitOfWork.WHOStandard.GetAsync(s => s.PregnancyWeek == standard.PregnancyWeek);
+                if (existStandard == null)
+                {
+                    await _unitOfWork.WHOStandard.AddAsync(standard);
+>>>>>>> main
                     await _unitOfWork.SaveChangeAsync();
                     return apiResponse.SetOk("Added successfully!");
                 }
