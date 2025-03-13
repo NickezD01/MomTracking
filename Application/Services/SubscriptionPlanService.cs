@@ -42,10 +42,17 @@ namespace Application.Services
                 }
 
                 var plan = _mapper.Map<SubscriptionPlan>(request);
+
+                // Đảm bảo isActive luôn là false khi tạo mới - ghi đè sau khi mapping
+                plan.IsActive = false;
+
                 await _unitOfWork.SubscriptionPlans.AddAsync(plan);
                 await _unitOfWork.SaveChangeAsync();
 
+                // Đảm bảo response cũng có isActive = false
                 var response = _mapper.Map<SubscriptionPlanResponse>(plan);
+                response.IsActive = false; // Đảm bảo response cũng có giá trị đúng
+
                 return apiResponse.SetOk(response);
             }
             catch (Exception ex)
@@ -53,6 +60,7 @@ namespace Application.Services
                 return apiResponse.SetBadRequest($"Error creating subscription plan: {ex.Message}");
             }
         }
+
 
         public async Task<ApiResponse> UpdatePlanAsync(int Id, UpdateSubscriptionPlanRequest request)
         {
