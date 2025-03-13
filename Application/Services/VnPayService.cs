@@ -145,7 +145,7 @@ namespace Application.Services
                             }
 
                             await _unitOfWork.SaveChangeAsync();
-                            var redirectUrl = "http://localhost:5141/paymentfail";
+                            var redirectUrl = "http://localhost:5173/paymentfail";
                             return apiResponse.SetOk(redirectUrl);
                         }
                         else
