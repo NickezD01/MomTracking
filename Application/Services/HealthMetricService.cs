@@ -32,7 +32,7 @@ namespace Application.Services
                 var DetailsExist = await _unitOfWork.HeathMetrics.GetAsync(x => x.PregnancyWeek == healthMetric.PregnancyWeek);
                 if (DetailsExist == null || DetailsExist.ChildrentId != healthMetric.ChildrentId)
                 {
-                    if(healthMetric.PregnancyWeek > 3 && healthMetric.PregnancyWeek < 43)
+                    if(healthMetric.PregnancyWeek > 7 && healthMetric.PregnancyWeek <= 40)
                     {
                         await _unitOfWork.HeathMetrics.AddAsync(healthMetric);
                         await _unitOfWork.SaveChangeAsync();
@@ -70,41 +70,55 @@ namespace Application.Services
                     return apiResponse.SetNotFound("Can not found the Children's health detail");
                 }
                 List<string> warnings = new List<string>();
-                if (healthMetric.PregnancyWeek >= 4 && healthMetric.PregnancyWeek <= 20)
+                //tu tuan 8 toi tuan 14 cac sieu am se lay chi so chieu dai cua thai nhi
+                if (healthMetric.PregnancyWeek >= 8 && healthMetric.PregnancyWeek <= 14)
                 {
-                    if(healthMetric.SacDiameter < standard.SacDiameter || healthMetric.SacDiameter > standard.SacDiameter)
+                    if(healthMetric.Lenght < standard.LenghtMin || healthMetric.Lenght > standard.LenghtMax)
                     {
-                        warnings.Add("WARNING: Diameter of fetal sac is different from the standard index!!!");
+                        warnings.Add("WARNING: Fetal lenght is different from the standard index!!!");
                     }
                 }
-                if (healthMetric.PregnancyWeek >= 12 && healthMetric.PregnancyWeek <= 20)
+                //tu tuan 14 tro di chieu dai thai nhi se ko dc khao sat moi lan sieu am
+                if (healthMetric.PregnancyWeek > 14 && healthMetric.PregnancyWeek <= 15)
                 {
-                    if(healthMetric.HeadCircumference < standard.HeadCircumference || healthMetric.HeadCircumference > standard.HeadCircumference)
+                    if(healthMetric.Weight < standard.WeightMin || healthMetric.Weight > standard.WeightMax)
                     {
-                        warnings.Add("WARNING: The fetal head circumference is different from the standard index!!!");
+                        warnings.Add("WARNING: Fetal weight is different from the standard index!!!");
                     }
+                    if (healthMetric.BPD < standard.BPDMin || healthMetric.BPD > standard.BPDMax)
+                    {
+                        warnings.Add("WARNING: Fetal biparietal diameter is different from the standard index!!!");
+                    }
+                    if (healthMetric.FL < standard.FLMin || healthMetric.FL > standard.FLMax)
+                    {
+                        warnings.Add("WARNING: Fetal femur length is different from the standard index!!!");
+                    }
+
                 }
-                if (healthMetric.PregnancyWeek >= 8 && healthMetric.PregnancyWeek <= 42)
+                //Tuan 16 tro di se co them nhung chi so can quan tam
+                if (healthMetric.PregnancyWeek >= 16 && healthMetric.PregnancyWeek <= 40)
                 {
-                    if (healthMetric.Weight < standard.Weight || healthMetric.Weight > standard.Weight)
+                    if (healthMetric.Weight < standard.WeightMin || healthMetric.Weight > standard.WeightMax)
                     {
-                        warnings.Add("WARNING: The fetal weight is different from the standard index!!!");
+                        warnings.Add("WARNING: Fetal weight is different from the standard index!!!");
                     }
-                    if (healthMetric.Lenght < standard.Lenght || healthMetric.Lenght > standard.Lenght)
+                    if (healthMetric.BPD < standard.BPDMin || healthMetric.BPD > standard.BPDMax)
                     {
-                        warnings.Add("WARNING: The fetal lenght is different from the standard index!!!");
+                        warnings.Add("WARNING: Fetal biparietal diameter is different from the standard index!!!");
                     }
-                }
-                if (healthMetric.PregnancyWeek >= 7 && healthMetric.PregnancyWeek < 9)
-                { 
-                    if(healthMetric.HearRate < 140 || healthMetric.HearRate > 170)
+                    if (healthMetric.FL < standard.FLMin || healthMetric.FL > standard.FLMax)
+                    {
+                        warnings.Add("WARNING: Fetal femur length is different from the standard index!!!");
+                    }
+                    if (healthMetric.HearRate < standard.HearRateMin || healthMetric.HearRate > standard.HearRateMax)
                     {
                         warnings.Add("WARNING: The fetal heart rate is different from the standard index!!!");
                     }
-                }
-                if (healthMetric.PregnancyWeek >= 9)
-                {
-                    if (healthMetric.HearRate < standard.HearRateMin || healthMetric.HearRate > standard.HearRateMax)
+                    if (healthMetric.HeadCircumference < standard.HeadCircumferenceMin || healthMetric.HeadCircumference > standard.HeadCircumferenceMax)
+                    {
+                        warnings.Add("WARNING: Fetal head circumference is different from the standard index!!!");
+                    }
+                    if (healthMetric.AC < standard.ACMin || healthMetric.AC > standard.ACMax)
                     {
                         warnings.Add("WARNING: The fetal heart rate is different from the standard index!!!");
                     }
@@ -141,7 +155,7 @@ namespace Application.Services
                 {
                     return apiResponse.SetNotFound("Can not found the Children's Health detail");
                 }
-                healthMetric.Status = false;
+                await _unitOfWork.HeathMetrics.RemoveByIdAsync(Id);
                 await _unitOfWork.SaveChangeAsync();
                 return apiResponse.SetOk("Delele successfully!");
 
@@ -158,7 +172,7 @@ namespace Application.Services
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var healthMetric = await _unitOfWork.HeathMetrics.GetAllAsync(a => a.Status == true);
+                var healthMetric = await _unitOfWork.HeathMetrics.GetAllAsync(null);
                 var reshealthMetric = _mapper.Map<List<HealthMetricResponse>>(healthMetric);
                 return new ApiResponse().SetOk(reshealthMetric);
             }

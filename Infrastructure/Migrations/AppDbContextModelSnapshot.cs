@@ -174,6 +174,12 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double?>("AC")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("BPD")
+                        .HasColumnType("float");
+
                     b.Property<int>("ChildrentId")
                         .HasColumnType("int");
 
@@ -182,6 +188,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<double?>("FL")
+                        .HasColumnType("float");
 
                     b.Property<double?>("HeadCircumference")
                         .HasColumnType("float");
@@ -209,9 +218,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<int?>("PregnancyWeek")
                         .HasColumnType("int");
-
-                    b.Property<double?>("SacDiameter")
-                        .HasColumnType("float");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -644,7 +650,28 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double?>("HeadCircumference")
+                    b.Property<double?>("ACMax")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("ACMin")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("BPDMax")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("BPDMin")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("FLMax")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("FLMin")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HeadCircumferenceMax")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("HeadCircumferenceMin")
                         .HasColumnType("float");
 
                     b.Property<double?>("HearRateMax")
@@ -653,16 +680,19 @@ namespace Infrastructure.Migrations
                     b.Property<double?>("HearRateMin")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Lenght")
+                    b.Property<double?>("LenghtMax")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("LenghtMin")
                         .HasColumnType("float");
 
                     b.Property<int>("PregnancyWeek")
                         .HasColumnType("int");
 
-                    b.Property<double?>("SacDiameter")
+                    b.Property<double?>("WeightMax")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Weight")
+                    b.Property<double?>("WeightMin")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
