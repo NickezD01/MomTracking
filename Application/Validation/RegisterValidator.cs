@@ -18,7 +18,8 @@ namespace Application.Validation
                 .NotEmpty().WithMessage("FistName is required.");
             RuleFor(user => user.LastName)
                .NotEmpty().WithMessage("LastName is required.");
-
+            RuleFor(user => (int)user.Role)
+        .InclusiveBetween(0, 1).WithMessage("Role must be either 0 or 1.");
         }
     }
 }

@@ -4,6 +4,7 @@ using Application.Response;
 using Application.Response.SubscriptionPlan;
 using AutoMapper;
 using Domain.Entity;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,20 +15,30 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IClaimService _claimService;
+        private readonly IValidator<CreateSubscriptionPlanRequest> _subplanValidator;
 
         public SubscriptionPlanService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            IClaimService claimService)
+            IClaimService claimService,
+            IValidator<CreateSubscriptionPlanRequest> subplanValidator
+            )
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;   
             _claimService = claimService;
+            _subplanValidator = subplanValidator;
         }
 
         public async Task<ApiResponse> CreatePlanAsync(CreateSubscriptionPlanRequest request)
         {
             ApiResponse apiResponse = new ApiResponse();
+            var validationResult = _subplanValidator.Validate(request);
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return apiResponse.SetBadRequest(string.Join(", ", errors));
+            }
             try
             {
                 var userClaim = _claimService.GetUserClaim();
