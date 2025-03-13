@@ -14,7 +14,9 @@ namespace Application.Response
         public double HeadCircumference { get; set; }
         public double Weight { get; set; }
         public double Lenght { get; set; }
-        public double SacDiameter { get; set; }
+        public double? BPD { get; set; }
+        public double? AC { get; set; }
+        public double? FL { get; set; }
         public double HearRate { get; set; }
         public string? Note { get; set; }
     }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initdb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -41,10 +41,18 @@ namespace Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PregnancyWeek = table.Column<int>(type: "int", nullable: false),
-                    HeadCircumference = table.Column<double>(type: "float", nullable: true),
-                    Weight = table.Column<double>(type: "float", nullable: true),
-                    Lenght = table.Column<double>(type: "float", nullable: true),
-                    SacDiameter = table.Column<double>(type: "float", nullable: true),
+                    HeadCircumferenceMin = table.Column<double>(type: "float", nullable: true),
+                    HeadCircumferenceMax = table.Column<double>(type: "float", nullable: true),
+                    WeightMin = table.Column<double>(type: "float", nullable: true),
+                    WeightMax = table.Column<double>(type: "float", nullable: true),
+                    LenghtMin = table.Column<double>(type: "float", nullable: true),
+                    LenghtMax = table.Column<double>(type: "float", nullable: true),
+                    BPDMin = table.Column<double>(type: "float", nullable: true),
+                    BPDMax = table.Column<double>(type: "float", nullable: true),
+                    ACMin = table.Column<double>(type: "float", nullable: true),
+                    ACMax = table.Column<double>(type: "float", nullable: true),
+                    FLMin = table.Column<double>(type: "float", nullable: true),
+                    FLMax = table.Column<double>(type: "float", nullable: true),
                     HearRateMin = table.Column<double>(type: "float", nullable: true),
                     HearRateMax = table.Column<double>(type: "float", nullable: true)
                 },
@@ -266,7 +274,9 @@ namespace Infrastructure.Migrations
                     HeadCircumference = table.Column<double>(type: "float", nullable: true),
                     Weight = table.Column<double>(type: "float", nullable: true),
                     Lenght = table.Column<double>(type: "float", nullable: true),
-                    SacDiameter = table.Column<double>(type: "float", nullable: true),
+                    BPD = table.Column<double>(type: "float", nullable: true),
+                    AC = table.Column<double>(type: "float", nullable: true),
+                    FL = table.Column<double>(type: "float", nullable: true),
                     HearRate = table.Column<double>(type: "float", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<bool>(type: "bit", nullable: false),
