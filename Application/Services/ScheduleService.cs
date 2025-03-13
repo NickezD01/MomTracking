@@ -36,11 +36,12 @@ namespace Application.Services
                 var user = await _unitOfWork.UserAccounts.GetAsync(a => a.Id == claim.Id); 
                 var schedule = _mapper.Map<Schedule>(scheduleRequest);
                 schedule.AccountId = claim.Id;
-                var scheduleExist = await _unitOfWork.Schedule.GetAsync(s => s.AppointmentDate == schedule.AppointmentDate);
-                if (scheduleExist == null || user.Id != schedule.AccountId)
+                var scheduleExist = await _unitOfWork.Schedules.GetAsync(s => s.AppointmentDate == schedule.AppointmentDate);
+                if (scheduleExist == null)
                 {
-                    await _unitOfWork.Schedule.AddAsync(schedule);
-                    await _unitOfWork.SaveChangeAsync();                 
+                    await _unitOfWork.Schedules.AddAsync(schedule);
+                    await _unitOfWork.SaveChangeAsync();            
+
                     return apiResponse.SetOk("Schedule created successfully!!!");
                     
 
@@ -58,12 +59,12 @@ namespace Application.Services
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var schedule = await _unitOfWork.Schedule.GetAsync(s => s.Id == Id);
+                var schedule = await _unitOfWork.Schedules.GetAsync(s => s.Id == Id);
                 if (schedule == null)
                 {
                     return apiResponse.SetNotFound("Schedule not created yet!!!");
                 }
-                await _unitOfWork.Schedule.RemoveByIdAsync(Id);
+                await _unitOfWork.Schedules.RemoveByIdAsync(Id);
                 await _unitOfWork.SaveChangeAsync();
                 return apiResponse.SetOk("Deleted successfully!");
             }
@@ -78,7 +79,7 @@ namespace Application.Services
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var schedule = await _unitOfWork.Schedule.GetAllAsync(null);
+                var schedule = await _unitOfWork.Schedules.GetAllAsync(null);
                 var resSchedule = _mapper.Map<List<ScheduleResponse>>(schedule);
                 return new ApiResponse().SetOk(resSchedule);
             }
@@ -93,7 +94,7 @@ namespace Application.Services
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var schedule = await _unitOfWork.Schedule.GetAsync(s => s.Id == Id);
+                var schedule = await _unitOfWork.Schedules.GetAsync(s => s.Id == Id);
                 if(schedule == null)
                 {
                     return apiResponse.SetNotFound("Schedule not created yet!!!");

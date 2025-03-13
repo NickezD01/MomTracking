@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Configuration
 {
-    public class SubPlanConfiguration : IEntityTypeConfiguration<SubscriptionPlan>
+    public class SubplanConfiguration : IEntityTypeConfiguration<SubscriptionPlan>
     {
         public void Configure(EntityTypeBuilder<SubscriptionPlan> builder)
         {
@@ -19,11 +19,11 @@ namespace Infrastructure.Configuration
                  .HasForeignKey(s => s.PlanId)
                  .OnDelete(DeleteBehavior.Restrict);
 
-            //SubPlan-Order relationship
-            builder.HasMany(o => o.Orders)
-                .WithOne(o => o.SubscriptionPlans)
-                .HasForeignKey(o => o.PlanId)
-                .OnDelete(DeleteBehavior.Restrict);
+            ////SubPlan-Order relationship
+            //builder.HasMany(o => o.Orders)
+            //    .WithOne(o => o.SubscriptionPlans)
+            //    .HasForeignKey(o => o.PlanId)
+            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

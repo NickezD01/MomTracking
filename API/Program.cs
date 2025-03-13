@@ -124,7 +124,14 @@ builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
 builder.Services.AddScoped<IScheduleReminderService, ScheduleReminderService>();
 
 
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+
+builder.Services.AddScoped<IScheduleReminderService, ScheduleReminderService>();
+
+
 //builder.Services.AddScoped<IVnPayService, VnPayService>();
+
 
 builder.Services.AddFluentValidationAutoValidation().AddValidatorsFromAssemblyContaining<RegisterValidator>();
 

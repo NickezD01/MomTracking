@@ -20,7 +20,9 @@ namespace Application.Services
         public async Task CheckAndSendReminders()
         {
             var today = DateTime.Now.Date;
-            var schedules = await _unitOfWork.Schedule.GetAllAsync(s => s.AppointmentDate == today);
+
+            var schedules = await _unitOfWork.Schedules.GetAllAsync(s => s.AppointmentDate == today);
+
             foreach(var schedule in schedules)
             {
                 var user = await _unitOfWork.UserAccounts.GetAsync(u => u.Id == schedule.AccountId);

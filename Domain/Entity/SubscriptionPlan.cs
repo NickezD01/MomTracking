@@ -21,7 +21,6 @@ namespace Domain.Entity
         public string? Feature { get; set; }
 
         public List<Subscription>? Subscriptions { get; set; }
-        public List<Order>? Orders { get; set; }
     }
     public enum SubscriptionPlanName
     {

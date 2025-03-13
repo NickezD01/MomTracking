@@ -17,7 +17,7 @@ namespace Application.Interface
         Task<ApiResponse> UpdateSubscriptionAsync(int Id,UpdateSubscriptionRequest request);
         Task<ApiResponse> CancelSubscriptionAsync(int subscriptionId);
         Task<ApiResponse> GetSubscriptionByIdAsync(int subscriptionId);
-        
+        Task<ApiResponse> DeleteSubPlanData(int Id);
         // User-related subscription operations
         Task<ApiResponse> GetUserSubscriptionsAsync(int accountId);
         Task<ApiResponse> GetActiveUserSubscriptionAsync(int accountId);

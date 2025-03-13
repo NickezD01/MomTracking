@@ -19,27 +19,28 @@ namespace Infrastructure
 
         public IChildrenRepository Childrens { get; }
 
-        public IGrowthIndexRepository GrowthIndex { get; }
+        public IGrowthIndexRepository GrowthIndexs { get; }
 
         public IHeathMetricRepository HeathMetrics { get; }
 
-        public INotificationRepository Notification { get; }
+        public INotificationRepository Notifications { get; }
 
-        public IOrderRepository Order { get; }
+        public IOrderRepository Orders { get; }
 
-        public IPostRepository Post { get; }
+        public IPostRepository Posts { get; }
 
-        public IScheduleRepository Schedule { get; }
+        public IScheduleRepository Schedules { get; }
 
-        public ISubscriptionPlanRepository SubscriptionPlan { get; }
+        public ISubscriptionPlanRepository SubscriptionPlans { get; }
 
-        public ISubscriptionRepository Subscription { get; }
+        public ISubscriptionRepository Subscriptions { get; }
 
-        public ITransactionHistoryRepository TransactionHistory { get; }
+        public ITransactionHistoryRepository TransactionHistorys { get; }
 
-        public IWHOStandardRepository WHOStandard { get; }
+        public IWHOStandardRepository WHOStandards { get; }
 
         public ICommentRepository Comments { get; }
+        public IPaymentRepository Payments { get; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -48,17 +49,18 @@ namespace Infrastructure
             EmailVerifications = new EmailVerificationRepository(context);
             Childrens = new ChildrenRepository(context);
             Comments = new CommentRepository(context);
-            GrowthIndex = new GrowthIndexRepository(context);
+            GrowthIndexs = new GrowthIndexRepository(context);
             HeathMetrics = new HeathMetricRepository(context);
-            Notification = new NotificationRepository(context);
-            Order = new OrderRepository(context);
-            Post = new PostRepository(context);
-            Schedule = new ScheduleRepository(context);
-            SubscriptionPlan = new SubscriptionPlanRepository(context);
-            Subscription = new SubscriptionRepository(context);
-            TransactionHistory = new TransactionHistoryRepository(context);
-            WHOStandard = new WHOStandardRepository(context);
-            
+            Notifications = new NotificationRepository(context);
+            Orders = new OrderRepository(context);
+            Posts = new PostRepository(context);
+            Schedules = new ScheduleRepository(context);
+            SubscriptionPlans = new SubscriptionPlanRepository(context);
+            Subscriptions = new SubscriptionRepository(context);
+            TransactionHistorys = new TransactionHistoryRepository(context);
+            WHOStandards = new WHOStandardRepository(context);
+            Payments = new PaymentRepository(context);
+
 
 
         }
