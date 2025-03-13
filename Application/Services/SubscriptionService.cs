@@ -4,8 +4,10 @@ using Application.Response;
 using Application.Response.Subscription;
 using AutoMapper;
 using Domain.Entity;
+using MaxMind.GeoIP2.Responses;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -28,20 +30,24 @@ namespace Application.Services
 
         public async Task<ApiResponse> CreateSubscriptionAsync(CreateSubscriptionRequest request)
         {
+            ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var user = await _unitOfWork.UserAccounts.GetAsync(u => u.Id == request.AccountId);
+                var claim = _claimService.GetUserClaim();
+
+                var user = await _unitOfWork.UserAccounts.GetAsync(u => u.Id == claim.Id);
                 if (user == null)
-                    return new ApiResponse().SetNotFound("User not found");
+                    return apiResponse.SetNotFound("User not found");
 
                 var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == request.PlanId);
                 if (plan == null || !plan.IsActive)
-                    return new ApiResponse().SetNotFound("Subscription plan not found or inactive");
+                    return apiResponse.SetNotFound("Subscription plan not found or inactive");
 
-                if (await _unitOfWork.Subscriptions.HasActiveSubscription(request.AccountId))
-                    return new ApiResponse().SetBadRequest("User already has an active subscription");
+                if (await _unitOfWork.Subscriptions.HasActiveSubscription(claim.Id))
+                    return apiResponse.SetBadRequest("User already has an active subscription");
 
                 var subscription = _mapper.Map<Subscription>(request);
+                subscription.AccountId = claim.Id;
                 subscription.Price = plan.Price;
                 subscription.EndDate = request.StartDate.AddMonths(plan.DurationMonth);
                 subscription.NextBillingDate = subscription.EndDate;
