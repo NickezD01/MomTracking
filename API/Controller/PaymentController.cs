@@ -29,16 +29,16 @@ namespace API.Controller
 
             // Redirect the user directly to the front-end with status
             if (response.IsSuccess)
-            {
-                // Extract the redirect URL from the response and pass it as a query parameter to the FE
-                var redirectUrl = "http://localhost:5173/paymentsuccess";
-                return Redirect(redirectUrl);
-            }
-            else
-            {
-                var redirectUrl = "http://localhost:5173/paymentfail";
-                return Redirect(redirectUrl);
-            }
+                        {
+                            // Extract the redirect URL from the response and pass it as a query parameter to the FE
+                            var redirectUrl = "http://localhost:5173/subscription?status=success";
+                            return Redirect(redirectUrl);
+                        }
+                        else
+                        {
+                            var redirectUrl = "http://localhost:5173/subscription?status=failure";
+                            return Redirect(redirectUrl);
+                        }
         }
     }
 }
