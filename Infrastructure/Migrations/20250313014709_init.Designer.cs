@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:Infrastructure/Migrations/20250312161658_init.Designer.cs
-    [Migration("20250312161658_init")]
+    [Migration("20250313014709_init")]
     partial class init
-========
-    [Migration("20250313012617_initdb")]
-    partial class initdb
->>>>>>>> EmailNoti:Infrastructure/Migrations/20250313012617_initdb.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -335,7 +330,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OrderId")
@@ -347,7 +341,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("StatusPayment")
                         .HasColumnType("int");
 
-                    b.Property<int>("TransactionHId")
+                    b.Property<int?>("TransactionHId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -805,8 +799,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entity.TransactionHistory", "TransactionHistory")
                         .WithMany("Payments")
                         .HasForeignKey("TransactionHId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Account");
 
