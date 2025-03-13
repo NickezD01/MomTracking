@@ -24,12 +24,12 @@ namespace API.Controller
             _subscriptionService = subscriptionService;
             _claimService = claimService;
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateSubscription([FromBody] CreateSubscriptionRequest request)
         {
-        var userClaim = _claimService.GetUserClaim();
-            request.AccountId = userClaim.Id; // Set the authenticated user's ID
+        //var userClaim = _claimService.GetUserClaim();
+        //    request.AccountId = userClaim.Id; // Set the authenticated user's ID
             
             var response = await _subscriptionService.CreateSubscriptionAsync(request);
         return response.IsSuccess ? Ok(response) : BadRequest(response);

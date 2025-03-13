@@ -29,6 +29,7 @@ namespace Application.Request.WHO
         public double? FLMin { get; set; }
         public double? FLMax { get; set; }
         //nhip tim
-
+        public double? HearRateMin { get; set; }
+        public double? HearRateMax { get; set; }
     }
 }
