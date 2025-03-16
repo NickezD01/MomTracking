@@ -128,7 +128,7 @@ namespace Application.Services
                                     payment.CreatedDate = DateTime.UtcNow;
                                     payment.PaymentMethod = PaymentMethodEnum.VNPay;
                                     var sub = await _unitOfWork.Subscriptions.GetAsync(s => s.Id == order.Id);
-                                    sub.PaymentStatus = "Paid";
+                                    sub.PaymentStatus = PaymentStatus.Paid;
                                 }
                                 else
                                 {
@@ -136,7 +136,7 @@ namespace Application.Services
                                     payment.OrderId = orderId;
                                     apiResponse.SetBadRequest("The payment amount does not match the order amount.");
                                     var sub = await _unitOfWork.Subscriptions.GetAsync(s => s.Id == order.Id);
-                                    sub.PaymentStatus = "Failed";
+                                    sub.PaymentStatus = PaymentStatus.Failed;
                                     return apiResponse;
                                 }
                                 await _unitOfWork.Payments.AddAsync(payment);

@@ -15,13 +15,27 @@ namespace Domain.Entity
         public decimal Price { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; } // Active, Expired, Cancelled, PendingPayment
-        public string PaymentStatus { get; set; } // Paid, Pending, Failed
+        public SubscriptionStatus Status { get; set; } // Active, Expired, Cancelled, PendingPayment
+        public PaymentStatus PaymentStatus { get; set; } // Paid, Pending, Failed
         public DateTime? LastPaymentDate { get; set; }
         public DateTime? NextBillingDate { get; set; }
         public UserAccount? Account { get; set; }
         public SubscriptionPlan? SubscriptionPlans { get; set; }
         public DateTime ModifiedDate { get; set; }
         public Order Order { get; set; }
+    }
+    public enum SubscriptionStatus
+    {
+        Active,
+        Expired,
+        Cancelled,
+        PendingPayment
+    }
+
+    public enum PaymentStatus
+    {
+        Paid,
+        Pending,
+        Failed
     }
 }

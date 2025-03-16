@@ -20,8 +20,9 @@ namespace API.Controller
         //[HttpPost("AddNewChildren")]
 
 
-
+        
         [Authorize(Roles = "Customer")]
+        [RequirePaidStatusAttribute]
         [Route("AddNewChildren")]
         [HttpPost]
 
@@ -31,7 +32,7 @@ namespace API.Controller
             var result = await _childrenService.AddNewChildren(childrentRequest);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
-
+        
         [HttpGet("GetAllChildren")]
         public async Task<IActionResult> GetAllChildren()
         {

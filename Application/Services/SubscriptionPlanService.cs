@@ -62,7 +62,7 @@ namespace Application.Services
 
                 // Đảm bảo response cũng có isActive = false
                 var response = _mapper.Map<SubscriptionPlanResponse>(plan);
-                response.IsActive = false; // Đảm bảo response cũng có giá trị đúng
+                response.IsActive = true; // Đảm bảo response cũng có giá trị đúng
 
                 return apiResponse.SetOk(response);
             }

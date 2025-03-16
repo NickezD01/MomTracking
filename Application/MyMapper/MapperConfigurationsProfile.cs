@@ -60,19 +60,19 @@ namespace Application.MyMapper
                 .ForMember(dest => dest.DurationInMonths, opt => opt.MapFrom(src => src.DurationMonth))
                 .ForMember(dest => dest.ActiveSubscribersCount, opt => 
                     opt.MapFrom(src => src.Subscriptions != null ? 
-                        src.Subscriptions.Count(s => s.Status == "Active") : 0));
+                        src.Subscriptions.Count(s => s.Status == SubscriptionStatus.Active) : 0));
 
             CreateMap<SubscriptionPlan, SubscriptionPlanDetailResponse>()
                 .ForMember(dest => dest.DurationInMonths, opt => opt.MapFrom(src => src.DurationMonth))
                 .ForMember(dest => dest.ActiveSubscribers, opt => opt.MapFrom(src => 
-                    src.Subscriptions.Where(s => s.Status == "Active")
+                    src.Subscriptions.Where(s => s.Status == SubscriptionStatus.Active)
                     .Select(s => new SubscriptionPlanDetailResponse.SubscriberInfo
                     {
                         AccountId = s.AccountId,
                         AccountName = s.Account.FirstName + " " + s.Account.LastName,
                         StartDate = s.StartDate,
                         EndDate = s.EndDate,
-                        Status = s.Status
+                        Status = s.Status.ToString(),
                     })));
 
             // Subscription mappings
