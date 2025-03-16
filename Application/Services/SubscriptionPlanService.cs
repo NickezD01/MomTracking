@@ -55,7 +55,7 @@ namespace Application.Services
                 var plan = _mapper.Map<SubscriptionPlan>(request);
 
                 // Đảm bảo isActive luôn là false khi tạo mới - ghi đè sau khi mapping
-                plan.IsActive = false;
+                plan.IsActive = true;
 
                 await _unitOfWork.SubscriptionPlans.AddAsync(plan);
                 await _unitOfWork.SaveChangeAsync();
