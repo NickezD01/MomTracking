@@ -127,13 +127,16 @@ namespace Application.Services
                                     payment.OrderId = orderId;
                                     payment.CreatedDate = DateTime.UtcNow;
                                     payment.PaymentMethod = PaymentMethodEnum.VNPay;
-
+                                    var sub = await _unitOfWork.Subscriptions.GetAsync(s => s.Id == order.Id);
+                                    sub.PaymentStatus = "Paid";
                                 }
                                 else
                                 {
                                     payment.StatusPayment = StatusPayment.Failed;
                                     payment.OrderId = orderId;
                                     apiResponse.SetBadRequest("The payment amount does not match the order amount.");
+                                    var sub = await _unitOfWork.Subscriptions.GetAsync(s => s.Id == order.Id);
+                                    sub.PaymentStatus = "Failed";
                                     return apiResponse;
                                 }
                                 await _unitOfWork.Payments.AddAsync(payment);
@@ -145,7 +148,7 @@ namespace Application.Services
                             }
 
                             await _unitOfWork.SaveChangeAsync();
-                            var redirectUrl = "http://localhost:5141/paymentfail";
+                            var redirectUrl = "http://localhost:5173/paymentfail";
                             return apiResponse.SetOk(redirectUrl);
                         }
                         else

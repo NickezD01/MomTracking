@@ -134,7 +134,7 @@ builder.Services.AddScoped<IScheduleReminderService, ScheduleReminderService>();
 
 
 builder.Services.AddFluentValidationAutoValidation().AddValidatorsFromAssemblyContaining<RegisterValidator>();
-
+builder.Services.AddFluentValidationAutoValidation().AddValidatorsFromAssemblyContaining<SubPlanValidator>();
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();

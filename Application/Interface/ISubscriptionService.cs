@@ -28,6 +28,5 @@ namespace Application.Interface
         // Subscription status operations
         Task<ApiResponse> CheckSubscriptionStatusAsync(int accountId);
         Task<ApiResponse> HandleExpiredSubscriptionsAsync();
-        
     }
 }

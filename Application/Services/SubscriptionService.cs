@@ -43,8 +43,9 @@ namespace Application.Services
                 if (plan == null || !plan.IsActive)
                     return apiResponse.SetNotFound("Subscription plan not found or inactive");
 
-                if (await _unitOfWork.Subscriptions.HasActiveSubscription(claim.Id))
-                    return apiResponse.SetBadRequest("User already has an active subscription");
+                // Bỏ check này để cho phép đăng ký nhiều gói
+                // if (await _unitOfWork.Subscriptions.HasActiveSubscription(claim.Id))
+                //     return apiResponse.SetBadRequest("User already has an active subscription");
 
                 var subscription = _mapper.Map<Subscription>(request);
                 subscription.AccountId = claim.Id;
@@ -63,6 +64,7 @@ namespace Application.Services
                 return new ApiResponse().SetBadRequest($"Error creating subscription: {ex.Message}");
             }
         }
+
 
         public async Task<ApiResponse> UpdateSubscriptionAsync(int Id, UpdateSubscriptionRequest request)
         {
@@ -226,5 +228,7 @@ namespace Application.Services
                 return apiResponse.SetBadRequest(e.Message);
             }
         }
+
+
     }
 }
