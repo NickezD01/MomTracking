@@ -74,5 +74,9 @@ namespace Application.Services
     </body>
     </html>";
         }
+        public static string BuildNotiExpiredMail(string name, DateTime endDate)
+        {
+            return $@"";
+        }
     }
 }
