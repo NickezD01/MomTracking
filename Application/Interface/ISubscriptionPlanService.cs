@@ -32,5 +32,7 @@ namespace Application.Interface
         Task<ApiResponse> ValidatePlanAsync(CreateSubscriptionPlanRequest request);
         //Admin Dashboard
         Task<ApiResponse> CountPlan();
+        Task<ApiResponse> CalculateTotalRevenue();
+        Task<ApiResponse> TotalPrice();
     }
 }
