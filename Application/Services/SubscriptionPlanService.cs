@@ -342,5 +342,18 @@ namespace Application.Services
                 return new ApiResponse().SetBadRequest($"Error validating plan: {ex.Message}");
             }
         }
+
+        //admindashboard
+        public async Task<ApiResponse> CountPlan()
+        {
+            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null) ;
+            var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
+            var counts = new Dictionary<SubscriptionPlanName, int>();
+            foreach(var plan in plans)
+            {
+                counts[plan.Name] = subs.Count(sub => sub.PlanId == plan.Id);
+            }
+            return new ApiResponse().SetOk(counts);
+        }
     }
 }

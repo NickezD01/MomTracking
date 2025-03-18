@@ -30,5 +30,7 @@ namespace Application.Interface
         
         // Plan validation
         Task<ApiResponse> ValidatePlanAsync(CreateSubscriptionPlanRequest request);
+        //Admin Dashboard
+        Task<ApiResponse> CountPlan();
     }
 }
