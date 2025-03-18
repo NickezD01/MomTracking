@@ -55,14 +55,14 @@ namespace Application.Services
                 var plan = _mapper.Map<SubscriptionPlan>(request);
 
                 // Đảm bảo isActive luôn là false khi tạo mới - ghi đè sau khi mapping
-                plan.IsActive = false;
+                plan.IsActive = true;
 
                 await _unitOfWork.SubscriptionPlans.AddAsync(plan);
                 await _unitOfWork.SaveChangeAsync();
 
                 // Đảm bảo response cũng có isActive = false
                 var response = _mapper.Map<SubscriptionPlanResponse>(plan);
-                response.IsActive = false; // Đảm bảo response cũng có giá trị đúng
+                response.IsActive = true; // Đảm bảo response cũng có giá trị đúng
 
                 return apiResponse.SetOk(response);
             }
@@ -341,6 +341,19 @@ namespace Application.Services
             {
                 return new ApiResponse().SetBadRequest($"Error validating plan: {ex.Message}");
             }
+        }
+
+        //admindashboard
+        public async Task<ApiResponse> CountPlan()
+        {
+            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null) ;
+            var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
+            var counts = new Dictionary<SubscriptionPlanName, int>();
+            foreach(var plan in plans)
+            {
+                counts[plan.Name] = subs.Count(sub => sub.PlanId == plan.Id);
+            }
+            return new ApiResponse().SetOk(counts);
         }
     }
 }

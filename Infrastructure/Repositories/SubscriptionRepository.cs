@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
         public async Task<List<Subscription>> GetActiveSubscriptionsByAccountId(int accountId)
         {
             return await _db.Where(s => s.AccountId == accountId && 
-                                      s.Status == "Active" && 
+                                      s.Status == SubscriptionStatus.Active && 
                                       s.EndDate > DateTime.Now)
                            .Include(s => s.SubscriptionPlans)
                            .ToListAsync();
@@ -42,20 +42,20 @@ namespace Infrastructure.Repositories
         public async Task<bool> HasActiveSubscription(int accountId)
         {
             return await _db.AnyAsync(s => s.AccountId == accountId && 
-                                         s.Status == "Active" && 
+                                         s.Status == SubscriptionStatus.Active && 
                                          s.EndDate > DateTime.Now);
         }
 
         public async Task<int> GetActiveSubscribersCount(int planId)
         {
             return await _db.CountAsync(s => s.PlanId == planId && 
-                                           s.Status == "Active" && 
+                                           s.Status == SubscriptionStatus.Active && 
                                            s.EndDate > DateTime.Now);
         }
 
         public async Task<List<Subscription>> GetExpiringSubscriptions(DateTime expiryDate)
         {
-            return await _db.Where(s => s.Status == "Active" && 
+            return await _db.Where(s => s.Status == SubscriptionStatus.Active && 
                                       s.EndDate.Date == expiryDate.Date)
                            .Include(s => s.Account)
                            .Include(s => s.SubscriptionPlans)
@@ -64,7 +64,7 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Subscription>> GetSubscriptionsForRenewal(DateTime renewalDate)
         {
-            return await _db.Where(s => s.Status == "Active" && 
+            return await _db.Where(s => s.Status == SubscriptionStatus.Active && 
                                       s.NextBillingDate.HasValue && 
                                       s.NextBillingDate.Value.Date == renewalDate.Date)
                            .Include(s => s.Account)
@@ -91,7 +91,7 @@ namespace Infrastructure.Repositories
         {
             var subscription = await _db.FindAsync(subscriptionId);
             return subscription != null && 
-                   subscription.Status == "Active" && 
+                   subscription.Status == SubscriptionStatus.Active && 
                    subscription.EndDate > DateTime.Now;
         }
     }

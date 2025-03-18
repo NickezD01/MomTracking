@@ -85,14 +85,7 @@ namespace Application.Services
                     {
                         warnings.Add("WARNING: Fetal weight is different from the standard index!!!");
                     }
-                    if (healthMetric.BPD < standard.BPDMin || healthMetric.BPD > standard.BPDMax)
-                    {
-                        warnings.Add("WARNING: Fetal biparietal diameter is different from the standard index!!!");
-                    }
-                    if (healthMetric.FL < standard.FLMin || healthMetric.FL > standard.FLMax)
-                    {
-                        warnings.Add("WARNING: Fetal femur length is different from the standard index!!!");
-                    }
+                   
 
                 }
                 //Tuan 16 tro di se co them nhung chi so can quan tam

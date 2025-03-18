@@ -127,13 +127,16 @@ namespace Application.Services
                                     payment.OrderId = orderId;
                                     payment.CreatedDate = DateTime.UtcNow;
                                     payment.PaymentMethod = PaymentMethodEnum.VNPay;
-
+                                    var sub = await _unitOfWork.Subscriptions.GetAsync(s => s.Id == order.Id);
+                                    sub.PaymentStatus = PaymentStatus.Paid;
                                 }
                                 else
                                 {
                                     payment.StatusPayment = StatusPayment.Failed;
                                     payment.OrderId = orderId;
                                     apiResponse.SetBadRequest("The payment amount does not match the order amount.");
+                                    var sub = await _unitOfWork.Subscriptions.GetAsync(s => s.Id == order.Id);
+                                    sub.PaymentStatus = PaymentStatus.Failed;
                                     return apiResponse;
                                 }
                                 await _unitOfWork.Payments.AddAsync(payment);

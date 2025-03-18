@@ -10,23 +10,25 @@ namespace API.Middleware
     {
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var dbContext = context.HttpContext.RequestServices.GetService<AppDbContext>();
             var userId = context.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
 
             if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out int accountId))
             {
-                context.Result = new UnauthorizedResult();
+                context.Result = new UnauthorizedResult(); // Trả về 401 nếu không có UserId hợp lệ
                 return;
             }
 
-            var payment = await dbContext.Payments
-                .Where(p => p.AccountId == accountId)
-                .OrderByDescending(p => p.Id)
+            // Lấy DbContext từ HttpContext.RequestServices
+            var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+
+            var subscription = await dbContext.Subscriptions
+                .Where(s => s.AccountId == accountId && s.Status == SubscriptionStatus.Active)
+                .OrderByDescending(s => s.StartDate) // Lấy gói đăng ký mới nhất
                 .FirstOrDefaultAsync();
 
-            if (payment == null || payment.StatusPayment != StatusPayment.Paid)
+            if (subscription == null || subscription.PaymentStatus != PaymentStatus.Paid)
             {
-                context.Result = new ForbidResult(); // Trả về 403 Forbidden nếu chưa thanh toán
+                context.Result = new ForbidResult(); // Trả về 403 nếu chưa thanh toán
                 return;
             }
         }

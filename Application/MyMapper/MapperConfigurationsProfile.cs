@@ -22,7 +22,9 @@ using Application.Request.SubscriptionPlan;
 using Application.Response.Subscription;
 using Application.Response.SubscriptionPlan;
 using Application.Request.Orders;
+using Application.Response.Comment;
 using Application.Response.Orders;
+using Application.Response.Post;
 
 
 namespace Application.MyMapper
@@ -60,19 +62,19 @@ namespace Application.MyMapper
                 .ForMember(dest => dest.DurationInMonths, opt => opt.MapFrom(src => src.DurationMonth))
                 .ForMember(dest => dest.ActiveSubscribersCount, opt => 
                     opt.MapFrom(src => src.Subscriptions != null ? 
-                        src.Subscriptions.Count(s => s.Status == "Active") : 0));
+                        src.Subscriptions.Count(s => s.Status == SubscriptionStatus.Active) : 0));
 
             CreateMap<SubscriptionPlan, SubscriptionPlanDetailResponse>()
                 .ForMember(dest => dest.DurationInMonths, opt => opt.MapFrom(src => src.DurationMonth))
                 .ForMember(dest => dest.ActiveSubscribers, opt => opt.MapFrom(src => 
-                    src.Subscriptions.Where(s => s.Status == "Active")
+                    src.Subscriptions.Where(s => s.Status == SubscriptionStatus.Active)
                     .Select(s => new SubscriptionPlanDetailResponse.SubscriberInfo
                     {
                         AccountId = s.AccountId,
                         AccountName = s.Account.FirstName + " " + s.Account.LastName,
                         StartDate = s.StartDate,
                         EndDate = s.EndDate,
-                        Status = s.Status
+                        Status = s.Status.ToString(),
                     })));
 
             // Subscription mappings
@@ -98,8 +100,14 @@ namespace Application.MyMapper
                 .ForMember(dest => dest.Features, opt => 
                     opt.MapFrom(src => src.SubscriptionPlans != null ? 
                         src.SubscriptionPlans.Feature : ""));
-            //Comment
 
+            //Comment
+            CreateMap<Comment, CommentResponse>()
+                .ForMember(dest => dest.AuthorName, opt => 
+                    opt.MapFrom(src => src.Account != null ? 
+                        $"{src.Account.FirstName} {src.Account.LastName}" : ""))
+                .ForMember(dest => dest.AuthorImageUrl, opt => 
+                    opt.MapFrom(src => src.Account != null ? src.Account.ImgUrl : null));
 
             //GrowthIndex
 
@@ -115,7 +123,18 @@ namespace Application.MyMapper
             CreateMap<OrderRequest, Order>();
             CreateMap<Order, OrderResponse>();
             //Post
-
+            CreateMap<Post, PostResponse>()
+                .ForMember(dest => dest.AuthorName, opt => 
+                    opt.MapFrom(src => src.Account != null ? 
+                        $"{src.Account.FirstName} {src.Account.LastName}" : ""))
+                .ForMember(dest => dest.AuthorImageUrl, opt => 
+                    opt.MapFrom(src => src.Account != null ? src.Account.ImgUrl : null))
+                .ForMember(dest => dest.CommentCount, opt => 
+                    opt.MapFrom(src => src.Comments != null ? 
+                        src.Comments.Count(c => !c.IsDeleted) : 0))
+                .ForMember(dest => dest.Comments, opt => 
+                    opt.MapFrom(src => src.Comments != null ? 
+                        src.Comments.Where(c => !c.IsDeleted).OrderByDescending(c => c.CreatedDate).Take(5) : null));
 
             //Schedule
             CreateMap<ScheduleRequest, Schedule>();

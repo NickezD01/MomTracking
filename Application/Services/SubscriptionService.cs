@@ -102,7 +102,7 @@ namespace Application.Services
                 if (subscription == null)
                     return new ApiResponse().SetNotFound("Subscription not found");
 
-                subscription.Status = "Cancelled";
+                subscription.Status = SubscriptionStatus.Cancelled;
                 subscription.ModifiedDate = DateTime.UtcNow;
 
                 await _unitOfWork.SaveChangeAsync();
@@ -180,7 +180,7 @@ namespace Application.Services
 
                 foreach (var subscription in expiringSubscriptionss)
                 {
-                    subscription.Status = "Expired";
+                    subscription.Status = SubscriptionStatus.Expired;
                 }
 
                 await _unitOfWork.SaveChangeAsync();
@@ -228,5 +228,7 @@ namespace Application.Services
                 return apiResponse.SetBadRequest(e.Message);
             }
         }
+
+
     }
 }

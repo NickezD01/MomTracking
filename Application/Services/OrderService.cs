@@ -38,7 +38,7 @@ namespace Application.Services
                 }
 
                 // 🔹 Kiểm tra Subscription có hợp lệ
-                if (subscription.Status != "Active")
+                if (subscription.Status != SubscriptionStatus.Active)
                 {
                     return response.SetBadRequest("Subscription is not active");
                 }

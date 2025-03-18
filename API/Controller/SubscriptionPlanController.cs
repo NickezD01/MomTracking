@@ -76,5 +76,13 @@ namespace API.Controller
             var response = await _subscriptionPlanService.DeletePlanAsync(planId);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
+
+        [Authorize(Roles = "Manager")]
+        [HttpGet("NumberOfSubscribers")]
+        public async Task<IActionResult> countPlan()
+        {
+            var response = await _subscriptionPlanService.CountPlan();
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
+        }
     }
 }

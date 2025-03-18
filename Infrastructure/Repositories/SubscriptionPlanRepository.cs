@@ -68,7 +68,7 @@ namespace Infrastructure.Repositories
         {
             return await _db.Where(p => p.Id == planId)
                           .SelectMany(p => p.Subscriptions)
-                          .CountAsync(s => s.Status == "Active");
+                          .CountAsync(s => s.Status == SubscriptionStatus.Active);
         }
     }
 }

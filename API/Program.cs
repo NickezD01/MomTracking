@@ -121,8 +121,9 @@ builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
 
+//Tac Vu Ngam dùng HangFire
 builder.Services.AddScoped<IScheduleReminderService, ScheduleReminderService>();
-
+builder.Services.AddScoped<IExpiredSubscriptionService, ExpiredSubscriptionService>();
 
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
@@ -157,7 +158,9 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-RecurringJob.AddOrUpdate<ScheduleReminderService>("daily-reminder-job",x => x.CheckAndSendReminders(),Cron.Daily(13,15));
+//HangFire
+RecurringJob.AddOrUpdate<ScheduleReminderService>("daily-reminder-job",x => x.CheckAndSendReminders(),Cron.Daily(0,0));
+RecurringJob.AddOrUpdate<ExpiredSubscriptionService>("Check-EndDate", x => x.CheckExpiredSub(), Cron.Daily(1, 0));
 app.MapControllers();
 app.Run();
 

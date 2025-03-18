@@ -8,6 +8,7 @@ namespace Application.Response.Schedule
 {
     public class ScheduleResponse
     {
+        public int AccountId { get; set; }
         public int Id { get; set; }
         public bool IsNoti { get; set; }
         public string? Description { get; set; }
