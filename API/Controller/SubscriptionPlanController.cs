@@ -26,13 +26,8 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [HttpGet("active")]
-        public async Task<IActionResult> GetActivePlans()
-        {
-            var response = await _subscriptionPlanService.GetActivePlansAsync();
-            return response.IsSuccess ? Ok(response) : BadRequest(response);
-        }
 
+        [Authorize(Roles = "Manager")]
         [HttpGet("{planId}")]
         public async Task<IActionResult> GetPlanById(int planId)
         {
@@ -77,28 +72,6 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [Authorize(Roles = "Manager")]
-        [HttpGet("NumberOfSubscribers")]
-        public async Task<IActionResult> countPlan()
-        {
-            var response = await _subscriptionPlanService.CountPlan();
-            return response.IsSuccess ? Ok(response) : BadRequest(response);
-        }
 
-        [Authorize(Roles = "Manager")]
-        [HttpGet("CalculateTotalRevenue")]
-        public async Task<IActionResult> CalculateTotalRevenue()
-        {
-            var response = await _subscriptionPlanService.CalculateTotalRevenue();
-            return response.IsSuccess ? Ok(response) : BadRequest(response);
-        }
-
-        [Authorize(Roles = "Manager")]
-        [HttpGet("TotalPrice")]
-        public async Task<IActionResult> TotalPrice()
-        {
-            var response = await _subscriptionPlanService.TotalPrice();
-            return response.IsSuccess ? Ok(response) : BadRequest(response);
-        }
     }
 }

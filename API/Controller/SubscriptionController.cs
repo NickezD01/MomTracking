@@ -43,21 +43,6 @@ namespace API.Controller
         return response.IsSuccess ? Ok(response) : BadRequest(response);
     }
 
-        [HttpGet("active")]
-        public async Task<IActionResult> GetMyActiveSubscription()
-    {
-        var userClaim = _claimService.GetUserClaim();
-            var response = await _subscriptionService.GetActiveUserSubscriptionAsync(userClaim.Id);
-        return response.IsSuccess ? Ok(response) : BadRequest(response);
-    }
-
-        [HttpGet("status")]
-        public async Task<IActionResult> CheckSubscriptionStatus()
-    {
-            var userClaim = _claimService.GetUserClaim();
-            var response = await _subscriptionService.CheckSubscriptionStatusAsync(userClaim.Id);
-        return response.IsSuccess ? Ok(response) : BadRequest(response);
-    }
 
         [HttpGet("{subscriptionId}")]
         public async Task<IActionResult> GetSubscriptionById(int subscriptionId)

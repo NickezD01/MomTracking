@@ -18,6 +18,7 @@ namespace Infrastructure.Repositories
         public async Task<List<SubscriptionPlan>> GetActivePlans()
         {
             return await _db.Where(p => p.IsActive && !p.IsDeleted)
+                          .Include(p => p.Subscriptions)
                           .OrderBy(p => p.Price)
                           .ToListAsync();
         }

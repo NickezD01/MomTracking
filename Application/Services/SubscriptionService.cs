@@ -145,22 +145,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetActiveUserSubscriptionAsync(int accountId)
-        {
-            try
-            {
-                var subscriptions = await _unitOfWork.Subscriptions.GetActiveSubscriptionsByAccountId(accountId);
-                if (!subscriptions.Any())
-                    return new ApiResponse().SetNotFound("No active subscription found");
-
-                var response = _mapper.Map<SubscriptionResponse>(subscriptions.First());
-                return new ApiResponse().SetOk(response);
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse().SetBadRequest($"Error retrieving active subscription: {ex.Message}");
-            }
-        }
+  
         public Task<ApiResponse> UpgradeSubscriptionPlanAsync(int subscriptionId, int newPlanId)
         {
             throw new NotImplementedException();
@@ -199,7 +184,26 @@ namespace Application.Services
             try
             {
                 var hasActiveSubscription = await _unitOfWork.Subscriptions.HasActiveSubscription(accountId);
-                return new ApiResponse().SetOk(new { HasActiveSubscription = hasActiveSubscription });
+        
+                if (hasActiveSubscription)
+                {
+                    // Lấy subscription active mới nhất
+                    var activeSubscriptions = await _unitOfWork.Subscriptions.GetActiveSubscriptionsByAccountId(accountId);
+                    if (activeSubscriptions.Any())
+                    {
+                        var activeSubscription = activeSubscriptions.OrderByDescending(s => s.EndDate).First();
+                        var response = _mapper.Map<SubscriptionResponse>(activeSubscription);
+                        return new ApiResponse().SetOk(new { 
+                            HasActiveSubscription = true,
+                            ActiveSubscription = response
+                        });
+                    }
+                }
+        
+                return new ApiResponse().SetOk(new { 
+                    HasActiveSubscription = false,
+                    ActiveSubscription = (object)null
+                });
             }
             catch (Exception ex)
             {

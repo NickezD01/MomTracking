@@ -121,7 +121,7 @@ builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
 
-//Tac Vu Ngam dùng HangFire
+//Tac Vu Ngam dÃ¹ng HangFire
 builder.Services.AddScoped<IScheduleReminderService, ScheduleReminderService>();
 builder.Services.AddScoped<IExpiredSubscriptionService, ExpiredSubscriptionService>();
 

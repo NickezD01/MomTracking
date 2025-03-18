@@ -18,10 +18,11 @@ namespace Infrastructure.Repositories
         public async Task<List<Subscription>> GetActiveSubscriptionsByAccountId(int accountId)
         {
             return await _db.Where(s => s.AccountId == accountId && 
-                                      s.Status == SubscriptionStatus.Active && 
-                                      s.EndDate > DateTime.Now)
-                           .Include(s => s.SubscriptionPlans)
-                           .ToListAsync();
+                                        s.Status == SubscriptionStatus.Active && 
+                                        s.PaymentStatus == PaymentStatus.Paid &&
+                                        s.EndDate > DateTime.Now)
+                .Include(s => s.SubscriptionPlans)
+                .ToListAsync();
         }
 
         public async Task<List<Subscription>> GetSubscriptionsByPlanId(int planId)
@@ -42,8 +43,9 @@ namespace Infrastructure.Repositories
         public async Task<bool> HasActiveSubscription(int accountId)
         {
             return await _db.AnyAsync(s => s.AccountId == accountId && 
-                                         s.Status == SubscriptionStatus.Active && 
-                                         s.EndDate > DateTime.Now);
+                                           s.Status == SubscriptionStatus.Active && 
+                                           s.PaymentStatus == PaymentStatus.Paid &&
+                                           s.EndDate > DateTime.Now);
         }
 
         public async Task<int> GetActiveSubscribersCount(int planId)
