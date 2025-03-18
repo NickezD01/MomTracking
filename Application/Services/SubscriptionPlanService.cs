@@ -355,5 +355,84 @@ namespace Application.Services
             }
             return new ApiResponse().SetOk(counts);
         }
+        public async Task<ApiResponse> CalculateTotalRevenue()
+        {
+            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null);
+            var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
+            var userCounts = new Dictionary<SubscriptionPlanName, int>();
+            foreach (var plan in plans)
+            {
+                userCounts[plan.Name] = subs.Count(sub => sub.PlanId == plan.Id);
+            }
+            var totalRevenue = new Dictionary<SubscriptionPlanName, decimal>();
+
+            foreach (var plan in plans)
+            {
+                
+                totalRevenue[plan.Name] = userCounts[plan.Name] * plan.Price;
+            }
+
+
+            return new ApiResponse().SetOk(totalRevenue);
+        }
+        public async Task<ApiResponse> TotalPrice()
+        {
+            var planBronze = await _unitOfWork.SubscriptionPlans.GetAsync(b => b.Name == SubscriptionPlanName.Bronze);
+            var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
+            int bronzeUser = 0;
+            if (subs != null)
+            {
+                foreach (var sub in subs)
+                {
+                    if (sub.PlanId == planBronze.Id)
+                    {
+                        bronzeUser++;
+                    }
+                }
+            }
+            else
+            {
+                bronzeUser = 0;
+            }
+
+
+                var planSilver = await _unitOfWork.SubscriptionPlans.GetAsync(b => b.Name == SubscriptionPlanName.Silver);
+            int silverUser = 0;
+            if(subs != null)
+            {
+                foreach (var sub in subs)
+                {
+                    if (sub.PlanId == planSilver.Id)
+                    {
+                        silverUser++;
+                    }
+                }
+            }
+            else
+            {
+                silverUser = 0;
+            }
+
+
+                var planGold = await _unitOfWork.SubscriptionPlans.GetAsync(b => b.Name == SubscriptionPlanName.Gold);
+            int goldUser = 0;
+            if(subs != null)
+            {
+                foreach (var sub in subs)
+                {
+                    if (sub.PlanId == planGold.Id)
+                    {
+                        goldUser++;
+                    }
+                }
+            }
+            else
+            {
+                goldUser = 0;
+            }
+
+                var totalprice = (bronzeUser * planBronze.Price) + (silverUser * planSilver.Price) + (goldUser * planGold.Price);
+            return new ApiResponse().SetOk(totalprice);
+        }
     }
 }
