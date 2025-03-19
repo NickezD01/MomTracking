@@ -115,6 +115,7 @@ builder.Services.AddScoped<IHeathMetricService, HealthMetricService>();
 builder.Services.AddScoped<IChildenService, ChildrenService>();
 builder.Services.AddScoped<IWHOStandardService, WHOStandardService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
+builder.Services.AddScoped<IPdfExportService, PdfExportService>();
 
 
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
