@@ -116,6 +116,8 @@ builder.Services.AddScoped<IChildenService, ChildrenService>();
 builder.Services.AddScoped<IWHOStandardService, WHOStandardService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IPdfExportService, PdfExportService>();
+builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
+builder.Services.AddScoped<IPostService, PostService>();
 
 
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();

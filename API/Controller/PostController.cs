@@ -1,6 +1,7 @@
 using Application.Interface;
 using Application.Request.Post;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -48,7 +49,8 @@ namespace API.Controller
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreatePost([FromBody] CreatePostRequest request)
+        [Consumes("multipart/form-data")] // Thay đổi để hỗ trợ tải lên file
+        public async Task<IActionResult> CreatePost([FromForm] CreatePostRequest request) // Thay đổi từ [FromBody] sang [FromForm]
         {
             var response = await _postService.CreatePostAsync(request);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
@@ -56,7 +58,8 @@ namespace API.Controller
 
         [Authorize]
         [HttpPut("{postId}")]
-        public async Task<IActionResult> UpdatePost(int postId, [FromBody] UpdatePostRequest request)
+        [Consumes("multipart/form-data")] // Thay đổi để hỗ trợ tải lên file
+        public async Task<IActionResult> UpdatePost(int postId, [FromForm] UpdatePostRequest request) // Thay đổi từ [FromBody] sang [FromForm]
         {
             var response = await _postService.UpdatePostAsync(postId, request);
             return response.IsSuccess ? Ok(response) : BadRequest(response);

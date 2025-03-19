@@ -123,7 +123,8 @@ namespace Application.MyMapper
                         src.Comments.Count(c => !c.IsDeleted) : 0))
                 .ForMember(dest => dest.Comments, opt => 
                     opt.MapFrom(src => src.Comments != null ? 
-                        src.Comments.Where(c => !c.IsDeleted).OrderByDescending(c => c.CreatedDate).Take(5) : null));
+                        src.Comments.Where(c => !c.IsDeleted).OrderByDescending(c => c.CreatedDate).Take(5) : null))
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
 
             //Schedule
             CreateMap<ScheduleRequest, Schedule>();

@@ -10,5 +10,6 @@ namespace Application.Interface
     public interface IFirebaseStorageService
     {
         Task<string> UploadUserImage(string userName, IFormFile file);
+        Task<string> UploadPostImage(int postId, IFormFile file); // Thêm phương thức mới
     }
 }

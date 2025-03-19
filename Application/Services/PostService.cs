@@ -4,7 +4,8 @@ using Application.Response;
 using Application.Response.Post;
 using AutoMapper;
 using Domain.Entity;
-using Domain; // Add this to access the Role enum
+using Domain;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,12 +17,18 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IClaimService _claimService;
+        private readonly IFirebaseStorageService _firebaseStorageService;
 
-        public PostService(IUnitOfWork unitOfWork, IMapper mapper, IClaimService claimService)
+        public PostService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            IClaimService claimService,
+            IFirebaseStorageService firebaseStorageService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _claimService = claimService;
+            _firebaseStorageService = firebaseStorageService;
         }
 
         public async Task<ApiResponse> CreatePostAsync(CreatePostRequest request)
@@ -42,6 +49,23 @@ namespace Application.Services
 
                 await _unitOfWork.Posts.AddAsync(post);
                 await _unitOfWork.SaveChangeAsync();
+
+                // Nếu có hình ảnh, tải lên và cập nhật URL
+                if (request.Image != null && request.Image.Length > 0)
+                {
+            try
+            {
+                        string imageUrl = await _firebaseStorageService.UploadPostImage(post.Id, request.Image);
+                        post.ImageUrl = imageUrl;
+                await _unitOfWork.SaveChangeAsync();
+            }
+            catch (Exception ex)
+            {
+                        // Log lỗi tải ảnh nhưng không làm gián đoạn việc tạo bài đăng
+                        // Bài đăng vẫn được tạo nhưng không có hình ảnh
+                        Console.WriteLine($"Error uploading image: {ex.Message}");
+            }
+        }
 
                 var postResponse = _mapper.Map<PostResponse>(post);
                 return new ApiResponse().SetOk(postResponse);
@@ -71,6 +95,28 @@ namespace Application.Services
                 post.LastUpdateTime = DateTime.UtcNow;
                 post.ModifiedDate = DateTime.UtcNow;
 
+                // Xử lý hình ảnh
+                if (request.RemoveExistingImage && !string.IsNullOrEmpty(post.ImageUrl))
+                {
+                    // Xóa URL hình ảnh hiện tại
+                    post.ImageUrl = null;
+            }
+
+                // Nếu có hình ảnh mới, tải lên và cập nhật URL
+                if (request.Image != null && request.Image.Length > 0)
+                {
+                    try
+                    {
+                        string imageUrl = await _firebaseStorageService.UploadPostImage(post.Id, request.Image);
+                        post.ImageUrl = imageUrl;
+        }
+                    catch (Exception ex)
+                    {
+                        // Log lỗi tải ảnh nhưng không làm gián đoạn việc cập nhật bài đăng
+                        Console.WriteLine($"Error uploading image: {ex.Message}");
+    }
+}
+
                 await _unitOfWork.SaveChangeAsync();
 
                 var postResponse = _mapper.Map<PostResponse>(post);
@@ -92,7 +138,6 @@ namespace Application.Services
                 if (post == null)
                     return new ApiResponse().SetNotFound("Post not found");
 
-                // Fix: Compare with Role enum instead of string
                 if (post.AccountId != userClaim.Id && userClaim.Role != Role.Manager)
                     return new ApiResponse().SetBadRequest("You can only delete your own posts");
 
