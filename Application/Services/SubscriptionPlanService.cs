@@ -142,37 +142,41 @@ namespace Application.Services
             {
                 // Lấy plan với thông tin về subscribers
                 var plan = await _unitOfWork.SubscriptionPlans.GetPlanWithSubscribers(planId);
-        
+    
                 if (plan == null || plan.IsDeleted)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
                 }
 
-                // Mapper sẽ tự động tính toán ActiveSubscribersCount dựa trên các điều kiện đã định nghĩa
-                var response = _mapper.Map<SubscriptionPlanResponse>(plan);
-        
-                // Tính tổng giá trị của tất cả người dùng đã mua gói này
+                // Tính tổng doanh thu
                 decimal totalRevenue = 0;
-        
                 if (plan.Subscriptions != null && plan.Subscriptions.Any())
                 {
-                    // Chỉ tính các subscription đã thanh toán (Paid)
                     totalRevenue = plan.Subscriptions
                         .Where(s => s.PaymentStatus == PaymentStatus.Paid)
                         .Sum(s => s.Price);
                 }
         
-                // Thêm thông tin về tổng doanh thu vào response
-                // Nếu SubscriptionPlanResponse chưa có trường TotalRevenue, bạn cần thêm vào
-                response.TotalRevenue = totalRevenue;
-        
-                return new ApiResponse().SetOk(response);
+                // Tạo anonymous object mới chỉ chứa các trường cần thiết
+                var filteredResponse = new
+                {
+                    Id = plan.Id,
+                    Name = plan.Name,
+                    Price = plan.Price,
+                    ActiveSubscribersCount = plan.Subscriptions?.Count(s => s.Status == SubscriptionStatus.Active) ?? 0,
+
+                    TotalRevenue = totalRevenue
+                };
+    
+                return new ApiResponse().SetOk(filteredResponse);
             }
             catch (Exception ex)
             {
                 return new ApiResponse().SetBadRequest($"Error retrieving subscription plan: {ex.Message}");
             }
         }
+
+
 
         public async Task<ApiResponse> GetAllPlansAsync()
         {
