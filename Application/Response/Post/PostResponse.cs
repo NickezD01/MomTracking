@@ -9,7 +9,7 @@ namespace Application.Response.Post
         public int Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public string? ImageUrl { get; set; } // Thêm trường URL hình ảnh
+        public string? ImageUrl { get; set; } // URL hình ảnh
         public bool IsEdited { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdateTime { get; set; }

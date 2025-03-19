@@ -14,7 +14,7 @@ namespace Domain.Entity
         public string Content { get; set; }
         public bool IsEdited { get; set; }
         public DateTime LastUpdateTime { get; set; }
-        public string? ImageUrl { get; set; } // Thêm trường lưu URL hình ảnh
+        public string? ImageUrl { get; set; } // Trường lưu URL hình ảnh
         public UserAccount? Account { get; set; }
         public List<Comment>? Comments { get; set; }
     }

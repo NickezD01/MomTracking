@@ -5,7 +5,6 @@ using Application.Response.Post;
 using AutoMapper;
 using Domain.Entity;
 using Domain;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,18 +16,14 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IClaimService _claimService;
-        private readonly IFirebaseStorageService _firebaseStorageService;
-
         public PostService(
             IUnitOfWork unitOfWork, 
             IMapper mapper, 
-            IClaimService claimService,
-            IFirebaseStorageService firebaseStorageService)
+            IClaimService claimService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _claimService = claimService;
-            _firebaseStorageService = firebaseStorageService;
         }
 
         public async Task<ApiResponse> CreatePostAsync(CreatePostRequest request)
@@ -42,6 +37,7 @@ namespace Application.Services
                     AccountId = userClaim.Id,
                     Title = request.Title,
                     Content = request.Content,
+                    ImageUrl = request.ImageUrl, // Lưu URL hình ảnh từ request
                     IsEdited = false,
                     LastUpdateTime = DateTime.UtcNow,
                     CreatedDate = DateTime.UtcNow
@@ -49,23 +45,6 @@ namespace Application.Services
 
                 await _unitOfWork.Posts.AddAsync(post);
                 await _unitOfWork.SaveChangeAsync();
-
-                // Nếu có hình ảnh, tải lên và cập nhật URL
-                if (request.Image != null && request.Image.Length > 0)
-                {
-            try
-            {
-                        string imageUrl = await _firebaseStorageService.UploadPostImage(post.Id, request.Image);
-                        post.ImageUrl = imageUrl;
-                await _unitOfWork.SaveChangeAsync();
-            }
-            catch (Exception ex)
-            {
-                        // Log lỗi tải ảnh nhưng không làm gián đoạn việc tạo bài đăng
-                        // Bài đăng vẫn được tạo nhưng không có hình ảnh
-                        Console.WriteLine($"Error uploading image: {ex.Message}");
-            }
-        }
 
                 var postResponse = _mapper.Map<PostResponse>(post);
                 return new ApiResponse().SetOk(postResponse);
@@ -91,31 +70,10 @@ namespace Application.Services
 
                 post.Title = request.Title;
                 post.Content = request.Content;
+                post.ImageUrl = request.ImageUrl; // Cập nhật URL hình ảnh từ request
                 post.IsEdited = true;
                 post.LastUpdateTime = DateTime.UtcNow;
                 post.ModifiedDate = DateTime.UtcNow;
-
-                // Xử lý hình ảnh
-                if (request.RemoveExistingImage && !string.IsNullOrEmpty(post.ImageUrl))
-                {
-                    // Xóa URL hình ảnh hiện tại
-                    post.ImageUrl = null;
-            }
-
-                // Nếu có hình ảnh mới, tải lên và cập nhật URL
-                if (request.Image != null && request.Image.Length > 0)
-                {
-                    try
-                    {
-                        string imageUrl = await _firebaseStorageService.UploadPostImage(post.Id, request.Image);
-                        post.ImageUrl = imageUrl;
-        }
-                    catch (Exception ex)
-                    {
-                        // Log lỗi tải ảnh nhưng không làm gián đoạn việc cập nhật bài đăng
-                        Console.WriteLine($"Error uploading image: {ex.Message}");
-    }
-}
 
                 await _unitOfWork.SaveChangeAsync();
 
