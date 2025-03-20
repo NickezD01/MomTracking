@@ -16,16 +16,18 @@ namespace Application.Interface
         // Plan listing operations
         Task<ApiResponse> GetAllPlansAsync();
         // Đã xóa: Task<ApiResponse> GetActivePlansAsync();
-        
+
         // Plan detail operations
 
 
-        
+
         // Plan management operations
 
-    
+
 
         //Admin Dashboard
-
+        Task<ApiResponse> CountPlan();
+        Task<ApiResponse> CalculateTotalRevenue();
+        Task<ApiResponse> TotalPrice();
     }
 }
