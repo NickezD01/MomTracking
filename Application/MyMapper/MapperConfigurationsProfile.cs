@@ -60,22 +60,11 @@ namespace Application.MyMapper
 
             CreateMap<SubscriptionPlan, SubscriptionPlanResponse>()
                 .ForMember(dest => dest.DurationInMonths, opt => opt.MapFrom(src => src.DurationMonth))
-                .ForMember(dest => dest.ActiveSubscribersCount, opt => 
-                    opt.MapFrom(src => src.Subscriptions != null ? 
-                        src.Subscriptions.Count(s => s.Status == SubscriptionStatus.Active) : 0));
-
-            CreateMap<SubscriptionPlan, SubscriptionPlanDetailResponse>()
-                .ForMember(dest => dest.DurationInMonths, opt => opt.MapFrom(src => src.DurationMonth))
-                .ForMember(dest => dest.ActiveSubscribers, opt => opt.MapFrom(src => 
-                    src.Subscriptions.Where(s => s.Status == SubscriptionStatus.Active)
-                    .Select(s => new SubscriptionPlanDetailResponse.SubscriberInfo
-                    {
-                        AccountId = s.AccountId,
-                        AccountName = s.Account.FirstName + " " + s.Account.LastName,
-                        StartDate = s.StartDate,
-                        EndDate = s.EndDate,
-                        Status = s.Status.ToString(),
-                    })));
+                .ForMember(dest => dest.ActiveSubscribersCount, opt =>
+                    opt.MapFrom(src => src.Subscriptions != null ?
+                        src.Subscriptions.Count(s => s.Status == SubscriptionStatus.Active &&
+                                     s.PaymentStatus == PaymentStatus.Paid &&
+                                     s.EndDate > DateTime.Now) : 0));
 
             // Subscription mappings
             CreateMap<CreateSubscriptionRequest, Subscription>()
@@ -134,7 +123,8 @@ namespace Application.MyMapper
                         src.Comments.Count(c => !c.IsDeleted) : 0))
                 .ForMember(dest => dest.Comments, opt => 
                     opt.MapFrom(src => src.Comments != null ? 
-                        src.Comments.Where(c => !c.IsDeleted).OrderByDescending(c => c.CreatedDate).Take(5) : null));
+                        src.Comments.Where(c => !c.IsDeleted).OrderByDescending(c => c.CreatedDate).Take(5) : null))
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
 
             //Schedule
             CreateMap<ScheduleRequest, Schedule>();

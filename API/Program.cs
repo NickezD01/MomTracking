@@ -115,13 +115,16 @@ builder.Services.AddScoped<IHeathMetricService, HealthMetricService>();
 builder.Services.AddScoped<IChildenService, ChildrenService>();
 builder.Services.AddScoped<IWHOStandardService, WHOStandardService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
+builder.Services.AddScoped<IPdfExportService, PdfExportService>();
+builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
+builder.Services.AddScoped<IPostService, PostService>();
 
 
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
 
-//Tac Vu Ngam dùng HangFire
+//Tac Vu Ngam dÃ¹ng HangFire
 builder.Services.AddScoped<IScheduleReminderService, ScheduleReminderService>();
 builder.Services.AddScoped<IExpiredSubscriptionService, ExpiredSubscriptionService>();
 

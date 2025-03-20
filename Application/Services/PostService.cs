@@ -4,7 +4,7 @@ using Application.Response;
 using Application.Response.Post;
 using AutoMapper;
 using Domain.Entity;
-using Domain; // Add this to access the Role enum
+using Domain;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,8 +16,10 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IClaimService _claimService;
-
-        public PostService(IUnitOfWork unitOfWork, IMapper mapper, IClaimService claimService)
+        public PostService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            IClaimService claimService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -35,6 +37,7 @@ namespace Application.Services
                     AccountId = userClaim.Id,
                     Title = request.Title,
                     Content = request.Content,
+                    ImageUrl = request.ImageUrl, // Lưu URL hình ảnh từ request
                     IsEdited = false,
                     LastUpdateTime = DateTime.UtcNow,
                     CreatedDate = DateTime.UtcNow
@@ -67,6 +70,7 @@ namespace Application.Services
 
                 post.Title = request.Title;
                 post.Content = request.Content;
+                post.ImageUrl = request.ImageUrl; // Cập nhật URL hình ảnh từ request
                 post.IsEdited = true;
                 post.LastUpdateTime = DateTime.UtcNow;
                 post.ModifiedDate = DateTime.UtcNow;
@@ -92,7 +96,6 @@ namespace Application.Services
                 if (post == null)
                     return new ApiResponse().SetNotFound("Post not found");
 
-                // Fix: Compare with Role enum instead of string
                 if (post.AccountId != userClaim.Id && userClaim.Role != Role.Manager)
                     return new ApiResponse().SetBadRequest("You can only delete your own posts");
 

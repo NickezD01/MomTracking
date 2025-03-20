@@ -50,5 +50,13 @@ namespace API.Controller
             var resposne = await _service.UpdateUserRoleProfileAsync(customerId, request);
             return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
         }
+
+        [Authorize(Roles = "Manager")]
+        [HttpGet("CountUser")]
+        public async Task<IActionResult> CountUser()
+        {
+            var resposne = await _service.CountUser();
+            return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
+        }
     }
 }

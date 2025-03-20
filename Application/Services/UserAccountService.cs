@@ -5,7 +5,9 @@ using Application.Response;
 using Application.Response.UserAccount;
 using AutoMapper;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entity;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,6 +120,16 @@ namespace Application.Services
             {
                 return apiResponse.SetBadRequest(e.Message);
             }
+        }
+        public async Task<ApiResponse> CountUser()
+        {
+            var users = await _unitOfWork.UserAccounts.GetAllAsync(null);
+            int count = 0;
+            foreach(var user in users)
+            {
+                count++;
+            }
+            return new ApiResponse().SetOk(count);
         }
     }
 }

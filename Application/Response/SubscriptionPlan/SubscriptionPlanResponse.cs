@@ -11,5 +11,6 @@ namespace Application.Response.SubscriptionPlan
         public string Feature { get; set; }
         public bool IsActive { get; set; }
         public int ActiveSubscribersCount { get; set; }
+        public decimal TotalRevenue { get; set; }
     }
 }

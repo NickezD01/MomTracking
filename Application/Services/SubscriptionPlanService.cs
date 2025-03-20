@@ -140,14 +140,35 @@ namespace Application.Services
         {
             try
             {
-                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId && !p.IsDeleted);
-                if (plan == null)
+                // Lấy plan với thông tin về subscribers
+                var plan = await _unitOfWork.SubscriptionPlans.GetPlanWithSubscribers(planId);
+    
+                if (plan == null || plan.IsDeleted)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
                 }
 
-                var response = _mapper.Map<SubscriptionPlanResponse>(plan);
-                return new ApiResponse().SetOk(response);
+                // Tính tổng doanh thu
+                decimal totalRevenue = 0;
+                if (plan.Subscriptions != null && plan.Subscriptions.Any())
+                {
+                    totalRevenue = plan.Subscriptions
+                        .Where(s => s.PaymentStatus == PaymentStatus.Paid)
+                        .Sum(s => s.Price);
+                }
+        
+                // Tạo anonymous object mới chỉ chứa các trường cần thiết
+                var filteredResponse = new
+                {
+                    Id = plan.Id,
+                    Name = plan.Name,
+                    Price = plan.Price,
+                    ActiveSubscribersCount = plan.Subscriptions?.Count(s => s.Status == SubscriptionStatus.Active) ?? 0,
+
+                    TotalRevenue = totalRevenue
+                };
+    
+                return new ApiResponse().SetOk(filteredResponse);
             }
             catch (Exception ex)
             {
@@ -155,12 +176,29 @@ namespace Application.Services
             }
         }
 
+
+
         public async Task<ApiResponse> GetAllPlansAsync()
         {
             try
             {
                 var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(p => !p.IsDeleted);
-                var response = _mapper.Map<List<SubscriptionPlanResponse>>(plans);
+        
+                // Đảm bảo include Subscriptions để có thể đếm số người đăng ký
+                var plansWithSubscribers = new List<SubscriptionPlan>();
+                foreach (var plan in plans)
+                {
+                    var planWithSubs = await _unitOfWork.SubscriptionPlans.GetPlanWithSubscribers(plan.Id);
+                    if (planWithSubs != null)
+                    {
+                        plansWithSubscribers.Add(planWithSubs);
+                    }
+                }
+        
+                var response = _mapper.Map<List<SubscriptionPlanResponse>>(plansWithSubscribers);
+        
+                // Không tính toán hoặc gán TotalRevenue nữa
+        
                 return new ApiResponse().SetOk(response);
             }
             catch (Exception ex)
@@ -169,191 +207,100 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetActivePlansAsync()
-        {
-            try
-            {
-                var plans = await _unitOfWork.SubscriptionPlans.GetActivePlans();
-                var response = _mapper.Map<List<SubscriptionPlanResponse>>(plans);
-                return new ApiResponse().SetOk(response);
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse().SetBadRequest($"Error retrieving active plans: {ex.Message}");
-            }
-        }
-        public async Task<ApiResponse> GetPlanDetailsWithSubscribersAsync(int planId)
-        {
-            try
-            {
-                // Verify if user is Manager
-                var userClaim = _claimService.GetUserClaim();
-                if (userClaim.Role != Role.Manager)
-                {
-                    return new ApiResponse().SetBadRequest("Only managers can view subscriber details");
-                }
 
-                var plan = await _unitOfWork.SubscriptionPlans.GetPlanWithSubscribers(planId);
-                if (plan == null)
-                {
-                    return new ApiResponse().SetNotFound("Subscription plan not found");
-                }
-
-                var response = _mapper.Map<SubscriptionPlanDetailResponse>(plan);
-                return new ApiResponse().SetOk(response);
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse().SetBadRequest($"Error retrieving plan details: {ex.Message}");
-            }
-        }
-
-        public async Task<ApiResponse> GetPlanFeaturesAsync(int planId)
-        {
-            try
-            {
-                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId && !p.IsDeleted);
-                if (plan == null)
-                {
-                    return new ApiResponse().SetNotFound("Subscription plan not found");
-                }
-
-                return new ApiResponse().SetOk(new { Features = plan.Feature });
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse().SetBadRequest($"Error retrieving plan features: {ex.Message}");
-            }
-        }
-
-        public async Task<ApiResponse> ActivatePlanAsync(int planId)
-        {
-            try
-            {
-                // Verify if user is Manager
-                var userClaim = _claimService.GetUserClaim();
-                if (userClaim.Role != Role.Manager)
-                {
-                    return new ApiResponse().SetBadRequest("Only managers can activate subscription plans");
-                }
-
-                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId);
-                if (plan == null)
-                {
-                    return new ApiResponse().SetNotFound("Subscription plan not found");
-                }
-
-                plan.IsActive = true;
-
-                plan.ModifiedDate = DateTime.UtcNow;
-
-                await _unitOfWork.SaveChangeAsync();
-                return new ApiResponse().SetOk("Plan activated successfully");
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse().SetBadRequest($"Error activating plan: {ex.Message}");
-            }
-        }
-
-        public async Task<ApiResponse> DeactivatePlanAsync(int planId)
-        {
-            try
-            {
-                // Verify if user is Manager
-                var userClaim = _claimService.GetUserClaim();
-                if (userClaim.Role != Role.Manager)
-                {
-                    return new ApiResponse().SetBadRequest("Only managers can deactivate subscription plans");
-                }
-
-                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId);
-                if (plan == null)
-                {
-                    return new ApiResponse().SetNotFound("Subscription plan not found");
-                }
-
-                plan.IsActive = false;
-                plan.ModifiedDate = DateTime.UtcNow;
-
-                await _unitOfWork.SaveChangeAsync();
-                return new ApiResponse().SetOk("Plan deactivated successfully");
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse().SetBadRequest($"Error deactivating plan: {ex.Message}");
-            }
-        }
-
-        public async Task<ApiResponse> UpdatePlanPricingAsync(int planId, decimal newPrice)
-        {
-            try
-            {
-                // Verify if user is Manager
-                var userClaim = _claimService.GetUserClaim();
-                if (userClaim.Role != Role.Manager)
-                {
-                    return new ApiResponse().SetBadRequest("Only managers can update plan pricing");
-                }
-
-                var plan = await _unitOfWork.SubscriptionPlans.GetAsync(p => p.Id == planId);
-                if (plan == null)
-                {
-                    return new ApiResponse().SetNotFound("Subscription plan not found");
-                }
-
-                plan.Price = newPrice;
-
-                plan.ModifiedDate = DateTime.UtcNow;
-
-                await _unitOfWork.SaveChangeAsync();
-                return new ApiResponse().SetOk("Plan price updated successfully");
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse().SetBadRequest($"Error updating plan price: {ex.Message}");
-            }
-        }
-
-        public async Task<ApiResponse> ValidatePlanAsync(CreateSubscriptionPlanRequest request)
-        {
-            try
-            {
-                if (request.Price <= 0)
-                {
-                    return new ApiResponse().SetBadRequest("Price must be greater than zero");
-                }
-
-                if (request.DurationInMonths <= 0)
-                {
-                    return new ApiResponse().SetBadRequest("Duration must be greater than zero");
-                }
-
-                var planExists = await _unitOfWork.SubscriptionPlans.IsPlanNameExists(request.Name);
-                if (planExists)
-                {
-                    return new ApiResponse().SetBadRequest("A plan with this name already exists");
-                }
-
-                return new ApiResponse().SetOk("Plan validation successful");
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse().SetBadRequest($"Error validating plan: {ex.Message}");
-            }
-        }
-
+        //admindashboard
         //admindashboard
         public async Task<ApiResponse> CountPlan()
         {
-            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null) ;
+            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null);
             var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
             var counts = new Dictionary<SubscriptionPlanName, int>();
-            foreach(var plan in plans)
+            foreach (var plan in plans)
             {
                 counts[plan.Name] = subs.Count(sub => sub.PlanId == plan.Id);
             }
             return new ApiResponse().SetOk(counts);
         }
+        public async Task<ApiResponse> CalculateTotalRevenue()
+        {
+            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null);
+            var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
+            var userCounts = new Dictionary<SubscriptionPlanName, int>();
+            foreach (var plan in plans)
+            {
+                userCounts[plan.Name] = subs.Count(sub => sub.PlanId == plan.Id);
+            }
+            var totalRevenue = new Dictionary<SubscriptionPlanName, decimal>();
+
+            foreach (var plan in plans)
+            {
+
+                totalRevenue[plan.Name] = userCounts[plan.Name] * plan.Price;
+            }
+
+
+            return new ApiResponse().SetOk(totalRevenue);
+        }
+        public async Task<ApiResponse> TotalPrice()
+        {
+            var planBronze = await _unitOfWork.SubscriptionPlans.GetAsync(b => b.Name == SubscriptionPlanName.Bronze);
+            var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
+            int bronzeUser = 0;
+            if (subs != null)
+            {
+                foreach (var sub in subs)
+                {
+                    if (sub.PlanId == planBronze.Id)
+                    {
+                        bronzeUser++;
+                    }
+                }
+            }
+            else
+            {
+                bronzeUser = 0;
+            }
+
+
+            var planSilver = await _unitOfWork.SubscriptionPlans.GetAsync(b => b.Name == SubscriptionPlanName.Silver);
+            int silverUser = 0;
+            if (subs != null)
+            {
+                foreach (var sub in subs)
+                {
+                    if (sub.PlanId == planSilver.Id)
+                    {
+                        silverUser++;
+                    }
+                }
+            }
+            else
+            {
+                silverUser = 0;
+            }
+
+
+            var planGold = await _unitOfWork.SubscriptionPlans.GetAsync(b => b.Name == SubscriptionPlanName.Gold);
+            int goldUser = 0;
+            if (subs != null)
+            {
+                foreach (var sub in subs)
+                {
+                    if (sub.PlanId == planGold.Id)
+                    {
+                        goldUser++;
+                    }
+                }
+            }
+            else
+            {
+                goldUser = 0;
+            }
+
+            var totalprice = (bronzeUser * planBronze.Price) + (silverUser * planSilver.Price) + (goldUser * planGold.Price);
+            return new ApiResponse().SetOk(totalprice);
+        }
+
+
     }
 }

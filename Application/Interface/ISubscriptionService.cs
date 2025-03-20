@@ -20,13 +20,12 @@ namespace Application.Interface
         Task<ApiResponse> DeleteSubPlanData(int Id);
         // User-related subscription operations
         Task<ApiResponse> GetUserSubscriptionsAsync(int accountId);
-        Task<ApiResponse> GetActiveUserSubscriptionAsync(int accountId);
         
         // Subscription management operations
         Task<ApiResponse> ProcessSubscriptionPaymentAsync(int subscriptionId);
         
         // Subscription status operations
-        Task<ApiResponse> CheckSubscriptionStatusAsync(int accountId);
+
         Task<ApiResponse> HandleExpiredSubscriptionsAsync();
     }
 }
