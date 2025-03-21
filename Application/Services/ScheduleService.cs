@@ -37,7 +37,7 @@ namespace Application.Services
                 var schedule = _mapper.Map<Schedule>(scheduleRequest);
                 schedule.AccountId = claim.Id;
                 var scheduleExist = await _unitOfWork.Schedules.GetAsync(s => s.AppointmentDate == schedule.AppointmentDate);
-                if (scheduleExist == null)
+                if (scheduleExist == null || scheduleExist.AccountId != schedule.AccountId)
                 {
                     await _unitOfWork.Schedules.AddAsync(schedule);
                     await _unitOfWork.SaveChangeAsync();            
