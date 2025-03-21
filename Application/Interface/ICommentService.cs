@@ -9,8 +9,8 @@ namespace Application.Interface
         Task<ApiResponse> CreateCommentAsync(CreateCommentRequest request);
         Task<ApiResponse> UpdateCommentAsync(int commentId, UpdateCommentRequest request);
         Task<ApiResponse> DeleteCommentAsync(int commentId);
-        Task<ApiResponse> GetCommentsByPostAsync(int postId, int pageIndex = 1, int pageSize = 20);
-        Task<ApiResponse> GetCommentsByUserAsync(int accountId, int pageIndex = 1, int pageSize = 20);
-        Task<ApiResponse> GetMyCommentsAsync(int pageIndex = 1, int pageSize = 20);
+        Task<ApiResponse> GetCommentsByPostAsync(int postId);
+        Task<ApiResponse> GetCommentsByUserAsync(int accountId);
+        Task<ApiResponse> GetMyCommentsAsync();
     }
 }

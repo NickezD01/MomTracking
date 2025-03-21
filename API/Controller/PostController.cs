@@ -18,9 +18,9 @@ namespace API.Controller
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPosts([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetAllPosts()
         {
-            var response = await _postService.GetAllPostsAsync(pageIndex, pageSize);
+            var response = await _postService.GetAllPostsAsync();
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
@@ -32,17 +32,17 @@ namespace API.Controller
         }
 
         [HttpGet("user/{accountId}")]
-        public async Task<IActionResult> GetPostsByUser(int accountId, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetPostsByUser(int accountId)
         {
-            var response = await _postService.GetPostsByUserAsync(accountId, pageIndex, pageSize);
+            var response = await _postService.GetPostsByUserAsync(accountId);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
         [Authorize]
         [HttpGet("my-posts")]
-        public async Task<IActionResult> GetMyPosts([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetMyPosts()
         {
-            var response = await _postService.GetMyPostsAsync(pageIndex, pageSize);
+            var response = await _postService.GetMyPostsAsync();
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 

@@ -129,25 +129,16 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetAllPostsAsync(int pageIndex = 1, int pageSize = 10)
+        public async Task<ApiResponse> GetAllPostsAsync()
         {
             try
             {
-                var posts = await _unitOfWork.Posts.GetPostsWithComments(pageIndex, pageSize);
+                var posts = await _unitOfWork.Posts.GetPostsWithComments();
                 var totalCount = await _unitOfWork.Posts.GetTotalPostsCount();
                 
                 var postResponses = _mapper.Map<List<PostResponse>>(posts);
                 
-                var paginatedResponse = new
-                {
-                    TotalCount = totalCount,
-                    PageIndex = pageIndex,
-                    PageSize = pageSize,
-                    TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize),
-                    Items = postResponses
-                };
-                
-                return new ApiResponse().SetOk(paginatedResponse);
+                return new ApiResponse().SetOk(postResponses);
             }
             catch (Exception ex)
             {
@@ -155,11 +146,11 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetPostsByUserAsync(int accountId, int pageIndex = 1, int pageSize = 10)
+        public async Task<ApiResponse> GetPostsByUserAsync(int accountId)
         {
             try
             {
-                var posts = await _unitOfWork.Posts.GetPostsByUser(accountId, pageIndex, pageSize);
+                var posts = await _unitOfWork.Posts.GetPostsByUser(accountId);
                 var postResponses = _mapper.Map<List<PostResponse>>(posts);
                 return new ApiResponse().SetOk(postResponses);
             }
@@ -169,17 +160,17 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetMyPostsAsync(int pageIndex = 1, int pageSize = 10)
+        public async Task<ApiResponse> GetMyPostsAsync()
         {
             try
             {
                 var userClaim = _claimService.GetUserClaim();
-                return await GetPostsByUserAsync(userClaim.Id, pageIndex, pageSize);
-            }
+                return await GetPostsByUserAsync(userClaim.Id);
+    }
             catch (Exception ex)
             {
                 return new ApiResponse().SetBadRequest($"Error retrieving your posts: {ex.Message}");
-            }
+}
         }
     }
 }

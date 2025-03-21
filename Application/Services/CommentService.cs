@@ -4,7 +4,7 @@ using Application.Response;
 using Application.Response.Comment;
 using AutoMapper;
 using Domain.Entity;
-using Domain; // Add this to access the Role enum
+using Domain;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -113,7 +113,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetCommentsByPostAsync(int postId, int pageIndex = 1, int pageSize = 20)
+        public async Task<ApiResponse> GetCommentsByPostAsync(int postId)
         {
             try
             {
@@ -122,7 +122,7 @@ namespace Application.Services
                 if (post == null)
                     return new ApiResponse().SetNotFound("Post not found");
 
-                var comments = await _unitOfWork.Comments.GetCommentsByPost(postId, pageIndex, pageSize);
+                var comments = await _unitOfWork.Comments.GetCommentsByPost(postId);
                 var commentResponses = _mapper.Map<List<CommentResponse>>(comments);
                 return new ApiResponse().SetOk(commentResponses);
             }
@@ -132,11 +132,11 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetCommentsByUserAsync(int accountId, int pageIndex = 1, int pageSize = 20)
+        public async Task<ApiResponse> GetCommentsByUserAsync(int accountId)
         {
             try
             {
-                var comments = await _unitOfWork.Comments.GetCommentsByUser(accountId, pageIndex, pageSize);
+                var comments = await _unitOfWork.Comments.GetCommentsByUser(accountId);
                 var commentResponses = _mapper.Map<List<CommentResponse>>(comments);
                 return new ApiResponse().SetOk(commentResponses);
             }
@@ -146,12 +146,12 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetMyCommentsAsync(int pageIndex = 1, int pageSize = 20)
+        public async Task<ApiResponse> GetMyCommentsAsync()
         {
             try
             {
                 var userClaim = _claimService.GetUserClaim();
-                return await GetCommentsByUserAsync(userClaim.Id, pageIndex, pageSize);
+                return await GetCommentsByUserAsync(userClaim.Id);
             }
             catch (Exception ex)
             {

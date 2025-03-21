@@ -14,7 +14,7 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<List<Post>> GetPostsWithComments(int pageIndex = 1, int pageSize = 10)
+        public async Task<List<Post>> GetPostsWithComments()
         {
             return await _db
                 .Include(p => p.Account)
@@ -22,8 +22,7 @@ namespace Infrastructure.Repositories
                     .ThenInclude(c => c.Account)
                 .Where(p => !p.IsDeleted)
                 .OrderByDescending(p => p.CreatedDate)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
+
                 .ToListAsync();
         }
 
@@ -36,15 +35,19 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(p => p.Id == postId && !p.IsDeleted);
         }
 
-        public async Task<List<Post>> GetPostsByUser(int accountId, int pageIndex = 1, int pageSize = 10)
+    
+       
+
+      
+
+        public async Task<List<Post>> GetPostsByUser(int accountId)
         {
             return await _db
                 .Include(p => p.Account)
                 .Include(p => p.Comments.Where(c => !c.IsDeleted))
                 .Where(p => p.AccountId == accountId && !p.IsDeleted)
                 .OrderByDescending(p => p.CreatedDate)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
+
                 .ToListAsync();
         }
 
