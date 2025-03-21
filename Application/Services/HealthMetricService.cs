@@ -30,19 +30,17 @@ namespace Application.Services
                 var healthMetric = _mapper.Map<HealthMetric>(healthMetricRequest);
                 healthMetric.ChildrentId = healthMetricRequest.ChildrentId;
                 var DetailsExist = await _unitOfWork.HeathMetrics.GetAsync(x => x.PregnancyWeek == healthMetric.PregnancyWeek);
+                //Bo sung tinh tuan thai
+                var children = await _unitOfWork.Childrens.GetAsync(c => c.Id == healthMetric.ChildrentId);
+                DateTime today = DateTime.Now;
+                TimeSpan timeUntilDue = children.Birth - today;
+
                 if (DetailsExist == null || DetailsExist.ChildrentId != healthMetric.ChildrentId)
                 {
-                    if(healthMetric.PregnancyWeek > 7 && healthMetric.PregnancyWeek <= 40)
-                    {
                         await _unitOfWork.HeathMetrics.AddAsync(healthMetric);
+                        healthMetric.PregnancyWeek = (int)(timeUntilDue.TotalDays / 7);
                         await _unitOfWork.SaveChangeAsync();
                         return apiResponse.SetOk("Children's health details added successfully!");
-                    }
-                    if(healthMetric.PregnancyWeek < 4)
-                    {
-                        return apiResponse.SetBadRequest("The fetus is in a stage of development without any specific signs!!!");
-                    }
-                    return apiResponse.SetBadRequest("Invalid PregnancyWeek!!!");
                 }
                 return apiResponse.SetBadRequest("You have entered this week's data");
             }
@@ -70,51 +68,21 @@ namespace Application.Services
                     return apiResponse.SetNotFound("Can not found the Children's health detail");
                 }
                 List<string> warnings = new List<string>();
-                //tu tuan 8 toi tuan 14 cac sieu am se lay chi so chieu dai cua thai nhi
-                if (healthMetric.PregnancyWeek >= 8 && healthMetric.PregnancyWeek <= 14)
+                if (healthMetric.Weight < standard.WeightMin)
                 {
-                    if(healthMetric.Lenght < standard.LenghtMin || healthMetric.Lenght > standard.LenghtMax)
-                    {
-                        warnings.Add("WARNING: Fetal lenght is different from the standard index!!!");
-                    }
+                        warnings.Add("WARNING: Thai nhi có nguy cơ bị suy dinh dưỡng, mẹ cần quan tâm nhiều hơn đến sức khỏe và bồi bổ cho thai nhi!!!");
                 }
-                //tu tuan 14 tro di chieu dai thai nhi se ko dc khao sat moi lan sieu am
-                if (healthMetric.PregnancyWeek > 14 && healthMetric.PregnancyWeek <= 15)
+                if (healthMetric.Weight > standard.WeightMax)
                 {
-                    if(healthMetric.Weight < standard.WeightMin || healthMetric.Weight > standard.WeightMax)
-                    {
-                        warnings.Add("WARNING: Fetal weight is different from the standard index!!!");
-                    }
-                   
-
+                    warnings.Add("WARNING: Thai nhi có nguy cơ béo phì, mẹ cần chú ý chế độ ăn uống để tránh trường hợp xấu đến với thai nhi!!!");
                 }
-                //Tuan 16 tro di se co them nhung chi so can quan tam
-                if (healthMetric.PregnancyWeek >= 16 && healthMetric.PregnancyWeek <= 40)
+                if (healthMetric.Lenght < standard.LenghtMin  && healthMetric.Weight < standard.WeightMin)
                 {
-                    if (healthMetric.Weight < standard.WeightMin || healthMetric.Weight > standard.WeightMax)
-                    {
-                        warnings.Add("WARNING: Fetal weight is different from the standard index!!!");
-                    }
-                    if (healthMetric.BPD < standard.BPDMin || healthMetric.BPD > standard.BPDMax)
-                    {
-                        warnings.Add("WARNING: Fetal biparietal diameter is different from the standard index!!!");
-                    }
-                    if (healthMetric.FL < standard.FLMin || healthMetric.FL > standard.FLMax)
-                    {
-                        warnings.Add("WARNING: Fetal femur length is different from the standard index!!!");
-                    }
-                    if (healthMetric.HearRate < standard.HearRateMin || healthMetric.HearRate > standard.HearRateMax)
-                    {
-                        warnings.Add("WARNING: The fetal heart rate is different from the standard index!!!");
-                    }
-                    if (healthMetric.HeadCircumference < standard.HeadCircumferenceMin || healthMetric.HeadCircumference > standard.HeadCircumferenceMax)
-                    {
-                        warnings.Add("WARNING: Fetal head circumference is different from the standard index!!!");
-                    }
-                    if (healthMetric.AC < standard.ACMin || healthMetric.AC > standard.ACMax)
-                    {
-                        warnings.Add("WARNING: The fetal heart rate is different from the standard index!!!");
-                    }
+                    warnings.Add("WARNING: Thai nhi bị suy dinh dưỡng, mẹ chú ý bồi bổ cho bé và đến khám ở cơ sở y tế hoặc bệnh viện gần nhất!!!");
+                }
+                if (healthMetric.Lenght > standard.LenghtMin && healthMetric.Weight > standard.WeightMin)
+                {
+                    warnings.Add("WARNING: Thai nhi bị béo phì, mẹ cần chú ý chế độ ăn uống của mình sao cho phù hợp và đến khám ở cơ sở y tế hoặc bệnh viện gần nhất!!!");
                 }
                 if (warnings.Count > 0)
                 {
@@ -128,7 +96,7 @@ namespace Application.Services
                     await _unitOfWork.SaveChangeAsync();
                 }
 
-                return apiResponse.SetOk("The fetus's health is in the most stable condition");
+                return apiResponse.SetOk("Happy : Tình trạng thai nhi rất tốt tiếp tục theo dõi sức khỏe bé mẹ nhé!!!");
 
             }
             catch (Exception e)
