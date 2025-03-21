@@ -24,7 +24,7 @@ namespace API.Controller
             _subscriptionService = subscriptionService;
             _claimService = claimService;
         }
-        [Authorize]
+        [Authorize] 
         [HttpPost]
         public async Task<IActionResult> CreateSubscription([FromBody] CreateSubscriptionRequest request)
         {
