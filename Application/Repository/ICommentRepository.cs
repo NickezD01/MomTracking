@@ -8,5 +8,6 @@ namespace Application.Repository
     {
         Task<List<Comment>> GetCommentsByPost(int postId);
         Task<List<Comment>> GetCommentsByUser(int accountId);
+        Task<int> GetCommentCountForPost(int postId);
     }
 }
