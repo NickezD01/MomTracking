@@ -8,6 +8,7 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,6 +131,33 @@ namespace Application.Services
                 count++;
             }
             return new ApiResponse().SetOk(count);
+        }
+        public async Task<ApiResponse> GetMemberAccount()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var users = await _unitOfWork.UserAccounts.GetActiveUserAccountsAsync();
+                return apiResponse.SetOk(users);
+            }
+            catch (Exception ex)
+            {
+                return apiResponse.SetBadRequest(ex.Message);
+            }
+
+        }
+        public async Task<ApiResponse> GetMemberByPlanName(SubscriptionPlanName name)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var users = await _unitOfWork.UserAccounts.GetUserAccountsByPlanNameAsync(name);
+                return apiResponse.SetOk(users);
+            }
+            catch(Exception ex)
+            {
+                return apiResponse.SetBadRequest(ex.Message);
+            }
         }
     }
 }

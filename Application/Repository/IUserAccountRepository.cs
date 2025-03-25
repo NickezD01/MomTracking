@@ -9,6 +9,7 @@ namespace Application.Repository
 {
     public interface IUserAccountRepository: IGenericRepository<UserAccount>
     {
-
+        Task<List<UserAccount>> GetActiveUserAccountsAsync();
+        Task<List<UserAccount>> GetUserAccountsByPlanNameAsync(SubscriptionPlanName name);
     }
 }
