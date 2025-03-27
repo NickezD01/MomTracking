@@ -118,11 +118,11 @@ namespace Application.Services
                 }
 
                 // Check if plan has active subscribers
-                var activeSubscribers = await _unitOfWork.SubscriptionPlans.GetTotalSubscribersCount(planId);
-                if (activeSubscribers > 0)
-                {
-                    return new ApiResponse().SetBadRequest("Cannot delete plan with active subscribers");
-                }
+                //var activeSubscribers = await _unitOfWork.SubscriptionPlans.GetTotalSubscribersCount(planId);
+                //if (activeSubscribers > 0)
+                //{
+                //    return new ApiResponse().SetBadRequest("Cannot delete plan with active subscribers");
+                //}
 
                 plan.IsDeleted = true;
                 plan.ModifiedDate = DateTime.UtcNow;
@@ -212,13 +212,30 @@ namespace Application.Services
         //admindashboard
         public async Task<ApiResponse> CountPlan()
         {
-            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(p => p.IsDeleted == false);
+            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null);
             var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
             var counts = new Dictionary<SubscriptionPlanName, int>();
+            int totalBronzeCount = 0;
+            int totalSilverCount = 0;
+            int totalGoldCount = 0;
             foreach (var plan in plans)
             {
-                counts[plan.Name] = subs.Count(sub => sub.PlanId == plan.Id);
+                if (plan.Name == SubscriptionPlanName.Bronze)
+                {
+                    totalBronzeCount += subs.Count(sub => sub.PlanId == plan.Id);
+                }
+                else if (plan.Name == SubscriptionPlanName.Silver)
+                {
+                    totalSilverCount += subs.Count(sub => sub.PlanId == plan.Id);
+                }
+                else if (plan.Name == SubscriptionPlanName.Gold)
+                {
+                    totalGoldCount += subs.Count(sub => sub.PlanId == plan.Id);
+                }
             }
+            counts[SubscriptionPlanName.Bronze] = totalBronzeCount;
+            counts[SubscriptionPlanName.Silver] = totalSilverCount;
+            counts[SubscriptionPlanName.Gold] = totalGoldCount;
             return new ApiResponse().SetOk(counts);
         }
         public async Task<ApiResponse> CalculateTotalRevenue()
