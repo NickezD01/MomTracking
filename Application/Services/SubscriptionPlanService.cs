@@ -7,6 +7,7 @@ using Domain.Entity;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 namespace Application.Services
 {
@@ -87,6 +88,11 @@ namespace Application.Services
                 if (plan == null)
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
+                }
+                var activeSubscribers = await _unitOfWork.SubscriptionPlans.GetTotalSubscribersCount(Id);
+                if (activeSubscribers > 0)
+                {
+                    return new ApiResponse().SetBadRequest("Cannot update plan with active subscribers");
                 }
 
                 _mapper.Map(request, plan);
