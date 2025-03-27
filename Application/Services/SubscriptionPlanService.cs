@@ -47,10 +47,10 @@ namespace Application.Services
                     return apiResponse.SetBadRequest("Only managers can create subscription plans");
                 }
 
-                if (await _unitOfWork.SubscriptionPlans.IsPlanNameExists(request.Name))
-                {
-                    return apiResponse.SetBadRequest("A plan with this name already exists");
-                }
+                //if (await _unitOfWork.SubscriptionPlans.IsPlanNameExists(request.Name))
+                //{
+                //    return apiResponse.SetBadRequest("A plan with this name already exists");
+                //}
 
                 var plan = _mapper.Map<SubscriptionPlan>(request);
 
@@ -212,7 +212,7 @@ namespace Application.Services
         //admindashboard
         public async Task<ApiResponse> CountPlan()
         {
-            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null);
+            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(p => p.IsDeleted == false);
             var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
             var counts = new Dictionary<SubscriptionPlanName, int>();
             foreach (var plan in plans)
@@ -223,7 +223,7 @@ namespace Application.Services
         }
         public async Task<ApiResponse> CalculateTotalRevenue()
         {
-            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null);
+            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(p => p.IsDeleted == false);
             var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
             var userCounts = new Dictionary<SubscriptionPlanName, int>();
             foreach (var plan in plans)
