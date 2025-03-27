@@ -88,6 +88,11 @@ namespace Application.Services
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
                 }
+                var activeSubscribers = await _unitOfWork.SubscriptionPlans.GetTotalSubscribersCount(planId);
+                if (activeSubscribers > 0)
+                {
+                    return new ApiResponse().SetBadRequest("Cannot update plan with active subscribers");
+                }
 
                 _mapper.Map(request, plan);
                 await _unitOfWork.SaveChangeAsync();
