@@ -4,7 +4,7 @@ using Application.Response;
 using Application.Response.Comment;
 using AutoMapper;
 using Domain.Entity;
-using Domain; // Add this to access the Role enum
+using Domain;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -131,7 +131,6 @@ namespace Application.Services
                 return new ApiResponse().SetBadRequest($"Error retrieving comments: {ex.Message}");
             }
         }
-
         public async Task<ApiResponse> GetCommentsByUserAsync(int accountId, int pageIndex = 1, int pageSize = 20)
         {
             try

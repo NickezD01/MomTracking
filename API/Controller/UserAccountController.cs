@@ -1,5 +1,6 @@
 ﻿using Application.Interface;
 using Application.Request.UserAccount;
+using Domain.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -56,6 +57,20 @@ namespace API.Controller
         public async Task<IActionResult> CountUser()
         {
             var resposne = await _service.CountUser();
+            return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
+        }
+        [Authorize(Roles = "Manager")]
+        [HttpGet("GetAllMemberUser")]
+        public async Task<IActionResult> GetAllMemberUser()
+        {
+            var resposne = await _service.GetMemberAccount();
+            return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
+        }
+        [Authorize(Roles = "Manager")]
+        [HttpGet("GetAllMemberByPlan/{PlansName}")]
+        public async Task<IActionResult> GetAllMemberByPlan(SubscriptionPlanName PlansName)
+        {
+            var resposne = await _service.GetMemberByPlanName(PlansName);
             return resposne.IsSuccess ? Ok(resposne) : BadRequest(resposne);
         }
     }

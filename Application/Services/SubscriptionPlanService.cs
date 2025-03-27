@@ -7,6 +7,7 @@ using Domain.Entity;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 namespace Application.Services
 {
@@ -47,10 +48,10 @@ namespace Application.Services
                     return apiResponse.SetBadRequest("Only managers can create subscription plans");
                 }
 
-                if (await _unitOfWork.SubscriptionPlans.IsPlanNameExists(request.Name))
-                {
-                    return apiResponse.SetBadRequest("A plan with this name already exists");
-                }
+                //if (await _unitOfWork.SubscriptionPlans.IsPlanNameExists(request.Name))
+                //{
+                //    return apiResponse.SetBadRequest("A plan with this name already exists");
+                //}
 
                 var plan = _mapper.Map<SubscriptionPlan>(request);
 
@@ -88,6 +89,11 @@ namespace Application.Services
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
                 }
+                var activeSubscribers = await _unitOfWork.SubscriptionPlans.GetTotalSubscribersCount(Id);
+                if (activeSubscribers > 0)
+                {
+                    return new ApiResponse().SetBadRequest("Cannot update plan with active subscribers");
+                }
 
                 _mapper.Map(request, plan);
                 await _unitOfWork.SaveChangeAsync();
@@ -118,11 +124,11 @@ namespace Application.Services
                 }
 
                 // Check if plan has active subscribers
-                var activeSubscribers = await _unitOfWork.SubscriptionPlans.GetTotalSubscribersCount(planId);
-                if (activeSubscribers > 0)
-                {
-                    return new ApiResponse().SetBadRequest("Cannot delete plan with active subscribers");
-                }
+                //var activeSubscribers = await _unitOfWork.SubscriptionPlans.GetTotalSubscribersCount(planId);
+                //if (activeSubscribers > 0)
+                //{
+                //    return new ApiResponse().SetBadRequest("Cannot delete plan with active subscribers");
+                //}
 
                 plan.IsDeleted = true;
                 plan.ModifiedDate = DateTime.UtcNow;
@@ -215,29 +221,60 @@ namespace Application.Services
             var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null);
             var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
             var counts = new Dictionary<SubscriptionPlanName, int>();
+            int totalBronzeCount = 0;
+            int totalSilverCount = 0;
+            int totalGoldCount = 0;
             foreach (var plan in plans)
             {
-                counts[plan.Name] = subs.Count(sub => sub.PlanId == plan.Id);
+                if (plan.Name == SubscriptionPlanName.Bronze)
+                {
+                    totalBronzeCount += subs.Count(sub => sub.PlanId == plan.Id);
+                }
+                else if (plan.Name == SubscriptionPlanName.Silver)
+                {
+                    totalSilverCount += subs.Count(sub => sub.PlanId == plan.Id);
+                }
+                else if (plan.Name == SubscriptionPlanName.Gold)
+                {
+                    totalGoldCount += subs.Count(sub => sub.PlanId == plan.Id);
+                }
             }
+            counts[SubscriptionPlanName.Bronze] = totalBronzeCount;
+            counts[SubscriptionPlanName.Silver] = totalSilverCount;
+            counts[SubscriptionPlanName.Gold] = totalGoldCount;
             return new ApiResponse().SetOk(counts);
         }
         public async Task<ApiResponse> CalculateTotalRevenue()
         {
-            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(null);
+            var Bronzeplans = await _unitOfWork.SubscriptionPlans.GetAllAsync(b => b.Name == SubscriptionPlanName.Bronze);
+            var Silverplans = await _unitOfWork.SubscriptionPlans.GetAllAsync(b => b.Name == SubscriptionPlanName.Silver);
+            var Goldplans = await _unitOfWork.SubscriptionPlans.GetAllAsync(b => b.Name == SubscriptionPlanName.Gold);
             var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
-            var userCounts = new Dictionary<SubscriptionPlanName, int>();
-            foreach (var plan in plans)
-            {
-                userCounts[plan.Name] = subs.Count(sub => sub.PlanId == plan.Id);
-            }
+            
+            
             var totalRevenue = new Dictionary<SubscriptionPlanName, decimal>();
+            decimal totalBronzePrize = 0;
+            decimal totalSilverPrize = 0;
+            decimal totalGoldPrize = 0;
 
-            foreach (var plan in plans)
+            foreach (var bplan in Bronzeplans)
             {
-
-                totalRevenue[plan.Name] = userCounts[plan.Name] * plan.Price;
+                int userCount = subs.Count(sub => sub.PlanId == bplan.Id);
+                totalBronzePrize += userCount * bplan.Price;
             }
-
+            foreach (var splan in Silverplans)
+            {
+                int userCount = subs.Count(sub => sub.PlanId == splan.Id);
+                totalSilverPrize += userCount * splan.Price;
+            }
+            foreach (var gplan in Goldplans)
+            {
+                int userCount = subs.Count(sub => sub.PlanId == gplan.Id);
+                totalGoldPrize += userCount * gplan.Price;
+            }
+            totalRevenue[SubscriptionPlanName.Bronze] = totalBronzePrize;
+            totalRevenue[SubscriptionPlanName.Silver] = totalSilverPrize;
+            totalRevenue[SubscriptionPlanName.Gold] = totalGoldPrize;
 
             return new ApiResponse().SetOk(totalRevenue);
         }

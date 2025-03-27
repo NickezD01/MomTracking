@@ -1,5 +1,6 @@
 ﻿using Application.Request.UserAccount;
 using Application.Response;
+using Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,7 @@ namespace Application.Interface
         Task<ApiResponse> GetAllAccountAsync();
         Task<ApiResponse> GetUserIdAsync();
         Task<ApiResponse> CountUser();
+        Task<ApiResponse> GetMemberAccount();
+        Task<ApiResponse> GetMemberByPlanName(SubscriptionPlanName name);
     }
 }

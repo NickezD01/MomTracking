@@ -1,6 +1,8 @@
 ﻿using Application.Repository;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +23,7 @@ namespace Infrastructure.Repositories
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.Account)
                 .Where(p => !p.IsDeleted)
-                .OrderByDescending(p => p.CreatedDate)
+            .OrderByDescending(p => p.CreatedDate)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -35,6 +37,11 @@ namespace Infrastructure.Repositories
                     .ThenInclude(c => c.Account)
                 .FirstOrDefaultAsync(p => p.Id == postId && !p.IsDeleted);
         }
+
+    
+       
+
+      
 
         public async Task<List<Post>> GetPostsByUser(int accountId, int pageIndex = 1, int pageSize = 10)
         {

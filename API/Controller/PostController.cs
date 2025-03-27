@@ -20,7 +20,9 @@ namespace API.Controller
         [HttpGet]
         public async Task<IActionResult> GetAllPosts([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
         {
+            //var response = await _postService.GetAllPostsAsync();
             var response = await _postService.GetAllPostsAsync(pageIndex, pageSize);
+
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 

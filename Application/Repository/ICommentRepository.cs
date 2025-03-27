@@ -1,7 +1,7 @@
 ﻿using Domain.Entity;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 namespace Application.Repository
 {
     public interface ICommentRepository : IGenericRepository<Comment>

@@ -155,11 +155,12 @@ namespace Application.Services
             }
         }
 
+
         public async Task<ApiResponse> GetPostsByUserAsync(int accountId, int pageIndex = 1, int pageSize = 10)
         {
             try
             {
-                var posts = await _unitOfWork.Posts.GetPostsByUser(accountId, pageIndex, pageSize);
+                var posts = await _unitOfWork.Posts.GetPostsByUser(accountId);
                 var postResponses = _mapper.Map<List<PostResponse>>(posts);
                 return new ApiResponse().SetOk(postResponses);
             }
@@ -181,5 +182,6 @@ namespace Application.Services
                 return new ApiResponse().SetBadRequest($"Error retrieving your posts: {ex.Message}");
             }
         }
+
     }
 }
