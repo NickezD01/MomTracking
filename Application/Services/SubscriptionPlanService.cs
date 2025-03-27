@@ -246,21 +246,35 @@ namespace Application.Services
         }
         public async Task<ApiResponse> CalculateTotalRevenue()
         {
-            var plans = await _unitOfWork.SubscriptionPlans.GetAllAsync(p => p.IsDeleted == false);
+            var Bronzeplans = await _unitOfWork.SubscriptionPlans.GetAllAsync(b => b.Name == SubscriptionPlanName.Bronze);
+            var Silverplans = await _unitOfWork.SubscriptionPlans.GetAllAsync(b => b.Name == SubscriptionPlanName.Silver);
+            var Goldplans = await _unitOfWork.SubscriptionPlans.GetAllAsync(b => b.Name == SubscriptionPlanName.Gold);
             var subs = await _unitOfWork.Subscriptions.GetAllAsync(s => s.PaymentStatus == PaymentStatus.Paid);
-            var userCounts = new Dictionary<SubscriptionPlanName, int>();
-            foreach (var plan in plans)
-            {
-                userCounts[plan.Name] = subs.Count(sub => sub.PlanId == plan.Id);
-            }
+            
+            
             var totalRevenue = new Dictionary<SubscriptionPlanName, decimal>();
+            decimal totalBronzePrize = 0;
+            decimal totalSilverPrize = 0;
+            decimal totalGoldPrize = 0;
 
-            foreach (var plan in plans)
+            foreach (var bplan in Bronzeplans)
             {
-
-                totalRevenue[plan.Name] = userCounts[plan.Name] * plan.Price;
+                int userCount = subs.Count(sub => sub.PlanId == bplan.Id);
+                totalBronzePrize += userCount * bplan.Price;
             }
-
+            foreach (var splan in Silverplans)
+            {
+                int userCount = subs.Count(sub => sub.PlanId == splan.Id);
+                totalSilverPrize += userCount * splan.Price;
+            }
+            foreach (var gplan in Goldplans)
+            {
+                int userCount = subs.Count(sub => sub.PlanId == gplan.Id);
+                totalGoldPrize += userCount * gplan.Price;
+            }
+            totalRevenue[SubscriptionPlanName.Bronze] = totalBronzePrize;
+            totalRevenue[SubscriptionPlanName.Silver] = totalSilverPrize;
+            totalRevenue[SubscriptionPlanName.Gold] = totalGoldPrize;
 
             return new ApiResponse().SetOk(totalRevenue);
         }
