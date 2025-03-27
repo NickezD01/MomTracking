@@ -129,16 +129,25 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetAllPostsAsync()
+        public async Task<ApiResponse> GetAllPostsAsync(int pageIndex = 1, int pageSize = 10)
         {
             try
             {
-                var posts = await _unitOfWork.Posts.GetPostsWithComments();
+                var posts = await _unitOfWork.Posts.GetPostsWithComments(pageIndex, pageSize);
                 var totalCount = await _unitOfWork.Posts.GetTotalPostsCount();
                 
                 var postResponses = _mapper.Map<List<PostResponse>>(posts);
                 
-                return new ApiResponse().SetOk(postResponses);
+                var paginatedResponse = new
+                {
+                    TotalCount = totalCount,
+                    PageIndex = pageIndex,
+                    PageSize = pageSize,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize),
+                    Items = postResponses
+                };
+                
+                return new ApiResponse().SetOk(paginatedResponse);
             }
             catch (Exception ex)
             {
@@ -146,7 +155,8 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetPostsByUserAsync(int accountId)
+
+        public async Task<ApiResponse> GetPostsByUserAsync(int accountId, int pageIndex = 1, int pageSize = 10)
         {
             try
             {
@@ -160,17 +170,17 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetMyPostsAsync()
+        public async Task<ApiResponse> GetMyPostsAsync(int pageIndex = 1, int pageSize = 10)
         {
             try
             {
                 var userClaim = _claimService.GetUserClaim();
-                return await GetPostsByUserAsync(userClaim.Id);
-    }
+                return await GetPostsByUserAsync(userClaim.Id, pageIndex, pageSize);
+            }
             catch (Exception ex)
             {
                 return new ApiResponse().SetBadRequest($"Error retrieving your posts: {ex.Message}");
-}
+            }
         }
 
     }
