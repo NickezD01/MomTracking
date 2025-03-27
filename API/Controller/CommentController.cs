@@ -18,24 +18,24 @@ namespace API.Controller
         }
 
         [HttpGet("post/{postId}")]
-        public async Task<IActionResult> GetCommentsByPost(int postId)
+        public async Task<IActionResult> GetCommentsByPost(int postId, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 20)
         {
-            var response = await _commentService.GetCommentsByPostAsync(postId);
+            var response = await _commentService.GetCommentsByPostAsync(postId, pageIndex, pageSize);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
         [HttpGet("user/{accountId}")]
-        public async Task<IActionResult> GetCommentsByUser(int accountId)
+        public async Task<IActionResult> GetCommentsByUser(int accountId, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 20)
         {
-            var response = await _commentService.GetCommentsByUserAsync(accountId);
+            var response = await _commentService.GetCommentsByUserAsync(accountId, pageIndex, pageSize);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
         [Authorize]
         [HttpGet("my-comments")]
-        public async Task<IActionResult> GetMyComments()
+        public async Task<IActionResult> GetMyComments([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 20)
         {
-            var response = await _commentService.GetMyCommentsAsync();
+            var response = await _commentService.GetMyCommentsAsync(pageIndex, pageSize);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 

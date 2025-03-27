@@ -113,7 +113,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetCommentsByPostAsync(int postId)
+        public async Task<ApiResponse> GetCommentsByPostAsync(int postId, int pageIndex = 1, int pageSize = 20)
         {
             try
             {
@@ -122,7 +122,7 @@ namespace Application.Services
                 if (post == null)
                     return new ApiResponse().SetNotFound("Post not found");
 
-                var comments = await _unitOfWork.Comments.GetCommentsByPost(postId);
+                var comments = await _unitOfWork.Comments.GetCommentsByPost(postId, pageIndex, pageSize);
                 var commentResponses = _mapper.Map<List<CommentResponse>>(comments);
                 return new ApiResponse().SetOk(commentResponses);
             }
@@ -131,12 +131,11 @@ namespace Application.Services
                 return new ApiResponse().SetBadRequest($"Error retrieving comments: {ex.Message}");
             }
         }
-
-        public async Task<ApiResponse> GetCommentsByUserAsync(int accountId)
+        public async Task<ApiResponse> GetCommentsByUserAsync(int accountId, int pageIndex = 1, int pageSize = 20)
         {
             try
             {
-                var comments = await _unitOfWork.Comments.GetCommentsByUser(accountId);
+                var comments = await _unitOfWork.Comments.GetCommentsByUser(accountId, pageIndex, pageSize);
                 var commentResponses = _mapper.Map<List<CommentResponse>>(comments);
                 return new ApiResponse().SetOk(commentResponses);
             }
@@ -146,12 +145,12 @@ namespace Application.Services
             }
         }
 
-        public async Task<ApiResponse> GetMyCommentsAsync()
+        public async Task<ApiResponse> GetMyCommentsAsync(int pageIndex = 1, int pageSize = 20)
         {
             try
             {
                 var userClaim = _claimService.GetUserClaim();
-                return await GetCommentsByUserAsync(userClaim.Id);
+                return await GetCommentsByUserAsync(userClaim.Id, pageIndex, pageSize);
             }
             catch (Exception ex)
             {
