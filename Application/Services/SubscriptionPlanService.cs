@@ -7,7 +7,6 @@ using Domain.Entity;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Threading.Tasks;
 namespace Application.Services
 {
@@ -89,12 +88,6 @@ namespace Application.Services
                 {
                     return new ApiResponse().SetNotFound("Subscription plan not found");
                 }
-                var activeSubscribers = await _unitOfWork.SubscriptionPlans.GetTotalSubscribersCount(Id);
-                if (activeSubscribers > 0)
-                {
-                    return new ApiResponse().SetBadRequest("Cannot update plan with active subscribers");
-                }
-
                 _mapper.Map(request, plan);
                 await _unitOfWork.SaveChangeAsync();
 
@@ -104,7 +97,7 @@ namespace Application.Services
             catch (Exception ex)
             {
                 return new ApiResponse().SetBadRequest($"Error updating subscription plan: {ex.Message}");
-            }
+            } 
         }
 
         public async Task<ApiResponse> DeletePlanAsync(int planId)
