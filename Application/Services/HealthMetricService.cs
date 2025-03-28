@@ -34,11 +34,12 @@ namespace Application.Services
                 var children = await _unitOfWork.Childrens.GetAsync(c => c.Id == healthMetric.ChildrentId);
                 DateTime today = DateTime.Now;
                 TimeSpan timeUntilDue = children.Birth - today;
-
+                int w = 0;
                 if (DetailsExist == null || DetailsExist.ChildrentId != healthMetric.ChildrentId)
                 {
                         await _unitOfWork.HeathMetrics.AddAsync(healthMetric);
-                        healthMetric.PregnancyWeek = (int)(timeUntilDue.TotalDays / 7);
+                        w = (int)(timeUntilDue.TotalDays / 7);
+                        healthMetric.PregnancyWeek = 40 - w;
                         await _unitOfWork.SaveChangeAsync();
                         return apiResponse.SetOk("Children's health details added successfully!");
                 }
