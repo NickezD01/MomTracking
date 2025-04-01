@@ -39,6 +39,7 @@ namespace Application.Services
                 {
                         await _unitOfWork.HeathMetrics.AddAsync(healthMetric);
                         w = (int)(timeUntilDue.TotalDays / 7);
+                        w = w < 40 ? w + 1 : w;  // Ensure w is incremented if it's less than 40
                         healthMetric.PregnancyWeek = 40 - w;
                         await _unitOfWork.SaveChangeAsync();
                         return apiResponse.SetOk("Children's health details added successfully!");

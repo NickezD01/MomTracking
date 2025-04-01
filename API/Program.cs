@@ -167,5 +167,3 @@ RecurringJob.AddOrUpdate<ScheduleReminderService>("daily-reminder-job",x => x.Ch
 RecurringJob.AddOrUpdate<ExpiredSubscriptionService>("Check-EndDate", x => x.CheckExpiredSub(), Cron.Daily(1, 0));
 app.MapControllers();
 app.Run();
-
-
