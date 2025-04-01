@@ -2,186 +2,311 @@
 
 ## Tổng quan
 
-MomTracking là nền tảng theo dõi sức khỏe toàn diện dành cho mẹ và bé. Ứng dụng cho phép người dùng theo dõi các chỉ số sức khỏe của trẻ, so sánh dữ liệu tăng trưởng với tiêu chuẩn WHO, quản lý lịch hẹn thông qua hệ thống đặt lịch, và truy cập các tính năng cao cấp thông qua mô hình thuê bao.
+MomTracking là nền tảng theo dõi sức khỏe toàn diện dành cho mẹ và bé, được phát triển trên nền tảng .NET 8.0. Ứng dụng giúp người dùng theo dõi các chỉ số sức khỏe của trẻ, so sánh với tiêu chuẩn WHO, cảnh báo sớm các vấn đề tiềm ẩn, quản lý lịch hẹn y tế, và tham gia cộng đồng chia sẻ. Hệ thống cung cấp các gói dịch vụ khác nhau với nhiều tính năng đa dạng qua mô hình thuê bao.
 
 ## Tính năng chính
 
-- **Theo dõi Sức khỏe Trẻ em**: Giám sát và ghi lại các chỉ số sức khỏe quan trọng bao gồm cân nặng, chiều cao, chu vi đầu và các thông số tăng trưởng khác
-- **Phân tích Tăng trưởng**: So sánh dữ liệu sức khỏe của trẻ với tiêu chuẩn WHO để xác định các vấn đề sức khỏe tiềm ẩn
-- **Lịch hẹn Khám bệnh**: Tạo và quản lý các cuộc hẹn chăm sóc sức khỏe với thông báo nhắc nhở
-- **Diễn đàn Cộng đồng**: Chức năng đăng bài và bình luận để hỗ trợ cộng đồng và chia sẻ thông tin
-- **Quản lý Gói thuê bao**: Các gói thuê bao theo cấp bậc (Đồng, Bạc, Vàng) với các tính năng và thời hạn khác nhau
-- **Xuất PDF**: Tạo báo cáo về dữ liệu sức khỏe của trẻ để chia sẻ với nhà cung cấp dịch vụ chăm sóc sức khỏe
-- **Quản lý Người dùng**: Đăng ký, xác thực và quản lý hồ sơ với xác minh email
-- **Xử lý Thanh toán**: Tích hợp với VNPay cho thanh toán thuê bao
+### Theo dõi và Phân tích Sức khỏe Trẻ em
+- **Ghi nhận chỉ số sức khỏe**: Cân nặng, chiều cao, chu vi đầu, nhịp tim, BPD, AC, FL và các thông số khác
+- **Phân tích tự động**: So sánh dữ liệu với tiêu chuẩn WHO theo tuần thai
+- **Hệ thống cảnh báo thông minh**: Phát hiện các dấu hiệu bất thường như suy dinh dưỡng hoặc béo phì
+- **Theo dõi tiến trình**: Biểu đồ trực quan hóa sự phát triển theo thời gian
 
-## Công nghệ sử dụng
+### Hệ thống Quản lý Lịch hẹn
+- **Lịch hẹn y tế**: Tạo và quản lý các cuộc hẹn khám thai, tiêm chủng, khám định kỳ
+- **Nhắc nhở tự động**: Hệ thống gửi thông báo trước các cuộc hẹn qua email
+- **Tùy chỉnh lịch trình**: Phù hợp với nhu cầu cá nhân và lịch khám của bác sĩ
 
-### Backend
-- **Framework**: ASP.NET Core 8.0
-- **Kiến trúc**: Mô hình Clean Architecture với các lớp Domain, Application, Infrastructure và API
-- **Cơ sở dữ liệu**: SQL Server với Entity Framework Core
-- **Xác thực**: JWT (JSON Web Tokens)
-- **Xác thực dữ liệu**: FluentValidation
-- **Mapping đối tượng**: AutoMapper
-- **Xử lý nền**: Hangfire cho các tác vụ theo lịch
-- **Tài liệu API**: Swagger/OpenAPI
+### Cộng đồng và Chia sẻ Kinh nghiệm
+- **Diễn đàn thảo luận**: Đăng bài, bình luận, chia sẻ kinh nghiệm chăm sóc con
+- **Hỗ trợ hình ảnh**: Đăng tải hình ảnh kèm theo bài viết
+- **Phân trang thông minh**: Dễ dàng tìm kiếm và theo dõi các cuộc thảo luận
 
-### Hạ tầng
-- **Docker**: Hỗ trợ container hóa với docker-compose
-- **Dịch vụ Email**: Dịch vụ email SMTP cho thông báo và xác minh
+### Mô hình Thuê bao Linh hoạt
+- **Ba gói thuê bao**:
+    - **Đồng**: Các tính năng cơ bản
+    - **Bạc**: Tính năng mở rộng
+    - **Vàng**: Đầy đủ tính năng cao cấp
+- **Thanh toán an toàn**: Tích hợp cổng thanh toán VNPay
+- **Quản lý thuê bao**: Theo dõi, nâng cấp hoặc hủy gói dịch vụ
 
-## Kiến trúc
+### Quản lý Người dùng và Bảo mật
+- **Xác thực hai lớp**: Đăng ký tài khoản với xác minh email
+- **Phân quyền**: Người dùng (Customer) và Quản trị viên (Manager)
+- **Bảo mật JWT**: Xác thực và phân quyền dựa trên token
+- **Quản lý hồ sơ**: Cập nhật thông tin cá nhân và hình ảnh
 
-Ứng dụng tuân theo nguyên tắc Clean Architecture với bốn lớp riêng biệt:
+### Báo cáo và Xuất dữ liệu
+- **Xuất báo cáo PDF**: Tạo báo cáo về dữ liệu sức khỏe của trẻ
+- **Tùy chỉnh báo cáo**: Lựa chọn thông tin và khoảng thời gian hiển thị
+- **Chia sẻ dữ liệu**: Dễ dàng chia sẻ với bác sĩ và chuyên gia y tế
 
-### Lớp Domain
-Chứa các quy tắc nghiệp vụ doanh nghiệp và các thực thể đại diện cho các khái niệm kinh doanh cốt lõi:
-- Tài khoản người dùng và hồ sơ trẻ em
-- Chỉ số sức khỏe và tiêu chuẩn WHO
-- Thuê bao và xử lý thanh toán
-- Bài đăng và bình luận cộng đồng
-- Lịch hẹn và thông báo
+## Kiến trúc và Công nghệ
 
-### Lớp Application
-Chứa các quy tắc nghiệp vụ ứng dụng và các trường hợp sử dụng:
-- Giao diện dịch vụ và triển khai
-- DTO Yêu cầu/Phản hồi
-- Quy tắc xác thực
-- Cấu hình mapping
-- Xử lý ngoại lệ tùy chỉnh
+### Kiến trúc Clean Architecture
+MomTracking áp dụng nguyên tắc Clean Architecture với 4 lớp rõ ràng:
 
-### Lớp Infrastructure
-Chứa framework và chi tiết triển khai:
-- Context và cấu hình cơ sở dữ liệu
-- Triển khai repository
-- Triển khai mô hình Unit of Work
-- Triển khai dịch vụ email
-- Tích hợp dịch vụ bên ngoài
+#### 1. Domain Layer
+- Chứa các entity core: UserAccount, Children, HealthMetric, Schedule, Post, Comment, Subscription...
+- Định nghĩa business rules và enumerations (Role, SubscriptionStatus, PaymentStatus...)
+- Không phụ thuộc vào bất kỳ layer nào khác
 
-### Lớp API
-Chứa lớp trình bày và các điểm đầu vào:
-- Controllers REST API
-- Các thành phần middleware
-- Cấu hình xác thực
-- Xử lý ngoại lệ
-- Tài liệu API
+#### 2. Application Layer
+- Triển khai business logic thông qua các service: AuthService, HealthMetricService, SubscriptionService...
+- Định nghĩa các interface: IUnitOfWork, IHeathMetricService, ISubscriptionService...
+- Xử lý DTO (Data Transfer Objects): Requests/Responses
+- Tích hợp validation với FluentValidation
+- Cấu hình mapping với AutoMapper
 
-## Bắt đầu
+#### 3. Infrastructure Layer
+- Thực hiện các interface từ Application layer
+- Quản lý truy cập dữ liệu với Repository pattern và Unit of Work
+- Cấu hình Entity Framework Core và DbContext
+- Triển khai các dịch vụ ngoài: EmailService, VnPayService, FirebaseStorageService...
+
+#### 4. API Layer
+- Cung cấp RESTful API endpoints qua controllers
+- Xử lý authentication, authorization và validation
+- Middleware tùy chỉnh: ValidationMiddleware, ExceptionMiddleware, RequirePaidStatusAttribute
+- Tích hợp Swagger/OpenAPI cho tài liệu API
+- Cấu hình background jobs với Hangfire
+
+### Công nghệ chính
+- **Backend Framework**: ASP.NET Core 8.0
+- **ORM**: Entity Framework Core với SQL Server
+- **Authentication**: JWT (JSON Web Tokens)
+- **Validation**: FluentValidation
+- **Object Mapping**: AutoMapper
+- **Background Processing**: Hangfire
+- **API Documentation**: Swagger/OpenAPI
+- **Payment Gateway**: VNPay
+- **File Storage**: Firebase Storage
+- **Email Service**: SMTP Email
+- **Containerization**: Docker & Docker Compose
+
+## Cài đặt và Triển khai
 
 ### Yêu cầu hệ thống
 - .NET 8.0 SDK
-- SQL Server
-- Docker (tùy chọn)
+- SQL Server 2019 trở lên
+- Visual Studio 2022 hoặc VS Code
+- Docker (tùy chọn cho containerization)
 
-### Cài đặt
+### Cài đặt thông thường
 
 1. Clone repository
 ```bash
-git clone <đường-dẫn-repository>
+git clone https://github.com/yourusername/MomTracking.git
 cd MomTracking
 ```
 
-2. Cập nhật chuỗi kết nối trong `appsettings.json` để trỏ đến instance SQL Server của bạn
-
-3. Áp dụng migration cơ sở dữ liệu
-```bash
-dotnet ef database update
+2. Cấu hình chuỗi kết nối
+   Mở file `API/appsettings.json` và cập nhật chuỗi kết nối SQL Server:
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=your-server;Database=MomTrackingDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+}
 ```
 
-4. Chạy ứng dụng
+3. Cấu hình JWT và các dịch vụ khác
+```json
+"SecretToken": {
+  "Value": "your-secure-secret-token-at-least-32-characters"
+},
+"EmailConfiguration": {
+  "From": "your-email@example.com",
+  "SmtpServer": "smtp.example.com",
+  "Port": 587,
+  "Username": "your-username",
+  "Password": "your-password"
+}
+```
+
+4. Áp dụng migrations để khởi tạo cơ sở dữ liệu
+```bash
+dotnet ef database update --project Infrastructure --startup-project API
+```
+
+5. Chạy ứng dụng
 ```bash
 dotnet run --project API
 ```
 
-5. Truy cập tài liệu Swagger tại `https://localhost:5001/swagger`
+6. Truy cập Swagger UI tại `https://localhost:5001/swagger`
 
-### Triển khai bằng Docker
+### Triển khai với Docker
 
-Ứng dụng có thể được triển khai bằng Docker:
+1. Đảm bảo Docker và Docker Compose đã được cài đặt
 
+2. Cập nhật các biến môi trường trong `docker-compose.yml` nếu cần thiết
+
+3. Chạy Docker Compose
 ```bash
 docker-compose up -d
 ```
 
-## Các điểm cuối API
+4. Truy cập ứng dụng tại `http://localhost:8080`
 
-API cung cấp các điểm cuối chính sau:
+## API Endpoints
 
-- **Xác thực**: `/api/Auth` - Đăng ký, đăng nhập và xác minh email
-- **Quản lý Người dùng**: `/api/UserAccount` - Quản lý hồ sơ người dùng
-- **Trẻ em**: `/api/Children` - Quản lý hồ sơ trẻ
-- **Chỉ số Sức khỏe**: `/api/HealthMetric` - Theo dõi và phân tích dữ liệu sức khỏe
-- **Tiêu chuẩn WHO**: `/api/WHOStandard` - Truy cập tiêu chuẩn tăng trưởng
-- **Lịch hẹn**: `/api/Schedule` - Quản lý cuộc hẹn
-- **Cộng đồng**: `/api/Post` và `/api/Comment` - Chức năng diễn đàn
-- **Thuê bao**: `/api/Subscription` và `/api/SubscriptionPlan` - Quản lý thuê bao
-- **Thanh toán**: `/api/Payment` - Xử lý thanh toán
-- **Xuất PDF**: `/api/PdfExport` - Tạo báo cáo
+### Authentication
+- `POST /api/Auth/register` - Đăng ký tài khoản mới
+- `POST /api/Auth/login` - Đăng nhập và nhận JWT token
+- `POST /api/Auth/Verification` - Xác minh email
 
-## Công việc nền
+### Quản lý Người dùng
+- `GET /api/UserAccount/profile` - Lấy thông tin profile
+- `PUT /api/UserAccount/updateprofile` - Cập nhật thông tin cá nhân
+- `PUT /api/UserAccount/changepassword` - Thay đổi mật khẩu
 
-Ứng dụng sử dụng Hangfire để chạy các tác vụ theo lịch sau:
+### Quản lý Trẻ em
+- `POST /api/Children/AddNewChildren` - Thêm thông tin trẻ mới
+- `GET /api/Children/GetAllChildren` - Lấy danh sách tất cả trẻ
+- `PUT /api/Children/UpdateChildrenData/{id}` - Cập nhật thông tin trẻ
+- `DELETE /api/Children/DeleteChildrenDetail/{id}` - Xóa thông tin trẻ
 
-- Nhắc nhở cuộc hẹn hàng ngày (chạy lúc 00:00)
-- Kiểm tra hết hạn thuê bao (chạy lúc 01:00)
+### Theo dõi Sức khỏe
+- `POST /api/HealthMetric/AddNewHealthMetric` - Thêm chỉ số sức khỏe mới
+- `GET /api/HealthMetric/GetAllHealthMetric` - Lấy tất cả chỉ số sức khỏe
+- `PUT /api/HealthMetric/UpdateHealthMetric/{id}` - Cập nhật chỉ số sức khỏe
+- `DELETE /api/HealthMetric/DeleteHealthMetric/{id}` - Xóa chỉ số sức khỏe
+- `GET /api/HealthMetric/CompareHealthMetricData/{id}` - So sánh với tiêu chuẩn WHO
+
+### Tiêu chuẩn WHO
+- `GET /api/WHOStandard` - Lấy tất cả tiêu chuẩn WHO
+- `POST /api/WHOStandard` - Thêm tiêu chuẩn mới (chỉ Manager)
+- `PUT /api/WHOStandard/{id}` - Cập nhật tiêu chuẩn (chỉ Manager)
+- `DELETE /api/WHOStandard/{id}` - Xóa tiêu chuẩn (chỉ Manager)
+
+### Lịch hẹn
+- `POST /api/Schedule` - Tạo lịch hẹn mới
+- `GET /api/Schedule` - Lấy tất cả lịch hẹn
+- `PUT /api/Schedule/{id}` - Cập nhật lịch hẹn
+- `DELETE /api/Schedule/{id}` - Xóa lịch hẹn
+
+### Quản lý Thuê bao
+- `GET /api/SubscriptionPlan` - Lấy tất cả gói thuê bao
+- `POST /api/SubscriptionPlan` - Tạo gói mới (chỉ Manager)
+- `PUT /api/SubscriptionPlan/{planId}` - Cập nhật gói (chỉ Manager)
+- `DELETE /api/SubscriptionPlan/{planId}` - Xóa gói (chỉ Manager)
+- `POST /api/Subscription` - Đăng ký gói thuê bao
+- `GET /api/Subscription/my-subscriptions` - Lấy thuê bao của tôi
+- `POST /api/Subscription/{subscriptionId}/cancel` - Hủy thuê bao
+
+### Thanh toán
+- `POST /api/Payment` - Tạo URL thanh toán VNPay
+- `GET /api/Payment/callback` - Callback từ cổng thanh toán
+
+### Bài đăng Cộng đồng
+- `GET /api/Post` - Lấy tất cả bài đăng (có phân trang)
+- `GET /api/Post/{postId}` - Lấy chi tiết bài đăng
+- `POST /api/Post` - Tạo bài đăng mới
+- `PUT /api/Post/{postId}` - Cập nhật bài đăng
+- `DELETE /api/Post/{postId}` - Xóa bài đăng
+
+### Bình luận
+- `POST /api/Comment` - Thêm bình luận mới
+- `PUT /api/Comment/{commentId}` - Cập nhật bình luận
+- `DELETE /api/Comment/{commentId}` - Xóa bình luận
+
+### Xuất dữ liệu
+- `GET /api/PdfExport/health/{childId}` - Xuất báo cáo sức khỏe dạng PDF
+
+### Dashboard (chỉ Manager)
+- `GET /api/SubscriptionPlan/NumberOfSubscribers` - Thống kê số người đăng ký theo gói
+- `GET /api/SubscriptionPlan/CalculateTotalRevenue` - Tính tổng doanh thu theo gói
+- `GET /api/SubscriptionPlan/TotalPrice` - Tính tổng doanh thu
+
+## Background Jobs
+
+Ứng dụng sử dụng Hangfire để quản lý các tác vụ nền:
+
+1. **Nhắc nhở lịch hẹn hàng ngày**
+    - Chạy lúc 00:00 mỗi ngày
+    - Gửi email nhắc nhở cho các cuộc hẹn trong ngày
+
+2. **Kiểm tra thuê bao hết hạn**
+    - Chạy lúc 01:00 mỗi ngày
+    - Cập nhật trạng thái các thuê bao đã hết hạn
+
+Bạn có thể truy cập Hangfire Dashboard tại `/hangfire` để theo dõi và quản lý các job.
 
 ## Bảo mật
 
-- Xác thực JWT với phân quyền dựa trên vai trò
-- Mã hóa mật khẩu với HMACSHA512
-- Xác minh email cho tài khoản mới
-- Kiểm soát truy cập dựa trên thuê bao cho các tính năng cao cấp
+### Xác thực và Phân quyền
+- **JWT Authentication**: Sử dụng JSON Web Tokens với thời hạn có thể cấu hình
+- **Role-based Authorization**: Phân quyền theo vai trò (Customer, Manager)
+- **Xác minh Email**: Gửi mã xác nhận qua email khi đăng ký
+- **Mã hóa mật khẩu**: Sử dụng HMACSHA512 cho mã hóa mật khẩu
 
-## Cấu trúc dự án
+### Bảo vệ API
+- **RequirePaidStatusAttribute**: Middleware tùy chỉnh để kiểm tra người dùng đã thanh toán thuê bao
+- **ValidationMiddleware**: Xử lý và chuẩn hóa lỗi validation
+- **ExceptionMiddleware**: Xử lý exception an toàn, không để lộ thông tin nhạy cảm
 
-```
-MomTracking/
-├── API/                 # Lớp API với controllers và middleware
-├── Application/         # Lớp Application với services và DTOs
-├── Domain/              # Lớp Domain với entities và business rules
-├── Infrastructure/      # Lớp Infrastructure với data access và external services
-├── docker-compose.yml   # Cấu hình Docker
-└── MomTracking.sln      # File solution
-```
+### Xử lý dữ liệu
+- **Input Validation**: Sử dụng FluentValidation để kiểm tra dữ liệu đầu vào
+- **API Response chuẩn hóa**: Tất cả response đều có cấu trúc nhất quán
+- **Logging**: Ghi log chi tiết cho các lỗi và hoạt động hệ thống
 
-## Tính năng tương lai
+## Tính năng đang phát triển
 
-- Tích hợp ứng dụng di động
-- Phân tích nâng cao cho dữ liệu sức khỏe
-- Tích hợp với hệ thống nhà cung cấp dịch vụ y tế
-- Hỗ trợ đa ngôn ngữ
-- Mở rộng tính năng cộng đồng
+- **Mobile App**: Ứng dụng di động cho iOS và Android
+- **Trí tuệ nhân tạo**: Phân tích dữ liệu sức khỏe bằng AI để dự đoán vấn đề
+- **Tích hợp y tế**: Kết nối với hệ thống của các bệnh viện và phòng khám
+- **Chat trực tiếp**: Tính năng chat với chuyên gia y tế
+- **Bảng tin cá nhân hóa**: Nội dung được đề xuất dựa trên tuổi và tình trạng của trẻ
+- **Hỗ trợ đa ngôn ngữ**: Mở rộng hỗ trợ nhiều ngôn ngữ
 
 ## Đóng góp
 
-Chúng tôi hoan nghênh mọi đóng góp cho dự án MomTracking! Nếu bạn muốn đóng góp:
+Chúng tôi rất hoan nghênh đóng góp từ cộng đồng! Nếu bạn muốn tham gia phát triển MomTracking:
 
 1. Fork repository
 2. Tạo nhánh mới (`git checkout -b feature/amazing-feature`)
-3. Commit thay đổi (`git commit -m 'Thêm tính năng tuyệt vời'`)
-4. Push lên nhánh (`git push origin feature/amazing-feature`)
+3. Commit thay đổi (`git commit -m 'Thêm tính năng XYZ'`)
+4. Push lên nhánh của bạn (`git push origin feature/amazing-feature`)
 5. Tạo Pull Request
+
+Vui lòng tuân thủ coding standards và viết unit tests cho các tính năng mới.
 
 ## Xử lý sự cố
 
-Nếu bạn gặp vấn đề khi cài đặt hoặc chạy ứng dụng:
+### Các vấn đề thường gặp
 
-- Kiểm tra xem bạn đã cài đặt đúng phiên bản .NET 8.0 SDK
-- Đảm bảo SQL Server đang chạy và chuỗi kết nối chính xác
-- Kiểm tra logs ở thư mục `API/logs` để xem chi tiết lỗi
+1. **Lỗi kết nối cơ sở dữ liệu**
+    - Kiểm tra chuỗi kết nối trong appsettings.json
+    - Đảm bảo SQL Server đang chạy và có thể truy cập
+    - Kiểm tra firewall không chặn kết nối
 
-## Giấy phép
+2. **Lỗi xác thực JWT**
+    - Đảm bảo SecretToken đủ mạnh và nhất quán
+    - Kiểm tra claim types và values
 
-Dự án này được cấp phép theo giấy phép MIT. Xem file `LICENSE` để biết thêm thông tin.
+3. **Lỗi khi chạy migrations**
+    - Xóa thư mục Migrations và tạo lại migration đầu tiên
+    - Chạy `dotnet ef database update` từ thư mục gốc
 
-## Liên hệ
+4. **Lỗi Hangfire**
+    - Đảm bảo kết nối đến cơ sở dữ liệu Hangfire
+    - Kiểm tra logs để xem chi tiết về lỗi job
 
-Nếu bạn có bất kỳ câu hỏi hoặc phản hồi nào, vui lòng liên hệ:
+### Logs và Debugging
 
-- **Email**: support@momtracking.com
+- Logs được lưu tại `API/logs/`
+- Có thể cấu hình mức độ log trong appsettings.json
+- Sử dụng Swagger UI để test API trực tiếp
+
+## Liên hệ và Hỗ trợ
+
 - **Website**: https://www.momtracking.com
-- **GitHub**: https://github.com/momtracking
+- **Email hỗ trợ**: support@momtracking.com
+- **GitHub Issues**: https://github.com/momtracking/issues
+- **Tài liệu API**: https://api.momtracking.com/docs
+
+## License
+
+Dự án MomTracking được phân phối dưới giấy phép MIT. Xem file `LICENSE` để biết thêm chi tiết.
 
 ---
 
