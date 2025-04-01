@@ -85,6 +85,17 @@ namespace Application.Services
                 {
                     warnings.Add("WARNING: Thai nhi bị béo phì, mẹ cần chú ý chế độ ăn uống của mình sao cho phù hợp và đến khám ở cơ sở y tế hoặc bệnh viện gần nhất!!!");
                 }
+                if(healthMetric.PregnancyWeek == 16)
+                {
+                    if(healthMetric.HearRate < standard.HearRateMin)
+                    {
+                        warnings.Add("WARNING: Nhịp tim của thai nhi thấp hơn mức tiêu chuẩn, mẹ cần chú ý đến tình trạng sức khỏe, chế độ dinh dưỡng, tinh thần của bản thân để tránh ảnh hưởng nhiều tới bé");
+                    }
+                    if(healthMetric.HearRate > standard.HearRateMax)
+                    {
+                        warnings.Add("WARNING: Nhịp tim của thai nhi cao hơn mức tiêu chuẩn, mẹ cần chú ý đến tình trạng sức khỏe và cần nghỉ ngơi nhiều hơn hạn chế hoạt động thể chất và căng thẳng quá mức");
+                    }
+                }
                 if (warnings.Count > 0)
                 {
                     healthMetric.IsAlert = true;
