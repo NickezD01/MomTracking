@@ -29,17 +29,18 @@ namespace Application.Services
             {
                 var healthMetric = _mapper.Map<HealthMetric>(healthMetricRequest);
                 healthMetric.ChildrentId = healthMetricRequest.ChildrentId;
-                var DetailsExist = await _unitOfWork.HeathMetrics.GetAsync(x => x.PregnancyWeek == healthMetric.PregnancyWeek);
+                //var DetailsExist = await _unitOfWork.HeathMetrics.GetAsync(x => x.PregnancyWeek == healthMetric.PregnancyWeek);
                 //Bo sung tinh tuan thai
                 var children = await _unitOfWork.Childrens.GetAsync(c => c.Id == healthMetric.ChildrentId);
                 DateTime today = DateTime.Now;
                 TimeSpan timeUntilDue = children.Birth - today;
-                int w = 0;
+                //int w = 0;
+                int w = (int)(timeUntilDue.TotalDays / 7);
+                healthMetric.PregnancyWeek = 40 - w;
+                var DetailsExist = await _unitOfWork.HeathMetrics.GetAsync(x => x.PregnancyWeek == healthMetric.PregnancyWeek);
                 if (DetailsExist == null || DetailsExist.ChildrentId != healthMetric.ChildrentId)
                 {
                         await _unitOfWork.HeathMetrics.AddAsync(healthMetric);
-                        w = (int)(timeUntilDue.TotalDays / 7);
-                        healthMetric.PregnancyWeek = 40 - w;
                         await _unitOfWork.SaveChangeAsync();
                         return apiResponse.SetOk("Children's health details added successfully!");
                 }
@@ -85,7 +86,7 @@ namespace Application.Services
                 {
                     warnings.Add("WARNING: Thai nhi bị béo phì, mẹ cần chú ý chế độ ăn uống của mình sao cho phù hợp và đến khám ở cơ sở y tế hoặc bệnh viện gần nhất!!!");
                 }
-                if(healthMetric.PregnancyWeek == 16)
+                if(healthMetric.PregnancyWeek > 15)
                 {
                     if(healthMetric.HearRate < standard.HearRateMin)
                     {
