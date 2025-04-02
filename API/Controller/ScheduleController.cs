@@ -29,7 +29,7 @@ namespace API.Controller
         }
 
         [Authorize(Roles = "Customer")]
-        [RequirePaidStatusAttribute]
+        //[RequirePaidStatusAttribute]
         [HttpGet("GetAllSchedule")]
         public async Task<IActionResult> GetAllSchedule()
         {
