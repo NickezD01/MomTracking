@@ -8,7 +8,7 @@ namespace Application.Request.HealthMetric
 {
     public class HealthMetricUpdateRequest
     {
-        public int PregnancyWeek { get; set; }
+        //public int PregnancyWeek { get; set; }
         public double HeadCircumference { get; set; }
         public double Weight { get; set; }
         public double Lenght { get; set; }
