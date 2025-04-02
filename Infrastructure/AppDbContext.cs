@@ -16,7 +16,7 @@ namespace Infrastructure
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseNpgsql("Host=172.17.0.2; Port=5431; Database=koidelivery; Username=postgres; Password=matkhau;Include Error Detail=True;TrustServerCertificate=True");
+
         }
         public DbSet<UserAccount> Users { get; set; }
         public DbSet<Children> Childrens { get; set; }

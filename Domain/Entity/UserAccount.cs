@@ -19,12 +19,8 @@ namespace Domain.Entity
         public bool? IsEmailVerified { get; set; } = false;
         public string? ImgUrl { get; set; }
         public Role Role { get; set; }
-        //public double? walletAmount { get; set; }
-        //
         public List<EmailVerification>? EmailVerifications { get; set; }
-        /*public int? TransportServiceId { get; set; }
-        public TransportService? TransportService { get; set; }*/
-        //public List<OrderFish>? OrderFishes { get; set; }
+
         public List<Subscription>? Subscriptions{ get; set; }
         public List<Payment>? Payments { get; set; }
         public List<Children>? Childrents { get; set; }
