@@ -1,3 +1,4 @@
+using API.Middleware;
 using Application.Interface;
 using Application.Request.Post;
 using Microsoft.AspNetCore.Authorization;
@@ -48,7 +49,8 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
+        [RequirePaidStatusAttribute]
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromBody] CreatePostRequest request)
         {
@@ -56,7 +58,8 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
+        [RequirePaidStatusAttribute]
         [HttpPut("{postId}")]
         public async Task<IActionResult> UpdatePost(int postId, [FromBody] UpdatePostRequest request)
         {
@@ -64,7 +67,8 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
+        [RequirePaidStatusAttribute]
         [HttpDelete("{postId}")]
         public async Task<IActionResult> DeletePost(int postId)
         {

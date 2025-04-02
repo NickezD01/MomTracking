@@ -1,3 +1,4 @@
+using API.Middleware;
 using Application.Interface;
 using Application.Request.Comment;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +17,7 @@ namespace API.Controller
         {
             _commentService = commentService;
         }
+
 
         [HttpGet("post/{postId}")]
         public async Task<IActionResult> GetCommentsByPost(int postId, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 20)
@@ -39,7 +41,8 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
+        [RequirePaidStatusAttribute]
         [HttpPost]
         public async Task<IActionResult> CreateComment([FromBody] CreateCommentRequest request)
         {
@@ -47,7 +50,8 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
+        [RequirePaidStatusAttribute]
         [HttpPut("{commentId}")]
         public async Task<IActionResult> UpdateComment(int commentId, [FromBody] UpdateCommentRequest request)
         {
@@ -55,7 +59,8 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Customer")]
+        [RequirePaidStatusAttribute]
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteComment(int commentId)
         {

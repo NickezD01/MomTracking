@@ -32,7 +32,9 @@ namespace API.Controller
             var result = await _childrenService.AddNewChildren(childrentRequest);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
-        
+
+        [Authorize(Roles = "Customer")]
+        [RequirePaidStatusAttribute]
         [HttpGet("GetAllChildren")]
         public async Task<IActionResult> GetAllChildren()
         {
@@ -40,6 +42,8 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
+        [Authorize(Roles = "Customer")]
+        [RequirePaidStatusAttribute]
         [HttpDelete("DeleteChildrenDetail/{id}")]
         public async Task<IActionResult> DeleteChildrenDetail(int id)
         {
@@ -47,6 +51,8 @@ namespace API.Controller
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
+        [Authorize(Roles = "Customer")]
+        [RequirePaidStatusAttribute]
         [HttpPut("UpdateChildrenData/{id}")]
         public async Task<IActionResult> UpdateChildrenData(int id, ChildrenUpdateRequest childrentRequest)
         {
