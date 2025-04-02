@@ -31,7 +31,7 @@ namespace API.Controller
         }
 
         [Authorize(Roles = "Customer")]
-        [RequirePaidStatusAttribute]
+        //[RequirePaidStatusAttribute]
         [HttpGet("GetAllHealthMetric")]
         public async Task<IActionResult> GetAllHealthMetric()
         {

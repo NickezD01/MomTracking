@@ -35,8 +35,10 @@ namespace Application.Services
                 DateTime today = DateTime.Now;
                 TimeSpan timeUntilDue = children.Birth - today;
                 //int w = 0;
-                int w = (int)(timeUntilDue.TotalDays / 7);
-                healthMetric.PregnancyWeek = 40 - w;
+                //int w = (int)(timeUntilDue.TotalDays / 7);
+                //healthMetric.PregnancyWeek = 40 - w;
+                double pregnancyWeekDouble = 40 - (timeUntilDue.TotalDays / 7);
+                healthMetric.PregnancyWeek = (int)Math.Round(pregnancyWeekDouble);
                 var DetailsExist = await _unitOfWork.HeathMetrics.GetAsync(x => x.PregnancyWeek == healthMetric.PregnancyWeek);
                 if (DetailsExist == null || DetailsExist.ChildrentId != healthMetric.ChildrentId)
                 {
