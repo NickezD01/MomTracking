@@ -34,7 +34,7 @@ namespace API.Controller
         }
 
         [Authorize(Roles = "Customer")]
-        [RequirePaidStatusAttribute]
+        //[RequirePaidStatusAttribute]
         [HttpGet("GetAllChildren")]
         public async Task<IActionResult> GetAllChildren()
         {
